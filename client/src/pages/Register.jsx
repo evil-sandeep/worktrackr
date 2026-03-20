@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import authService from '../services/authService';
-import { UserPlus, User, Mail, Phone, Hash, Lock, Eye, EyeOff, ArrowRight, Loader2, ShieldCheck, Briefcase } from 'lucide-react';
+import { useUI } from '../context/UIContext';
+import { UserPlus, User, Mail, Phone, Hash, Lock, Eye, EyeOff, ArrowRight, ShieldCheck, Briefcase } from 'lucide-react';
 
 const Register = () => {
+  const { showLoader, addToast } = useUI();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -13,8 +15,6 @@ const Register = () => {
     role: 'employee'
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -23,16 +23,16 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
+    showLoader(true);
 
     try {
       await authService.register(formData);
+      addToast('Registration successful! Welcome to WorkTrackr.', 'success');
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed. Please check your details.');
+      addToast(err.response?.data?.message || 'Registration failed.', 'error');
     } finally {
-      setLoading(false);
+      showLoader(false);
     }
   };
 
@@ -59,13 +59,6 @@ const Register = () => {
           <div className="absolute top-0 right-0 w-full h-1 bg-gradient-to-l from-transparent via-indigo-500 to-transparent"></div>
           
           <form className="space-y-6" onSubmit={handleSubmit}>
-            {error && (
-              <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-2xl flex items-center gap-3 text-red-400 animate-in fade-in zoom-in duration-300">
-                <ShieldCheck className="h-5 w-5 flex-shrink-0" />
-                <p className="text-sm font-semibold">{error}</p>
-              </div>
-            )}
-
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* Full Name */}
               <div className="space-y-2">
@@ -184,16 +177,9 @@ const Register = () => {
 
             <button
               type="submit"
-              disabled={loading}
-              className="w-full h-15 mt-4 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-black text-lg rounded-2xl shadow-xl shadow-indigo-900/20 hover:shadow-2xl hover:shadow-indigo-500/30 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3 group disabled:opacity-50 disabled:hover:translate-y-0 active:scale-95"
+              className="w-full h-15 mt-4 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-black text-lg rounded-2xl shadow-xl shadow-indigo-900/20 hover:shadow-2xl hover:shadow-indigo-500/30 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3 group active:scale-95"
             >
-              {loading ? (
-                <Loader2 className="h-6 w-6 animate-spin" />
-              ) : (
-                <>
-                  Register Now <ArrowRight className="h-6 w-6 group-hover:translate-x-1.5 transition-transform" />
-                </>
-              )}
+              Register Now <ArrowRight className="h-6 w-6 group-hover:translate-x-1.5 transition-transform" />
             </button>
           </form>
 

@@ -5,10 +5,25 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
+import Toast from './components/Toast';
+import Loader from './components/Loader';
+import { UIProvider, useUI } from './context/UIContext';
+
+const GlobalUI = () => {
+  const { loading } = useUI();
+  return (
+    <>
+      <Toast />
+      {loading && <Loader fullScreen />}
+    </>
+  );
+};
 
 const AppRoutes = () => {
   return (
-    <Routes>
+    <UIProvider>
+      <GlobalUI />
+      <Routes>
       {/* Public Routes - No Layout */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
@@ -28,6 +43,7 @@ const AppRoutes = () => {
       {/* Default Redirect */}
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
     </Routes>
+    </UIProvider>
   );
 };
 

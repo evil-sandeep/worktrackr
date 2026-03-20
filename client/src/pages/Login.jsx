@@ -1,28 +1,28 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import authService from '../services/authService';
-import { LogIn, Mail, Lock, Eye, EyeOff, ArrowRight, Loader2, ShieldCheck } from 'lucide-react';
+import { useUI } from '../context/UIContext';
+import { LogIn, Mail, Lock, Eye, EyeOff, ArrowRight, ShieldCheck } from 'lucide-react';
 
 const Login = () => {
+  const { showLoader, addToast } = useUI();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
+    showLoader(true);
 
     try {
       await authService.login(email, password);
+      addToast('Login successful! Welcome back.', 'success');
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid email or password. Please try again.');
+      addToast(err.response?.data?.message || 'Invalid credentials.', 'error');
     } finally {
-      setLoading(false);
+      showLoader(false);
     }
   };
 
@@ -53,13 +53,6 @@ const Login = () => {
               <h2 className="text-2xl font-bold text-white">Sign In</h2>
               <p className="text-slate-400 text-sm mt-1">Enter your credentials to continue</p>
             </div>
-
-            {error && (
-              <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-2xl flex items-center gap-3 text-red-400 animate-in fade-in zoom-in duration-300">
-                <ShieldCheck className="h-5 w-5 flex-shrink-0" />
-                <p className="text-sm font-semibold">{error}</p>
-              </div>
-            )}
 
             <div className="space-y-4">
               {/* Email Field */}
@@ -107,16 +100,9 @@ const Login = () => {
 
             <button
               type="submit"
-              disabled={loading}
-              className="w-full h-15 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-lg rounded-2xl shadow-xl shadow-blue-900/20 hover:shadow-2xl hover:shadow-blue-500/30 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3 group disabled:opacity-50 disabled:hover:translate-y-0 active:scale-95"
+              className="w-full h-15 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-lg rounded-2xl shadow-xl shadow-blue-900/20 hover:shadow-2xl hover:shadow-blue-500/30 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3 group active:scale-95"
             >
-              {loading ? (
-                <Loader2 className="h-6 w-6 animate-spin" />
-              ) : (
-                <>
-                  Enter Dashboard <ArrowRight className="h-6 w-6 group-hover:translate-x-1.5 transition-transform" />
-                </>
-              )}
+              Enter Dashboard <ArrowRight className="h-6 w-6 group-hover:translate-x-1.5 transition-transform" />
             </button>
           </form>
 

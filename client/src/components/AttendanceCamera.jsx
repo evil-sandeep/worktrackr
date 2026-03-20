@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import attendanceService from '../services/attendanceService';
+import { useUI } from '../context/UIContext';
 import { 
   Camera, 
   MapPin, 
@@ -13,6 +14,7 @@ import {
 } from 'lucide-react';
 
 const AttendanceCamera = () => {
+  const { showLoader, addToast } = useUI();
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [stream, setStream] = useState(null);
@@ -90,8 +92,7 @@ const AttendanceCamera = () => {
   const handleUpload = async () => {
     if (!capturedImage || !location) return;
 
-    setLoading(true);
-    setStatus({ type: '', message: '' });
+    showLoader(true);
 
     try {
       await attendanceService.markAttendance({
@@ -101,16 +102,14 @@ const AttendanceCamera = () => {
         date: currentTime.toISOString().split('T')[0],
         time: currentTime.toLocaleTimeString(),
       });
-      setStatus({ type: 'success', message: 'Attendance successfully logged!' });
+      addToast('Attendance logged successfully!', 'success');
+      setCapturedImage(null);
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'Upload failed.';
       const detailMsg = err.response?.data?.details || '';
-      setStatus({ 
-        type: 'error', 
-        message: detailMsg ? `${errorMsg} (${detailMsg})` : errorMsg 
-      });
+      addToast(detailMsg ? `${errorMsg} (${detailMsg})` : errorMsg, 'error');
     } finally {
-      setLoading(false);
+      showLoader(false);
     }
   };
 
@@ -221,33 +220,19 @@ const AttendanceCamera = () => {
           </div>
         )}
 
-        {/* Status Messages */}
-        {status.message && (
-          <div className={`mt-8 p-5 rounded-3xl flex items-center space-x-4 animate-in fade-in slide-in-from-top-4 duration-500 ${status.type === 'success' ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-red-50 text-red-700 border border-red-100'}`}>
-            <div className={`p-2.5 rounded-2xl ${status.type === 'success' ? 'bg-green-100' : 'bg-red-100'}`}>
-              {status.type === 'success' ? <CheckCircle className="h-6 w-6" /> : <AlertCircle className="h-6 w-6" />}
-            </div>
-            <p className="text-sm font-bold leading-tight">{status.message}</p>
-          </div>
-        )}
-
         <div className="mt-10">
           <button
             onClick={capturedImage ? handleUpload : handleCapture}
-            disabled={loading || !isCameraReady || !location}
-            className={`w-full h-16 flex items-center justify-center rounded-[1.5rem] font-black text-lg text-white shadow-xl transition-all transform active:scale-95 ${loading || !isCameraReady || !location ? 'bg-slate-200 cursor-not-allowed shadow-none font-bold' : 'bg-gradient-to-br from-blue-600 to-indigo-700 hover:shadow-2xl hover:shadow-blue-300 hover:-translate-y-1'}`}
+            disabled={!isCameraReady || !location}
+            className={`w-full h-16 flex items-center justify-center rounded-[1.5rem] font-black text-lg text-white shadow-xl transition-all transform active:scale-95 ${!isCameraReady || !location ? 'bg-slate-200 cursor-not-allowed shadow-none font-bold' : 'bg-gradient-to-br from-blue-600 to-indigo-700 hover:shadow-2xl hover:shadow-blue-300 hover:-translate-y-1'}`}
           >
-            {loading ? (
-              <Loader2 className="h-7 w-7 animate-spin" />
-            ) : (
-              <span className="flex items-center gap-3">
-                {capturedImage ? (
-                  <>Submit Logs <UploadCloud className="h-6 w-6" /></>
-                ) : (
-                  <>Point and Capture <ArrowRight className="h-6 w-6" /></>
-                )}
-              </span>
-            )}
+            <span className="flex items-center gap-3">
+              {capturedImage ? (
+                <>Submit Logs <UploadCloud className="h-6 w-6" /></>
+              ) : (
+                <>Point and Capture <ArrowRight className="h-6 w-6" /></>
+              )}
+            </span>
           </button>
           
           <p className="mt-6 text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] opacity-40">

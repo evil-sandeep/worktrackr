@@ -15,8 +15,17 @@
   75% { transform: translateX(4px); }
 }
 
+@keyframes toast-progress {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
 .animate-shake {
   animation: shake 0.2s ease-in-out 0s 2;
+}
+
+.animate-toast-progress {
+  animation: toast-progress 4s linear forwards;
 }
 
 @layer components {
