@@ -76,7 +76,12 @@ const AttendanceCamera = () => {
       });
       setStatus({ type: 'success', message: 'Attendance logged successfully!' });
     } catch (err) {
-      setStatus({ type: 'error', message: err.response?.data?.message || 'Submission failed.' });
+      const errorMsg = err.response?.data?.message || 'Submission failed.';
+      const detailMsg = err.response?.data?.details || '';
+      setStatus({ 
+        type: 'error', 
+        message: detailMsg ? `${errorMsg} (${detailMsg})` : errorMsg 
+      });
     } finally {
       setLoading(false);
     }

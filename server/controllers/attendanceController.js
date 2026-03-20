@@ -2,15 +2,9 @@ const Attendance = require('../models/Attendance');
 const { uploadImage } = require('../utils/cloudinary');
 
 // @desc    Mark daily attendance
-// @route   POST /api/attendance
-// @access  Private
 const markAttendance = async (req, res) => {
   try {
-    // We expect the authMiddleware to supply req.user
     const userId = req.user._id;
-
-    // Receive fields from the request
-    // 'image' can be a base64 string or a local file path if used with multer
     const { image, latitude, longitude, date, time } = req.body;
 
     if (!image || !latitude || !longitude || !date || !time) {
@@ -22,7 +16,11 @@ const markAttendance = async (req, res) => {
     try {
       imageUrl = await uploadImage(image);
     } catch (uploadError) {
-      return res.status(500).json({ message: 'Failed to upload image to Cloudinary' });
+      console.error('Controller Error - Cloudinary:', uploadError.message);
+      return res.status(500).json({ 
+        message: 'Failed to upload image to Cloudinary',
+        details: uploadError.message 
+      });
     }
 
     // 2. Save data in MongoDB
@@ -37,7 +35,7 @@ const markAttendance = async (req, res) => {
 
     res.status(201).json(attendance);
   } catch (error) {
-    console.error('Attendance Error:', error);
+    console.error('Attendance Controller General Error:', error);
     res.status(500).json({ message: 'Server error while marking attendance' });
   }
 };

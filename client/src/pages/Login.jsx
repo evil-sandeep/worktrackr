@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import authService from '../services/authService';
-import { LogIn, User, Lock, ArrowRight, Loader2 } from 'lucide-react';
+import { LogIn, Mail, Lock, Eye, EyeOff, ArrowRight, Loader2, ShieldCheck } from 'lucide-react';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -19,89 +20,118 @@ const Login = () => {
       await authService.login(email, password);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid email or password.');
+      setError(err.response?.data?.message || 'Invalid email or password. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC] p-4">
-      <div className="max-w-md w-full">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-slate-950">
+      {/* Dynamic Background Elements */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/20 rounded-full blur-[120px] animate-pulse"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/20 rounded-full blur-[120px] animate-pulse delay-700"></div>
+
+      <div className="max-w-md w-full px-6 py-12 relative z-10">
         {/* Branding */}
-        <div className="flex flex-col items-center mb-10">
-          <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/30 mb-4 transition-transform hover:rotate-3">
-            <LogIn className="h-8 w-8 text-white" />
+        <div className="flex flex-col items-center mb-10 text-center">
+          <div className="w-20 h-20 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-blue-500/40 mb-6 transform hover:rotate-6 transition-all duration-500">
+            <ShieldCheck className="h-10 w-10 text-white" />
           </div>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tight">Welcome Back</h1>
-          <p className="text-slate-500 mt-2 font-medium">Log in to your WorkTrackr account</p>
+          <h1 className="text-5xl font-extrabold text-white tracking-tight mb-2">
+            Work<span className="text-blue-500">Trackr</span>
+          </h1>
+          <p className="text-slate-400 font-medium text-lg">Secure workforce management portal</p>
         </div>
 
-        {/* Card */}
-        <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/60 border border-slate-100 p-10 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-3xl -mr-16 -mt-16 opacity-50"></div>
+        {/* Glassmorphic Card */}
+        <div className="backdrop-blur-2xl bg-white/10 rounded-[2.5rem] shadow-2xl border border-white/10 p-10 relative">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent"></div>
           
-          <form className="space-y-6 relative z-10" onSubmit={handleSubmit}>
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold text-white">Sign In</h2>
+              <p className="text-slate-400 text-sm mt-1">Enter your credentials to continue</p>
+            </div>
+
             {error && (
-              <div className="bg-red-50 border border-red-100 p-4 rounded-xl flex items-center gap-3 text-red-600 animate-shake">
-                <Lock className="h-5 w-5 flex-shrink-0" />
+              <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-2xl flex items-center gap-3 text-red-400 animate-in fade-in zoom-in duration-300">
+                <ShieldCheck className="h-5 w-5 flex-shrink-0" />
                 <p className="text-sm font-semibold">{error}</p>
               </div>
             )}
 
-            <div className="space-y-5">
-              <div className="group relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
-                <input
-                  type="email"
-                  required
-                  placeholder="name@company.com"
-                  className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 text-slate-900 rounded-2xl focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-medium"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
+            <div className="space-y-4">
+              {/* Email Field */}
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-slate-300 ml-1">Email Address</label>
+                <div className="group relative">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                  <input
+                    type="email"
+                    required
+                    placeholder="name@company.com"
+                    className="w-full pl-12 pr-4 py-4 bg-slate-900/50 border border-slate-800 text-white placeholder-slate-600 rounded-2xl focus:bg-slate-900/80 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none transition-all font-medium"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
               </div>
 
-              <div className="group relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
-                <input
-                  type="password"
-                  required
-                  placeholder="••••••••"
-                  className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 text-slate-900 rounded-2xl focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-medium"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
+              {/* Password Field */}
+              <div className="space-y-2">
+                <div className="flex justify-between items-center ml-1">
+                  <label className="text-sm font-bold text-slate-300">Password</label>
+                  <button type="button" className="text-xs font-bold text-blue-500 hover:text-blue-400 transition-colors">Forgot?</button>
+                </div>
+                <div className="group relative">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    placeholder="••••••••"
+                    className="w-full pl-12 pr-12 py-4 bg-slate-900/50 border border-slate-800 text-white placeholder-slate-600 rounded-2xl focus:bg-slate-900/80 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none transition-all font-medium"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-blue-400 transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
+                </div>
               </div>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-14 bg-gradient-to-br from-blue-600 to-indigo-700 text-white font-bold rounded-2xl shadow-lg shadow-blue-200 hover:shadow-xl hover:shadow-blue-300 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 group disabled:opacity-70 disabled:hover:translate-y-0 disabled:cursor-not-allowed"
+              className="w-full h-15 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-lg rounded-2xl shadow-xl shadow-blue-900/20 hover:shadow-2xl hover:shadow-blue-500/30 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3 group disabled:opacity-50 disabled:hover:translate-y-0 active:scale-95"
             >
               {loading ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
+                <Loader2 className="h-6 w-6 animate-spin" />
               ) : (
                 <>
-                  Sign In <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  Enter Dashboard <ArrowRight className="h-6 w-6 group-hover:translate-x-1.5 transition-transform" />
                 </>
               )}
             </button>
           </form>
 
-          <div className="mt-8 text-center">
-            <p className="text-slate-500 font-medium">
-              New here?{' '}
-              <Link to="/register" className="text-blue-600 font-bold hover:underline">
-                Create an account
+          <div className="mt-10 pt-8 border-t border-white/5 text-center">
+            <p className="text-slate-400 font-medium">
+              New to WorkTrackr?{' '}
+              <Link to="/register" className="text-white font-bold hover:text-blue-400 transition-colors ml-1">
+                Create Account
               </Link>
             </p>
           </div>
         </div>
 
-        <p className="mt-8 text-center text-slate-400 text-sm font-medium">
-          Secure, compliant, and easy to use.
+        <p className="mt-10 text-center text-slate-500 text-sm font-bold flex items-center justify-center gap-2 tracking-widest uppercase">
+          <ShieldCheck className="h-4 w-4" /> Enterprise Secure
         </p>
       </div>
     </div>
