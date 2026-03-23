@@ -10,11 +10,17 @@ const markAttendance = async (attendanceData) => {
 };
 
 /**
- * Fetch all attendance records for a user
+ * Fetch all attendance records for a user with optional filtering
  * @param {string} userId - ID of the user
+ * @param {Object} filters - { month, year }
  */
-const getAttendanceByUserId = async (userId) => {
-  const response = await api.get(`/attendance/${userId}`);
+const getAttendanceByUserId = async (userId, filters = {}) => {
+  const { month, year } = filters;
+  let url = `/attendance/${userId}`;
+  if (month && year) {
+    url += `?month=${month}&year=${year}`;
+  }
+  const response = await api.get(url);
   return response.data;
 };
 

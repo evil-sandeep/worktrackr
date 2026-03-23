@@ -9,6 +9,18 @@ const markAttendance = async (req, res) => {
     // Use userId from authenticated user or fallback to body
     const userId = req.user ? req.user._id.toString() : req.body.userId;
 
+    // 0. Security/Business Logic Validations
+    const serverToday = new Date().toISOString().split('T')[0];
+    if (date !== serverToday) {
+      return res.status(400).json({ message: 'Backdated attendance is not allowed. Capture today only.' });
+    }
+
+    // Check for existing record today
+    const existingRecord = await Attendance.findOne({ userId, date });
+    if (existingRecord) {
+      return res.status(400).json({ message: 'Attendance already marked for today.' });
+    }
+
     if (!image || !location || !date || !time || !userId) {
       return res.status(400).json({ message: 'Missing required attendance data' });
     }
@@ -42,16 +54,25 @@ const markAttendance = async (req, res) => {
   }
 };
 
-// @desc    Fetch all attendance for a specific user
+// @desc    Fetch attendance logs for a specific user with optional filtering
 const getAttendanceByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
+    const { month, year } = req.query; // Optional filters: YYYY-MM
     
     if (!userId) {
       return res.status(400).json({ message: 'User ID is required' });
     }
 
-    const records = await Attendance.find({ userId }).sort({ createdAt: -1 });
+    let query = { userId };
+    
+    // If filtering by specific month (YYYY-MM style regex)
+    if (year && month) {
+      const monthStr = `${year}-${month.padStart(2, '0')}`;
+      query.date = { $regex: `^${monthStr}` };
+    }
+
+    const records = await Attendance.find(query).sort({ date: -1, time: -1 });
 
     res.status(200).json({
       success: true,
