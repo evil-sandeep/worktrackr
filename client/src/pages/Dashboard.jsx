@@ -124,7 +124,7 @@ const Dashboard = () => {
   
   const todayLog = attendanceMap[todayKey];
   const isCheckedIn = !!todayLog;
-  const isCheckedOut = !!todayLog?.checkoutTime;
+  const isCheckedOut = !!(todayLog?.checkOut?.time || todayLog?.checkoutTime);
 
   const handleDateSelect = (date) => {
     const dateKey = formatDateKey(date);

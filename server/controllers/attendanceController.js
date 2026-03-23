@@ -36,14 +36,16 @@ const markAttendance = async (req, res) => {
       return res.status(500).json({ message: 'Cloudinary upload failed' });
     }
 
-    // 2. Save record in MongoDB
+    // 2. Save record in MongoDB with nested structure
     const attendance = await Attendance.create({
       userId,
-      imageUrl,
-      location,
-      status,
       date,
-      time,
+      checkIn: {
+        imageUrl,
+        location,
+        time,
+      },
+      status: 'present'
     });
 
     res.status(201).json({
@@ -112,7 +114,7 @@ const markCheckout = async (req, res) => {
       return res.status(404).json({ message: 'No check-in record found for today. Please check-in first.' });
     }
 
-    if (attendance.checkoutTime) {
+    if (attendance.checkOut && attendance.checkOut.time) {
       return res.status(400).json({ message: 'You have already checked out for today.' });
     }
 
@@ -120,9 +122,11 @@ const markCheckout = async (req, res) => {
     const uploadedImage = await uploadImage(image);
 
     // 3. Update record
-    attendance.checkoutImageUrl = uploadedImage;
-    attendance.checkoutLocation = location;
-    attendance.checkoutTime = time;
+    attendance.checkOut = {
+      imageUrl: uploadedImage,
+      location,
+      time
+    };
 
     await attendance.save();
 
