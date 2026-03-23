@@ -66,7 +66,7 @@ const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
                </div>
                <div>
                   <p className="text-[10px] font-black uppercase tracking-widest opacity-80">Shift Duration</p>
-                  <p className="text-xl font-black">{record?.workingHours || 'In Progress'}</p>
+                  <p className="text-xl font-black">{record?.totalHours || record?.workingHours || 'In Progress'}</p>
                </div>
             </div>
             <div className="h-10 w-px bg-white/20 mx-2"></div>

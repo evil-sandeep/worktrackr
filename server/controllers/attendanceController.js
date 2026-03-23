@@ -134,7 +134,7 @@ const markCheckout = async (req, res) => {
     // Calculate duration and earnings
     if (attendance.checkIn && attendance.checkIn.time) {
       const duration = calculateWorkingHours(attendance.checkIn.time, time);
-      attendance.workingHours = duration;
+      attendance.totalHours = duration;
       attendance.earning = calculateEarnings(duration);
     }
 

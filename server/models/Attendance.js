@@ -19,7 +19,7 @@ const attendanceSchema = new mongoose.Schema({
     location: { type: String },
     time: { type: String }
   },
-  workingHours: {
+  totalHours: {
     type: String,
     default: 'In Progress'
   },
