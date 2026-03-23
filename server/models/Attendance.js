@@ -2,29 +2,29 @@ const mongoose = require('mongoose');
 
 const attendanceSchema = new mongoose.Schema({
   userId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String, // String as per user request
     required: true,
-    ref: 'User',
   },
   imageUrl: {
     type: String,
     required: true,
   },
-  latitude: {
-    type: Number,
+  location: {
+    type: String, // Combined string "lat,long"
     required: true,
   },
-  longitude: {
-    type: Number,
+  status: {
+    type: String,
+    enum: ['present', 'absent'],
+    default: 'present',
     required: true,
   },
   date: {
-    type: Date,
+    type: String, // YYYY-MM-DD
     required: true,
-    default: Date.now,
   },
   time: {
-    type: String,
+    type: String, // HH:MM:SS
     required: true,
   },
 }, {
