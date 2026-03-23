@@ -23,6 +23,10 @@ const attendanceSchema = new mongoose.Schema({
     type: String,
     default: 'In Progress'
   },
+  earning: {
+    type: Number,
+    default: 0
+  },
   status: {
     type: String,
     enum: ['present', 'absent'],

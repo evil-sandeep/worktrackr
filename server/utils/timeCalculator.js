@@ -44,4 +44,39 @@ const calculateWorkingHours = (startTimeStr, endTimeStr) => {
   }
 };
 
-module.exports = { calculateWorkingHours };
+/**
+ * Calculates earnings based on duration string.
+ * Salary: 20000/month, 8h/day, 30 days/month
+ * 
+ * @param {string} durationStr - Format "7h 30m"
+ * @returns {number} 
+ */
+const calculateEarnings = (durationStr) => {
+  if (!durationStr || durationStr === 'In Progress' || durationStr === 'Invalid Time') return 0;
+
+  try {
+    const parts = durationStr.split(' ');
+    let hours = 0;
+    let minutes = 0;
+
+    parts.forEach(part => {
+      if (part.includes('h')) hours = parseInt(part);
+      if (part.includes('m')) minutes = parseInt(part);
+    });
+
+    const totalHours = hours + (minutes / 60);
+    const monthlySalary = 20000;
+    const stdDays = 30;
+    const stdHoursPerDay = 8;
+    
+    // Hourly rate = Salary / (30 days * 8 hours)
+    const hourlyRate = monthlySalary / (stdDays * stdHoursPerDay);
+    
+    return Math.round(totalHours * hourlyRate);
+  } catch (error) {
+    console.error('Earning Calculation Error:', error);
+    return 0;
+  }
+};
+
+module.exports = { calculateWorkingHours, calculateEarnings };

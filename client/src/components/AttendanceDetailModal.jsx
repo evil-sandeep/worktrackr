@@ -70,11 +70,17 @@ const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
                </div>
             </div>
             <div className="h-10 w-px bg-white/20 mx-2"></div>
+            <div>
+               <p className="text-[10px] font-black uppercase tracking-widest opacity-80">Shift Earning</p>
+               <p className="text-xl font-black">₹{record?.earning || 0}</p>
+            </div>
+            <div className="h-10 w-px bg-white/20 mx-2"></div>
             <div className="text-right">
                <p className="text-[10px] font-black uppercase tracking-widest opacity-80">Cycle Status</p>
                <p className="text-xs font-black">{isCheckOutComplete ? 'SHIFT COMPLETE' : 'ACTIVE SESSION'}</p>
             </div>
           </div>
+
 
           {/* Section 1: Check-In */}
           <div className="space-y-4">

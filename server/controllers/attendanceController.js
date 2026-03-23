@@ -1,6 +1,7 @@
 const Attendance = require('../models/Attendance');
 const { uploadImage } = require('../utils/cloudinary');
-const { calculateWorkingHours } = require('../utils/timeCalculator');
+const { calculateWorkingHours, calculateEarnings } = require('../utils/timeCalculator');
+
 
 
 // @desc    Mark daily attendance
@@ -130,9 +131,11 @@ const markCheckout = async (req, res) => {
       time
     };
 
-    // Calculate duration
+    // Calculate duration and earnings
     if (attendance.checkIn && attendance.checkIn.time) {
-      attendance.workingHours = calculateWorkingHours(attendance.checkIn.time, time);
+      const duration = calculateWorkingHours(attendance.checkIn.time, time);
+      attendance.workingHours = duration;
+      attendance.earning = calculateEarnings(duration);
     }
 
     await attendance.save();
