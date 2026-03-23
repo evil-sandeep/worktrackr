@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import authService from '../services/authService';
 import AttendanceCamera from '../components/AttendanceCamera';
+import attendanceService from '../services/attendanceService';
 import { 
   Calendar as CalendarIcon, 
   TrendingUp, 
@@ -15,8 +15,26 @@ import {
 import Calendar from '../components/Calendar/Calendar';
 
 const Dashboard = () => {
-  const [user, setUser] = useState(null);
+  const [attendanceMap, setAttendanceMap] = useState({});
   const navigate = useNavigate();
+
+  const fetchAttendance = async () => {
+    const currentUser = authService.getCurrentUser();
+    if (!currentUser) return;
+
+    try {
+      const response = await attendanceService.getAttendanceByUserId(currentUser._id);
+      if (response.success && response.data) {
+        const mappedData = {};
+        response.data.forEach(record => {
+          mappedData[record.date] = record.status;
+        });
+        setAttendanceMap(mappedData);
+      }
+    } catch (err) {
+      console.error('Attendance fetch error:', err);
+    }
+  };
 
   useEffect(() => {
     const currentUser = authService.getCurrentUser();
@@ -24,6 +42,7 @@ const Dashboard = () => {
       navigate('/login');
     } else {
       setUser(currentUser);
+      fetchAttendance();
     }
   }, [navigate]);
 
@@ -134,7 +153,7 @@ const Dashboard = () => {
                 <Clock className="h-3.5 w-3.5" /> Live Syncing
              </span>
           </div>
-          <AttendanceCamera />
+          <AttendanceCamera onSuccess={fetchAttendance} />
         </div>
 
         {/* Records & Activity */}
@@ -153,15 +172,7 @@ const Dashboard = () => {
             </div>
             
             <div className="p-4 sm:p-6 transition-all duration-700">
-               <Calendar 
-                attendanceData={{
-                  "2026-03-23": "present",
-                  "2026-03-22": "absent",
-                  "2026-03-21": "present",
-                  "2026-03-20": "present",
-                  "2026-03-19": "absent",
-                }}
-               />
+               <Calendar attendanceData={attendanceMap} />
             </div>
           </div>
         </div>

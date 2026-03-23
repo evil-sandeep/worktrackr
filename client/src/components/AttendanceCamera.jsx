@@ -13,7 +13,7 @@ import {
   Clock
 } from 'lucide-react';
 
-const AttendanceCamera = () => {
+const AttendanceCamera = ({ onSuccess }) => {
   const { showLoader, addToast } = useUI();
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -152,6 +152,7 @@ const AttendanceCamera = () => {
         stream.getTracks().forEach(track => track.stop());
         setStream(null);
       }
+      if (onSuccess) onSuccess();
     } catch (err) {
       addToast('Submission failed. Please try again.', 'error');
     } finally {
