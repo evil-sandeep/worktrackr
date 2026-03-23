@@ -1,5 +1,7 @@
 const Attendance = require('../models/Attendance');
 const { uploadImage } = require('../utils/cloudinary');
+const { calculateWorkingHours } = require('../utils/timeCalculator');
+
 
 // @desc    Mark daily attendance
 const markAttendance = async (req, res) => {
@@ -121,12 +123,17 @@ const markCheckout = async (req, res) => {
     // 2. Upload to Cloudinary
     const uploadedImage = await uploadImage(image);
 
-    // 3. Update record
+    // 3. Update record with checkout data and calculate working hours
     attendance.checkOut = {
       imageUrl: uploadedImage,
       location,
       time
     };
+
+    // Calculate duration
+    if (attendance.checkIn && attendance.checkIn.time) {
+      attendance.workingHours = calculateWorkingHours(attendance.checkIn.time, time);
+    }
 
     await attendance.save();
 

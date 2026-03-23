@@ -58,6 +58,24 @@ const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
         {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto p-8 space-y-10 custom-scrollbar">
           
+          {/* Shift Summary / Working Hours */}
+          <div className="px-5 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl shadow-xl shadow-blue-100 flex items-center justify-between text-white">
+            <div className="flex items-center gap-3">
+               <div className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/10">
+                  <Clock className="h-5 w-5 text-white" />
+               </div>
+               <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest opacity-80">Shift Duration</p>
+                  <p className="text-xl font-black">{record?.workingHours || 'In Progress'}</p>
+               </div>
+            </div>
+            <div className="h-10 w-px bg-white/20 mx-2"></div>
+            <div className="text-right">
+               <p className="text-[10px] font-black uppercase tracking-widest opacity-80">Cycle Status</p>
+               <p className="text-xs font-black">{isCheckOutComplete ? 'SHIFT COMPLETE' : 'ACTIVE SESSION'}</p>
+            </div>
+          </div>
+
           {/* Section 1: Check-In */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">

@@ -19,6 +19,10 @@ const attendanceSchema = new mongoose.Schema({
     location: { type: String },
     time: { type: String }
   },
+  workingHours: {
+    type: String,
+    default: 'In Progress'
+  },
   status: {
     type: String,
     enum: ['present', 'absent'],
