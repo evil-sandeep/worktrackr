@@ -141,7 +141,7 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
     context.fillStyle = 'white';
     context.font = 'bold 14px Inter, sans-serif';
     context.textAlign = 'center';
-    context.fillText(mode === 'checkin' ? 'VERIFIED CHECK-IN' : 'VERIFIED CHECK-OUT', canvas.width - 140, canvas.height - 45);
+    context.fillText(mode === 'checkin' ? 'VERIFIED ENTRY' : 'VERIFIED EXIT', canvas.width - 140, canvas.height - 45);
 
     const imageData = canvas.toDataURL('image/jpeg', 0.8);
     setCapturedImage(imageData);
@@ -164,7 +164,7 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
         await attendanceService.markCheckout(capturedData);
       }
       
-      addToast(`${mode === 'checkin' ? 'Check-in' : 'Check-out'} logged successfully!`, 'success');
+      addToast(`${mode === 'checkin' ? 'Check-In' : 'Check-Out'} logged successfully!`, 'success');
       setCapturedImage(null);
       setCapturedData(null);
       setIsCameraActive(false);
@@ -174,7 +174,8 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
       }
       if (onSuccess) onSuccess();
     } catch (err) {
-      addToast('Submission failed. Please try again.', 'error');
+      const errorMsg = err.response?.data?.message || 'Submission failed. Please try again.';
+      addToast(errorMsg, 'error');
     } finally {
       showLoader(false);
     }

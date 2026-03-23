@@ -111,11 +111,11 @@ const markCheckout = async (req, res) => {
     // 1. Find existing check-in for today
     const attendance = await Attendance.findOne({ userId, date });
     if (!attendance) {
-      return res.status(404).json({ message: 'No check-in record found for today. Please check-in first.' });
+      return res.status(404).json({ message: 'Please check-in first' });
     }
 
     if (attendance.checkOut && attendance.checkOut.time) {
-      return res.status(400).json({ message: 'You have already checked out for today.' });
+      return res.status(400).json({ message: 'Check-out already completed' });
     }
 
     // 2. Upload to Cloudinary
