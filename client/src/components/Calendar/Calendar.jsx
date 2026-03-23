@@ -1,64 +1,24 @@
-import React, { useState, useMemo } from 'react';
+import React from 'react';
 import CalendarHeader from './CalendarHeader';
 import CalendarGrid from './CalendarGrid';
+import { useCalendar } from './useCalendar';
 
 /**
  * Modern Responsive Calendar Component
  * 
- * @param {Array} indicators - Array of objects: { date: Date|string, color: string, label: string }
+ * @param {Object} attendanceData - Object: { 'YYYY-MM-DD': 'present' | 'absent' }
  * @param {Function} onDateSelect - Callback when a date is clicked
  */
-const Calendar = ({ indicators = [], onDateSelect }) => {
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(new Date());
-
-  const calendarDays = useMemo(() => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    
-    // First day of the month
-    const firstDayOfMonth = new Date(year, month, 1);
-    // Day of the week the month starts on
-    const startingDayOfWeek = firstDayOfMonth.getDay();
-    
-    const days = [];
-    
-    // Padding from previous month
-    const prevMonthLastDay = new Date(year, month, 0).getDate();
-    for (let i = startingDayOfWeek - 1; i >= 0; i--) {
-      days.push(new Date(year, month - 1, prevMonthLastDay - i));
-    }
-    
-    // Days in current month
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    for (let i = 1; i <= daysInMonth; i++) {
-      days.push(new Date(year, month, i));
-    }
-    
-    // Padding for next month to fill exactly 42 slots (6 weeks)
-    const totalSlots = 42;
-    const remainingSlots = totalSlots - days.length;
-    for (let i = 1; i <= remainingSlots; i++) {
-      days.push(new Date(year, month + 1, i));
-    }
-    
-    return days;
-  }, [currentDate]);
-
-  const handlePrevMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
-  };
-
-  const handleNextMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
-  };
-
-  const handleToday = () => {
-    const today = new Date();
-    setCurrentDate(today);
-    setSelectedDate(today);
-    if (onDateSelect) onDateSelect(today);
-  };
+const Calendar = ({ attendanceData = {}, onDateSelect }) => {
+  const {
+    currentDate,
+    selectedDate,
+    calendarDays,
+    goToPrevMonth,
+    goToNextMonth,
+    goToToday,
+    setSelectedDate
+  } = useCalendar();
 
   const handleDateClick = (date) => {
     setSelectedDate(date);
@@ -69,30 +29,32 @@ const Calendar = ({ indicators = [], onDateSelect }) => {
     <div className="w-full bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 p-4 sm:p-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <CalendarHeader
         currentDate={currentDate}
-        onPrevMonth={handlePrevMonth}
-        onNextMonth={handleNextMonth}
-        onToday={handleToday}
+        onPrevMonth={goToPrevMonth}
+        onNextMonth={goToNextMonth}
+        onToday={goToToday}
       />
       <CalendarGrid
         days={calendarDays}
         currentDate={currentDate}
         selectedDate={selectedDate}
-        indicators={indicators}
+        attendanceData={attendanceData}
         onDateClick={handleDateClick}
       />
       
-      <div className="mt-8 flex items-center justify-between text-sm text-gray-500 px-2">
+      <div className="mt-8 flex flex-wrap items-center justify-between gap-4 text-sm text-gray-500 px-2">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-blue-600"></span>
-            <span>Today</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.3)]"></span>
+            <span className="font-semibold text-slate-700">Present</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-blue-100 ring-1 ring-blue-500"></span>
-            <span>Selected</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.3)]"></span>
+            <span className="font-semibold text-slate-700">Absent</span>
           </div>
         </div>
-        <p>Click a date to select it</p>
+        <p className="font-bold text-slate-900 bg-slate-50 px-4 py-2 rounded-xl border border-slate-100">
+           {selectedDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+        </p>
       </div>
     </div>
   );

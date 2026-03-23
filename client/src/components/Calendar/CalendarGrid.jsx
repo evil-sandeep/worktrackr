@@ -1,7 +1,9 @@
 import React from 'react';
 import CalendarDay from './CalendarDay';
 
-const CalendarGrid = ({ days, currentDate, selectedDate, indicators, onDateClick }) => {
+import { formatDateKey } from './useCalendar';
+
+const CalendarGrid = ({ days, currentDate, selectedDate, attendanceData, onDateClick }) => {
   const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   const isToday = (date) => {
@@ -18,19 +20,6 @@ const CalendarGrid = ({ days, currentDate, selectedDate, indicators, onDateClick
       date.getFullYear() === selectedDate.getFullYear();
   };
 
-  const isCurrentMonth = (date) => {
-    return date.getMonth() === currentDate.getMonth();
-  };
-
-  const getIndicatorsForDate = (date) => {
-    return indicators.filter(ind => {
-      const indDate = new Date(ind.date);
-      return indDate.getDate() === date.getDate() &&
-        indDate.getMonth() === date.getMonth() &&
-        indDate.getFullYear() === date.getFullYear();
-    });
-  };
-
   return (
     <div className="border-t border-l rounded-xl overflow-hidden shadow-sm bg-gray-50">
       <div className="grid grid-cols-7 border-b bg-gray-50/80 backdrop-blur-sm">
@@ -45,10 +34,10 @@ const CalendarGrid = ({ days, currentDate, selectedDate, indicators, onDateClick
           <CalendarDay
             key={index}
             day={date}
-            isCurrentMonth={isCurrentMonth(date)}
+            isCurrentMonth={date.getMonth() === currentDate.getMonth()}
             isToday={isToday(date)}
             isSelected={isSelected(date)}
-            indicators={getIndicatorsForDate(date)}
+            attendanceStatus={attendanceData[formatDateKey(date)]}
             onClick={onDateClick}
           />
         ))}

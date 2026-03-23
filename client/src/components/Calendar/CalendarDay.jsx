@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CalendarDay = ({ day, isCurrentMonth, isToday, isSelected, indicators, onClick }) => {
+const CalendarDay = ({ day, isCurrentMonth, isToday, isSelected, attendanceStatus, onClick }) => {
   return (
     <div
       onClick={() => onClick(day)}
@@ -18,14 +18,13 @@ const CalendarDay = ({ day, isCurrentMonth, isToday, isSelected, indicators, onC
         </span>
       </div>
 
-      <div className="mt-2 flex flex-wrap gap-1">
-        {indicators && indicators.map((indicator, idx) => (
-          <div
-            key={idx}
-            className={`w-2 h-2 rounded-full ${indicator.color || 'bg-blue-400'} shadow-sm`}
-            title={indicator.label}
-          />
-        ))}
+      <div className="mt-auto flex justify-center pb-2">
+        {attendanceStatus === 'present' && (
+          <div className="w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)] animate-pulse" title="Present" />
+        )}
+        {attendanceStatus === 'absent' && (
+          <div className="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.4)]" title="Absent" />
+        )}
       </div>
     </div>
   );

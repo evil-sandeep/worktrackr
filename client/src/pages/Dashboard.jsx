@@ -154,11 +154,13 @@ const Dashboard = () => {
             
             <div className="p-4 sm:p-6 transition-all duration-700">
                <Calendar 
-                indicators={[
-                  { date: new Date(), color: 'bg-green-500', label: 'Present' },
-                  { date: new Date(new Date().setDate(new Date().getDate() - 1)), color: 'bg-rose-500', label: 'Absent' },
-                  { date: new Date(new Date().setDate(new Date().getDate() - 2)), color: 'bg-blue-500', label: 'Event' },
-                ]}
+                attendanceData={{
+                  "2026-03-23": "present",
+                  "2026-03-22": "absent",
+                  "2026-03-21": "present",
+                  "2026-03-20": "present",
+                  "2026-03-19": "absent",
+                }}
                />
             </div>
           </div>
