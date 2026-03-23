@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AttendanceCamera from '../components/AttendanceCamera';
+import AttendanceDetailModal from '../components/AttendanceDetailModal';
 import attendanceService from '../services/attendanceService';
 import { 
   Calendar as CalendarIcon, 
@@ -15,7 +16,10 @@ import {
 import Calendar from '../components/Calendar/Calendar';
 
 const Dashboard = () => {
+  const [user, setUser] = useState(null);
   const [attendanceMap, setAttendanceMap] = useState({});
+  const [selectedLogDate, setSelectedLogDate] = useState(null);
+  const [isLogModalOpen, setIsLogModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const fetchAttendance = async () => {
@@ -27,7 +31,7 @@ const Dashboard = () => {
       if (response.success && response.data) {
         const mappedData = {};
         response.data.forEach(record => {
-          mappedData[record.date] = record.status;
+          mappedData[record.date] = record;
         });
         setAttendanceMap(mappedData);
       }
@@ -45,6 +49,12 @@ const Dashboard = () => {
       fetchAttendance();
     }
   }, [navigate]);
+
+  const handleDateSelect = (date) => {
+    const dateKey = date.toISOString().split('T')[0];
+    setSelectedLogDate(dateKey);
+    setIsLogModalOpen(true);
+  };
 
   if (!user) return null;
 
@@ -172,10 +182,22 @@ const Dashboard = () => {
             </div>
             
             <div className="p-4 sm:p-6 transition-all duration-700">
-               <Calendar attendanceData={attendanceMap} />
+               <Calendar 
+                attendanceData={attendanceMap} 
+                onDateSelect={handleDateSelect}
+               />
             </div>
           </div>
         </div>
+
+        {/* Detail Modal */}
+        <AttendanceDetailModal 
+          isOpen={isLogModalOpen}
+          onClose={() => setIsLogModalOpen(false)}
+          date={selectedLogDate}
+          record={attendanceMap[selectedLogDate]}
+        />
+
       </div>
     </div>
   );

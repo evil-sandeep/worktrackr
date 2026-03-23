@@ -1,0 +1,111 @@
+import React from 'react';
+import { X, MapPin, Clock, Calendar, ShieldCheck, User } from 'lucide-react';
+
+const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+      {/* Backdrop */}
+      <div 
+        className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300"
+        onClick={onClose}
+      ></div>
+
+      {/* Modal Content */}
+      <div className="relative w-full max-w-xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-100 animate-in zoom-in-95 slide-in-from-bottom-8 duration-500">
+        
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 pb-2">
+          <div className="flex items-center gap-3">
+            <div className={`p-2 rounded-xl ${record ? 'bg-blue-50 text-blue-600' : 'bg-slate-50 text-slate-400'}`}>
+               <ShieldCheck className="h-5 w-5" />
+            </div>
+            <div>
+              <h3 className="text-xl font-black text-slate-900 leading-tight">Biometric Record</h3>
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{date || 'Log View'}</p>
+            </div>
+          </div>
+          <button 
+            onClick={onClose}
+            className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-900"
+          >
+            <X className="h-6 w-6" />
+          </button>
+        </div>
+
+        <div className="p-6 pt-4 space-y-6">
+          {!record ? (
+            <div className="py-12 flex flex-col items-center justify-center text-center space-y-4">
+               <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center border border-slate-100">
+                  <User className="h-8 w-8 text-slate-300" />
+               </div>
+               <div className="space-y-1">
+                 <p className="text-lg font-black text-slate-800">No attendance found</p>
+                 <p className="text-sm font-medium text-slate-400 max-w-[200px]">There was no verification log recorded for this specific date.</p>
+               </div>
+            </div>
+          ) : (
+            <>
+              {/* Image Preview */}
+              <div className="relative group perspective-1000">
+                <div className="aspect-video rounded-3xl overflow-hidden bg-slate-100 border-2 border-slate-50 shadow-inner ring-4 ring-slate-50/50">
+                  <img 
+                    src={record.imageUrl} 
+                    alt="Biometric verification" 
+                    className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105"
+                  />
+                </div>
+                <div className="absolute top-4 right-4 px-3 py-1.5 bg-blue-600 rounded-full flex items-center gap-2 shadow-lg shadow-blue-200">
+                   <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
+                   <span className="text-[10px] font-black text-white uppercase tracking-widest">Verified Log</span>
+                </div>
+              </div>
+
+              {/* Grid Info */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-5 bg-slate-50 rounded-3xl border border-slate-100 group hover:border-blue-100 hover:bg-white transition-all">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Clock className="h-4 w-4 text-blue-500" />
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Timestamp</span>
+                  </div>
+                  <p className="text-lg font-black text-slate-800 tracking-tight">{record.time}</p>
+                </div>
+
+                <div className="p-5 bg-slate-50 rounded-3xl border border-slate-100 group hover:border-blue-100 hover:bg-white transition-all">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Entry Status</span>
+                  </div>
+                  <p className="text-lg font-black text-slate-800 tracking-tight capitalize">{record.status}</p>
+                </div>
+              </div>
+
+              <div className="p-5 bg-slate-50 rounded-3xl border border-slate-100 group hover:border-blue-100 hover:bg-white transition-all">
+                <div className="flex items-center gap-2 mb-2">
+                  <MapPin className="h-4 w-4 text-blue-500" />
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">GPS Coordinates</span>
+                </div>
+                <p className="text-sm font-bold text-slate-700 leading-relaxed font-mono">
+                  {record.location || 'Location data not available'}
+                </p>
+              </div>
+            </>
+          )}
+
+          {/* Footer Footer */}
+          <div className="pt-2 flex justify-end">
+            <button 
+              onClick={onClose}
+              className="px-8 py-3.5 bg-slate-900 text-white rounded-2xl font-black text-xs tracking-[0.2em] uppercase hover:bg-slate-800 transition-all hover:-translate-y-1 active:scale-95 shadow-xl shadow-slate-200"
+            >
+              Close Terminal
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AttendanceDetailModal;

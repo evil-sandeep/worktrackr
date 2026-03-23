@@ -37,7 +37,11 @@ const CalendarGrid = ({ days, currentDate, selectedDate, attendanceData, onDateC
             isCurrentMonth={date.getMonth() === currentDate.getMonth()}
             isToday={isToday(date)}
             isSelected={isSelected(date)}
-            attendanceStatus={attendanceData[formatDateKey(date)]}
+            attendanceStatus={
+              typeof attendanceData[formatDateKey(date)] === 'object' 
+                ? attendanceData[formatDateKey(date)]?.status 
+                : attendanceData[formatDateKey(date)]
+            }
             onClick={onDateClick}
           />
         ))}
