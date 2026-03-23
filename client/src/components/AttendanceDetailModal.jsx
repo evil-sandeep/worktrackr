@@ -89,7 +89,7 @@ const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
                 <div className="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center">
                    <ShieldCheck className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-black text-slate-900 uppercase tracking-tighter">Entry Verification</span>
+                <span className="text-sm font-black text-slate-900 uppercase tracking-tighter">Check-In Details</span>
               </div>
               <span className="px-3 py-1 bg-green-100 text-green-700 text-[9px] font-black uppercase tracking-widest rounded-full">Completed</span>
             </div>
@@ -113,7 +113,7 @@ const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
                       <div className="p-4 bg-slate-50/50 rounded-2xl border border-slate-100/50 transition-colors group-hover:bg-blue-50/30 group-hover:border-blue-100/50">
                         <div className="flex items-center gap-2 mb-1.5 text-blue-500">
                            <Clock className="h-3.5 w-3.5" />
-                           <span className="text-[10px] font-black uppercase tracking-widest">Time In</span>
+                           <span className="text-[10px] font-black uppercase tracking-widest">Check-In Time</span>
                         </div>
                         <p className="text-2xl font-black text-slate-900 tracking-tight">{checkInData.time}</p>
                       </div>
@@ -147,7 +147,7 @@ const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
                 <div className="w-8 h-8 bg-rose-50 text-rose-600 rounded-lg flex items-center justify-center">
                    <LogOut className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-black text-slate-900 uppercase tracking-tighter">Exit Verification</span>
+                <span className="text-sm font-black text-slate-900 uppercase tracking-tighter">Check-Out Details</span>
               </div>
               {isCheckOutComplete ? (
                  <span className="px-3 py-1 bg-green-100 text-green-700 text-[9px] font-black uppercase tracking-widest rounded-full">Completed</span>
@@ -176,7 +176,7 @@ const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
                         <div className="p-4 bg-slate-50/50 rounded-2xl border border-slate-100/50 transition-colors group-hover:bg-rose-50/30 group-hover:border-rose-100/50">
                           <div className="flex items-center gap-2 mb-1.5 text-rose-500">
                              <Clock className="h-3.5 w-3.5" />
-                             <span className="text-[10px] font-black uppercase tracking-widest">Time Out</span>
+                             <span className="text-[10px] font-black uppercase tracking-widest">Check-Out Time</span>
                           </div>
                           <p className="text-2xl font-black text-slate-900 tracking-tight">{checkOutData.time}</p>
                         </div>
