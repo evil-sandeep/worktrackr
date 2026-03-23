@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
 import AttendanceCamera from '../components/AttendanceCamera';
 import { 
-  Calendar, 
+  Calendar as CalendarIcon, 
   TrendingUp, 
   Users, 
   Clock, 
@@ -12,6 +12,7 @@ import {
   ArrowUpRight,
   MoreVertical
 } from 'lucide-react';
+import Calendar from '../components/Calendar/Calendar';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -80,7 +81,7 @@ const Dashboard = () => {
         
         <div className="bg-white p-2 rounded-2xl shadow-xl shadow-slate-200/40 border border-slate-100 flex items-center gap-4">
            <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center">
-              <Calendar className="h-6 w-6 text-slate-400" />
+              <CalendarIcon className="h-6 w-6 text-slate-400" />
            </div>
            <div className="pr-6">
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Session</p>
@@ -151,34 +152,14 @@ const Dashboard = () => {
               </button>
             </div>
             
-            <div className="p-12 flex flex-col items-center justify-center text-center h-[calc(100%-100px)] space-y-6">
-               <div className="relative">
-                  <div className="absolute inset-0 bg-blue-500/10 blur-[50px] rounded-full animate-pulse"></div>
-                  <div className="w-24 h-24 bg-white border border-slate-100 rounded-[2.5rem] flex items-center justify-center relative shadow-xl transform -rotate-12 hover:rotate-0 transition-transform duration-500">
-                    <Calendar className="h-12 w-12 text-slate-200" />
-                  </div>
-               </div>
-               
-               <div className="space-y-2">
-                  <p className="text-slate-900 font-black text-2xl tracking-tight">Initialize Your First Log</p>
-                  <p className="text-slate-400 font-medium max-w-sm mx-auto leading-relaxed">
-                    Capture your attendance using the biometric terminal to begin tracking your productivity metrics.
-                  </p>
-               </div>
-               
-               <div className="flex gap-4 pt-4">
-                  <div className="flex -space-x-3">
-                     {[1,2,3].map(i => (
-                        <div key={i} className="w-10 h-10 border-4 border-white bg-slate-100 rounded-full flex items-center justify-center text-[10px] font-black text-slate-400">
-                           {i}
-                        </div>
-                     ))}
-                  </div>
-                  <div className="text-left">
-                     <p className="text-xs font-black text-slate-900 leading-none mb-1">Join 40+ Peers</p>
-                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Logged today</p>
-                  </div>
-               </div>
+            <div className="p-4 sm:p-6 transition-all duration-700">
+               <Calendar 
+                indicators={[
+                  { date: new Date(), color: 'bg-green-500', label: 'Present' },
+                  { date: new Date(new Date().setDate(new Date().getDate() - 1)), color: 'bg-rose-500', label: 'Absent' },
+                  { date: new Date(new Date().setDate(new Date().getDate() - 2)), color: 'bg-blue-500', label: 'Event' },
+                ]}
+               />
             </div>
           </div>
         </div>
