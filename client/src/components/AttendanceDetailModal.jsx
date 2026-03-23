@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, MapPin, Clock, Calendar, ShieldCheck, User } from 'lucide-react';
+import { X, MapPin, Clock, Calendar, ShieldCheck, User, AlertCircle } from 'lucide-react';
 
 const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
   if (!isOpen) return null;
@@ -90,9 +90,9 @@ const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
               <div className="p-5 bg-slate-50 rounded-3xl border border-slate-100 group hover:border-blue-100 hover:bg-white transition-all">
                 <div className="flex items-center gap-2 mb-2">
                   <MapPin className="h-4 w-4 text-blue-500" />
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">GPS Coordinates</span>
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Verification Location</span>
                 </div>
-                <p className="text-sm font-bold text-slate-700 leading-relaxed font-mono">
+                <p className="text-sm font-bold text-slate-700 leading-relaxed">
                   {record.location || 'Location data not available'}
                 </p>
               </div>

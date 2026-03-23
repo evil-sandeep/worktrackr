@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import AttendanceCamera from '../components/AttendanceCamera';
 import AttendanceDetailModal from '../components/AttendanceDetailModal';
 import attendanceService from '../services/attendanceService';
+import authService from '../services/authService';
 import { 
   Calendar as CalendarIcon, 
   TrendingUp, 
@@ -14,6 +15,7 @@ import {
   MoreVertical
 } from 'lucide-react';
 import Calendar from '../components/Calendar/Calendar';
+import { formatDateKey } from '../components/Calendar/useCalendar';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -118,11 +120,11 @@ const Dashboard = () => {
   };
 
   const { present, absent } = getSummary();
-  const todayKey = new Date().toISOString().split('T')[0];
+  const todayKey = formatDateKey(new Date());
   const isAlreadyMarked = !!attendanceMap[todayKey];
 
   const handleDateSelect = (date) => {
-    const dateKey = date.toISOString().split('T')[0];
+    const dateKey = formatDateKey(date);
     setSelectedLogDate(dateKey);
     setIsLogModalOpen(true);
   };

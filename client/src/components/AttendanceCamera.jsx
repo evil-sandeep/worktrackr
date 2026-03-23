@@ -12,6 +12,7 @@ import {
   UploadCloud,
   Clock
 } from 'lucide-react';
+import { formatDateKey } from './Calendar/useCalendar';
 
 const AttendanceCamera = ({ onSuccess }) => {
   const { showLoader, addToast } = useUI();
@@ -25,6 +26,7 @@ const AttendanceCamera = ({ onSuccess }) => {
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
   const [capturedData, setCapturedData] = useState(null);
+  const [address, setAddress] = useState(null);
   const [currentTime, setCurrentTime] = useState(new Date());
 
   // Update clock every second
@@ -33,27 +35,47 @@ const AttendanceCamera = ({ onSuccess }) => {
     return () => clearInterval(timer);
   }, []);
 
+  const fetchAddress = async (lat, lon) => {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`,
+        {
+          headers: {
+            'User-Agent': 'WorkTrackr-Attendance-System/1.0'
+          }
+        }
+      );
+      const data = await response.json();
+      if (data && data.display_name) {
+        // Build a shorter address (e.g. City, Region/State, Country)
+        const city = data.address.city || data.address.town || data.address.village || data.address.suburb || '';
+        const state = data.address.state || data.address.region || '';
+        const shortAddress = [city, state].filter(Boolean).join(', ') || data.display_name.split(',').slice(0, 2).join(',');
+        setAddress(shortAddress);
+      }
+    } catch (err) {
+      console.error('Reverse Geocoding Error:', err);
+    }
+  };
+
   const startCamera = async () => {
     try {
       setLoading(true);
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'user' },
+      const cameraStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
         audio: false
       });
-      setStream(mediaStream);
-      if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream;
-      }
-      setIsCameraReady(true);
+      console.log('Camera stream obtained:', cameraStream.id);
+      setStream(cameraStream);
       setIsCameraActive(true);
 
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
-            setLocation({
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-            });
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            setLocation({ latitude: lat, longitude: lon });
+            fetchAddress(lat, lon);
           },
           () => {
             setStatus({ type: 'error', message: 'GPS access denied. Please enable location.' });
@@ -61,7 +83,8 @@ const AttendanceCamera = ({ onSuccess }) => {
         );
       }
     } catch (err) {
-      addToast('Camera access denied. Check permissions.', 'error');
+      console.error('Camera Error:', err);
+      addToast('Camera access denied or failed.', 'error');
       setStatus({ type: 'error', message: 'Camera access denied.' });
     } finally {
       setLoading(false);
@@ -69,6 +92,10 @@ const AttendanceCamera = ({ onSuccess }) => {
   };
 
   useEffect(() => {
+    if (stream && videoRef.current) {
+      console.log('Assigning stream to video element');
+      videoRef.current.srcObject = stream;
+    }
     return () => {
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
@@ -84,13 +111,13 @@ const AttendanceCamera = ({ onSuccess }) => {
 
     const canvas = canvasRef.current;
     const video = videoRef.current;
-    
+
     // Set fixed high resolution for the capture
     canvas.width = 1280;
     canvas.height = 720;
-    
+
     const context = canvas.getContext('2d');
-    
+
     // 1. Draw Video Frame (flipped for mirror effect)
     context.save();
     context.scale(-1, 1);
@@ -104,10 +131,12 @@ const AttendanceCamera = ({ onSuccess }) => {
     // 3. Draw Text Metadata
     context.fillStyle = 'white';
     context.font = 'bold 24px Inter, sans-serif';
-    
+
+    // Use ISO date format for internal storage/API
+    const dateISO = formatDateKey(currentTime);
     const dateStr = currentTime.toLocaleDateString();
     const timeStr = currentTime.toLocaleTimeString();
-    const locStr = `LOC: ${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`;
+    const locStr = address ? address : `LOC: ${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`;
     
     context.fillText(`${dateStr} | ${timeStr}`, 40, canvas.height - 60);
     context.font = '18px Inter, sans-serif';
@@ -125,9 +154,9 @@ const AttendanceCamera = ({ onSuccess }) => {
     setCapturedImage(imageData);
     setCapturedData({
       image: imageData,
-      date: dateStr,
+      date: dateISO,
       time: timeStr,
-      location: `${location.latitude},${location.longitude}`
+      location: address || `${location.latitude},${location.longitude}`
     });
   };
 
@@ -211,6 +240,7 @@ const AttendanceCamera = ({ onSuccess }) => {
                 autoPlay
                 playsInline
                 muted
+                onPlay={() => setIsCameraReady(true)}
                 className="w-full h-full object-cover transform scale-x-[-1] transition-transform group-hover:scale-105"
               />
               <canvas ref={canvasRef} className="hidden" />
@@ -243,8 +273,8 @@ const AttendanceCamera = ({ onSuccess }) => {
                   </div>
                   <div className="flex items-center gap-2">
                      <MapPin className="h-3.5 w-3.5 text-blue-400" />
-                     <span className="text-[10px] font-bold text-white/70 uppercase tracking-tighter">
-                        {location ? `${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)}` : 'Scanning GPS...'}
+                     <span className="text-[10px] font-bold text-white/70 uppercase tracking-tighter max-w-[150px] truncate">
+                        {address || (location ? `${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)}` : 'Scanning GPS...')}
                      </span>
                   </div>
                </div>

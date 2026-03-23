@@ -10,7 +10,9 @@ const markAttendance = async (req, res) => {
     const userId = req.user ? req.user._id.toString() : req.body.userId;
 
     // 0. Security/Business Logic Validations
-    const serverToday = new Date().toISOString().split('T')[0];
+    const now = new Date();
+    const serverToday = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+    
     if (date !== serverToday) {
       return res.status(400).json({ message: 'Backdated attendance is not allowed. Capture today only.' });
     }
