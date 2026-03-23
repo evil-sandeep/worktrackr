@@ -79,12 +79,27 @@ const getAttendanceByUserId = async (req, res) => {
       query.date = { $regex: `^${monthStr}` };
     }
 
-    const records = await Attendance.find(query).sort({ date: -1, time: -1 });
+    const attendance = await Attendance.find(query).sort({ date: -1 });
+
+    // Auto-heal records that were created before the calculation logic was added
+    for (const record of attendance) {
+      const needsHealing = !record.totalHours || record.totalHours === 'In Progress' || record.earning === 0;
+      const canHeal = record.checkIn?.time && record.checkOut?.time;
+
+      if (needsHealing && canHeal) {
+        console.log(`Auto-healing record for date: ${record.date}`);
+        const duration = calculateWorkingHours(record.checkIn.time, record.checkOut.time);
+        record.totalHours = duration;
+        record.earning = calculateEarnings(duration);
+        await record.save();
+        console.log(`Healed: ${duration}, ₹${record.earning}`);
+      }
+    }
 
     res.status(200).json({
       success: true,
-      count: records.length,
-      data: records
+      count: attendance.length,
+      data: attendance
     });
   } catch (error) {
     console.error('Fetch Attendance Error:', error);

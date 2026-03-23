@@ -12,7 +12,9 @@ const calculateWorkingHours = (startTimeStr, endTimeStr) => {
   try {
     const parseTime = (timeStr) => {
       const [time, modifier] = timeStr.split(' ');
-      let [hours, minutes] = time.split(':').map(Number);
+      const timeParts = time.split(':').map(Number);
+      let hours = timeParts[0];
+      let minutes = timeParts[1] || 0;
 
       if (modifier === 'PM' && hours !== 12) {
         hours += 12;
