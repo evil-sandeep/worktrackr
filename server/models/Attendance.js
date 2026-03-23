@@ -27,6 +27,9 @@ const attendanceSchema = new mongoose.Schema({
     type: String, // HH:MM:SS
     required: true,
   },
+  checkoutImageUrl: { type: String },
+  checkoutLocation: { type: String },
+  checkoutTime: { type: String }
 }, {
   timestamps: true,
 });

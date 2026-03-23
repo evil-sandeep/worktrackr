@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { 
   markAttendance, 
-  getAttendanceByUserId 
+  getAttendanceByUserId,
+  markCheckout
 } = require('../controllers/attendanceController');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -15,5 +16,6 @@ router.post('/', protect, markAttendance);
 // @desc    Fetch all logs for a user
 // @access  Private
 router.get('/:userId', protect, getAttendanceByUserId);
+router.post('/checkout', protect, markCheckout);
 
 module.exports = router;

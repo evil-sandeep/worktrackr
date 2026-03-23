@@ -87,7 +87,57 @@ const getAttendanceByUserId = async (req, res) => {
   }
 };
 
+/**
+ * Mark checkout for today
+ */
+const markCheckout = async (req, res) => {
+  try {
+    const { image, location, date, time } = req.body;
+    const userId = req.user ? req.user._id.toString() : req.body.userId;
+
+    if (!image || !location || !date || !time || !userId) {
+      return res.status(400).json({ message: 'Missing required checkout data' });
+    }
+
+    // 0. Security: Today Only
+    const now = new Date();
+    const serverToday = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+    if (date !== serverToday) {
+      return res.status(400).json({ message: 'Backdated checkout is not allowed.' });
+    }
+
+    // 1. Find existing check-in for today
+    const attendance = await Attendance.findOne({ userId, date });
+    if (!attendance) {
+      return res.status(404).json({ message: 'No check-in record found for today. Please check-in first.' });
+    }
+
+    if (attendance.checkoutTime) {
+      return res.status(400).json({ message: 'You have already checked out for today.' });
+    }
+
+    // 2. Upload to Cloudinary
+    const uploadedImage = await uploadImage(image);
+
+    // 3. Update record
+    attendance.checkoutImageUrl = uploadedImage;
+    attendance.checkoutLocation = location;
+    attendance.checkoutTime = time;
+
+    await attendance.save();
+
+    res.status(200).json({
+      message: 'Checkout logged successfully!',
+      attendance
+    });
+  } catch (error) {
+    console.error('Logout error:', error.message);
+    res.status(500).json({ message: 'Internal server error while logging checkout' });
+  }
+};
+
 module.exports = {
   markAttendance,
   getAttendanceByUserId,
+  markCheckout
 };

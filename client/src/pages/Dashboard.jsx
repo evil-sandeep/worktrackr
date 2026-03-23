@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AttendanceCamera from '../components/AttendanceCamera';
+import BiometricTerminal from '../components/BiometricTerminal';
 import AttendanceDetailModal from '../components/AttendanceDetailModal';
 import attendanceService from '../services/attendanceService';
 import authService from '../services/authService';
@@ -121,7 +121,10 @@ const Dashboard = () => {
 
   const { present, absent } = getSummary();
   const todayKey = formatDateKey(new Date());
-  const isAlreadyMarked = !!attendanceMap[todayKey];
+  
+  const todayLog = attendanceMap[todayKey];
+  const isCheckedIn = !!todayLog;
+  const isCheckedOut = !!todayLog?.checkoutTime;
 
   const handleDateSelect = (date) => {
     const dateKey = formatDateKey(date);
@@ -246,18 +249,23 @@ const Dashboard = () => {
                </div>
             </div>
 
-            {isAlreadyMarked ? (
-              <div className="py-12 flex flex-col items-center justify-center text-center space-y-6 animate-in fade-in zoom-in duration-500">
-                <div className="w-24 h-24 bg-green-50 rounded-[2.5rem] flex items-center justify-center border border-green-100">
-                  <CheckCircle2 className="h-10 w-10 text-green-500" />
+            {/* Biometric Terminal logic */}
+            {!isCheckedIn ? (
+              <BiometricTerminal mode="checkin" onSuccess={fetchAttendance} />
+            ) : !isCheckedOut ? (
+              <BiometricTerminal mode="checkout" onSuccess={fetchAttendance} />
+            ) : (
+              <div className="bg-white rounded-[2.5rem] shadow-2xl p-12 border border-slate-100 flex flex-col items-center text-center space-y-6">
+                <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center border border-green-100">
+                  <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center shadow-lg shadow-green-200">
+                     <CheckCircle2 className="h-8 w-8 text-white" />
+                  </div>
                 </div>
                 <div className="space-y-2">
-                  <h3 className="text-slate-900 text-xl font-black tracking-tight">Today Logged!</h3>
-                  <p className="text-slate-400 text-sm font-medium">Your biometric verification is complete. See you tomorrow!</p>
+                  <h2 className="text-3xl font-black text-slate-900 tracking-tight">Shift Complete!</h2>
+                  <p className="text-slate-500 font-medium max-w-[240px]">Today's biometric cycle is fully synchronized. See you tomorrow!</p>
                 </div>
               </div>
-            ) : (
-              <AttendanceCamera onSuccess={fetchAttendance} />
             )}
           </div>
         </div>

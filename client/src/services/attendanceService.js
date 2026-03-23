@@ -24,9 +24,19 @@ const getAttendanceByUserId = async (userId, filters = {}) => {
   return response.data;
 };
 
+/**
+ * Save checkout record
+ * @param {Object} checkoutData - { image, location, date, time }
+ */
+const markCheckout = async (checkoutData) => {
+  const response = await api.post('/attendance/checkout', checkoutData);
+  return response.data;
+};
+
 const attendanceService = {
   markAttendance,
   getAttendanceByUserId,
+  markCheckout,
 };
 
 export default attendanceService;

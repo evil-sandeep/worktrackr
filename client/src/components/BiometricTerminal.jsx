@@ -7,26 +7,27 @@ import {
   Loader2, 
   CheckCircle, 
   AlertCircle, 
-  ArrowRight, 
-  RefreshCcw, 
-  UploadCloud,
-  Clock
+  ArrowRight,
+  LogOut,
+  ShieldCheck,
+  Clock,
+  UploadCloud
 } from 'lucide-react';
 import { formatDateKey } from './Calendar/useCalendar';
 
-const AttendanceCamera = ({ onSuccess }) => {
+const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
   const { showLoader, addToast } = useUI();
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [stream, setStream] = useState(null);
-  const [location, setLocation] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState({ type: '', message: '' });
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
   const [capturedData, setCapturedData] = useState(null);
   const [address, setAddress] = useState(null);
+  const [location, setLocation] = useState(null);
+  const [status, setStatus] = useState({ type: '', message: '' });
+  const [loading, setLoading] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
 
   // Update clock every second
@@ -47,7 +48,6 @@ const AttendanceCamera = ({ onSuccess }) => {
       );
       const data = await response.json();
       if (data && data.display_name) {
-        // Build a shorter address (e.g. City, Region/State, Country)
         const city = data.address.city || data.address.town || data.address.village || data.address.suburb || '';
         const state = data.address.state || data.address.region || '';
         const shortAddress = [city, state].filter(Boolean).join(', ') || data.display_name.split(',').slice(0, 2).join(',');
@@ -93,7 +93,6 @@ const AttendanceCamera = ({ onSuccess }) => {
 
   useEffect(() => {
     if (stream && videoRef.current) {
-      console.log('Assigning stream to video element');
       videoRef.current.srcObject = stream;
     }
     return () => {
@@ -111,44 +110,38 @@ const AttendanceCamera = ({ onSuccess }) => {
 
     const canvas = canvasRef.current;
     const video = videoRef.current;
-
-    // Set fixed high resolution for the capture
+    
     canvas.width = 1280;
     canvas.height = 720;
-
+    
     const context = canvas.getContext('2d');
-
-    // 1. Draw Video Frame (flipped for mirror effect)
+    
     context.save();
     context.scale(-1, 1);
     context.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
     context.restore();
 
-    // 2. Draw Overlay Background
     context.fillStyle = 'rgba(0, 0, 0, 0.5)';
     context.fillRect(0, canvas.height - 100, canvas.width, 100);
 
-    // 3. Draw Text Metadata
     context.fillStyle = 'white';
     context.font = 'bold 24px Inter, sans-serif';
 
-    // Use ISO date format for internal storage/API
     const dateISO = formatDateKey(currentTime);
     const dateStr = currentTime.toLocaleDateString();
-    const timeStr = currentTime.toLocaleTimeString();
+    const timeStr = currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const locStr = address ? address : `LOC: ${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`;
     
     context.fillText(`${dateStr} | ${timeStr}`, 40, canvas.height - 60);
     context.font = '18px Inter, sans-serif';
     context.fillText(locStr, 40, canvas.height - 30);
     
-    // 4. Branding/Security Tag
-    context.fillStyle = '#3b82f6'; // blue-500
+    context.fillStyle = mode === 'checkin' ? '#3b82f6' : '#f43f5e';
     context.fillRect(canvas.width - 240, canvas.height - 70, 200, 40);
     context.fillStyle = 'white';
     context.font = 'bold 14px Inter, sans-serif';
     context.textAlign = 'center';
-    context.fillText('VERIFIED ATTENDANCE', canvas.width - 140, canvas.height - 45);
+    context.fillText(mode === 'checkin' ? 'VERIFIED CHECK-IN' : 'VERIFIED CHECK-OUT', canvas.width - 140, canvas.height - 45);
 
     const imageData = canvas.toDataURL('image/jpeg', 0.8);
     setCapturedImage(imageData);
@@ -160,20 +153,18 @@ const AttendanceCamera = ({ onSuccess }) => {
     });
   };
 
-  const resetCapture = () => {
-    setCapturedImage(null);
-    setCapturedData(null);
-    setStatus({ type: '', message: '' });
-  };
-
   const handleUpload = async () => {
     if (!capturedData) return;
 
     showLoader(true);
-
     try {
-      await attendanceService.markAttendance(capturedData);
-      addToast('Attendance logged successfully!', 'success');
+      if (mode === 'checkin') {
+        await attendanceService.markAttendance(capturedData);
+      } else {
+        await attendanceService.markCheckout(capturedData);
+      }
+      
+      addToast(`${mode === 'checkin' ? 'Check-in' : 'Check-out'} logged successfully!`, 'success');
       setCapturedImage(null);
       setCapturedData(null);
       setIsCameraActive(false);
@@ -189,50 +180,69 @@ const AttendanceCamera = ({ onSuccess }) => {
     }
   };
 
+  const resetCapture = () => {
+    setCapturedImage(null);
+    setCapturedData(null);
+  };
+
   return (
     <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/60 border border-slate-100 overflow-hidden transform transition-all hover:shadow-3xl">
       <div className="p-8">
-        {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-              <Camera className="h-6 w-6 text-white" />
+            <div className={`w-12 h-12 ${mode === 'checkin' ? 'bg-blue-600' : 'bg-rose-600'} rounded-2xl flex items-center justify-center shadow-lg`}>
+              {mode === 'checkin' ? <ShieldCheck className="h-6 w-6 text-white" /> : <LogOut className="h-6 w-6 text-white" />}
             </div>
             <div>
-              <h2 className="text-xl font-black text-slate-900 tracking-tight leading-none">Attendance Terminal</h2>
+              <h2 className="text-xl font-black text-slate-900 tracking-tight leading-none">
+                {mode === 'checkin' ? 'Check-In' : 'Check-Out'} Terminal
+              </h2>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Biometric Verification</p>
             </div>
           </div>
-          <div className={`flex items-center px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${location ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+          <div className={`flex items-center px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${address ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
             <MapPin className="h-3 w-3 mr-2" />
-            {location ? 'Signal Secure' : 'Locating GPS...'}
+            {address ? 'Signal Secure' : 'Scanning GPS...'}
           </div>
         </div>
 
-        {/* Camera / Preview Area */}
         <div className="relative aspect-square sm:aspect-video bg-slate-950 rounded-[2rem] overflow-hidden shadow-2xl border-4 border-slate-50 group">
           {!isCameraActive && !capturedImage ? (
             <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center space-y-6 bg-slate-900">
-               <div className="w-24 h-24 bg-blue-600/10 rounded-[2.5rem] flex items-center justify-center border border-blue-500/20">
-                  <Camera className="h-10 w-10 text-blue-500" />
+               <div className={`w-24 h-24 ${mode === 'checkin' ? 'bg-blue-600/10' : 'bg-rose-600/10'} rounded-[2.5rem] flex items-center justify-center border border-white/5`}>
+                  {mode === 'checkin' ? <Camera className="h-10 w-10 text-blue-500" /> : <LogOut className="h-10 w-10 text-rose-500" />}
                </div>
                <div className="space-y-2">
-                 <h3 className="text-white text-xl font-black">Camera Offset</h3>
-                 <p className="text-slate-400 text-sm font-medium max-w-[240px]">Initialize the terminal to begin biometric verification</p>
+                 <h3 className="text-white text-xl font-black">{mode === 'checkin' ? 'Begin Shift' : 'End Shift'}</h3>
+                 <p className="text-slate-400 text-sm font-medium max-w-[240px]">Initialize lens for biometric verification</p>
                </div>
                <button 
                 onClick={startCamera}
-                className="px-8 py-3 bg-blue-600 text-white rounded-2xl font-black text-sm tracking-widest uppercase hover:bg-blue-700 transition-all active:scale-95"
+                className={`px-8 py-3 ${mode === 'checkin' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-rose-600 hover:bg-rose-700'} text-white rounded-2xl font-black text-sm tracking-widest uppercase transition-all active:scale-95`}
                >
-                 Mark Attendance
+                 Start Camera
                </button>
             </div>
           ) : capturedImage ? (
-            <img 
-              src={capturedImage} 
-              alt="captured" 
-              className="w-full h-full object-cover animate-in fade-in zoom-in duration-500" 
-            />
+            <div className="relative w-full h-full">
+              <img 
+                src={capturedImage} 
+                alt="captured" 
+                className="w-full h-full object-cover animate-in fade-in zoom-in duration-500" 
+              />
+              <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/80 to-transparent flex items-center justify-between">
+                <button onClick={resetCapture} className="px-6 py-2.5 bg-white/10 backdrop-blur-md text-white border border-white/20 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-white/20 transition-all">
+                  Retake
+                </button>
+                <button 
+                  onClick={handleUpload}
+                  className={`px-8 py-2.5 ${mode === 'checkin' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-rose-600 hover:bg-rose-700'} text-white rounded-xl font-black text-xs uppercase tracking-widest shadow-lg transition-all active:scale-95 flex items-center gap-2`}
+                >
+                  <UploadCloud className="h-4 w-4" />
+                  Submit {mode === 'checkin' ? 'Check-In' : 'Check-Out'}
+                </button>
+              </div>
+            </div>
           ) : (
             <>
               <video
@@ -252,6 +262,19 @@ const AttendanceCamera = ({ onSuccess }) => {
                    </div>
                 </div>
               )}
+              
+              {isCameraReady && (
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
+                   <button 
+                     onClick={handleCapture}
+                     className={`w-16 h-16 rounded-full border-4 border-white flex items-center justify-center bg-white/20 backdrop-blur-md hover:bg-white/40 transition-all active:scale-90`}
+                   >
+                     <div className={`w-12 h-12 rounded-full ${mode === 'checkin' ? 'bg-blue-600' : 'bg-rose-600'} flex items-center justify-center`}>
+                        <Camera className="h-6 w-6 text-white" />
+                     </div>
+                   </button>
+                </div>
+              )}
             </>
           )}
 
@@ -264,85 +287,26 @@ const AttendanceCamera = ({ onSuccess }) => {
             </div>
           )}
 
-          {(isCameraActive || capturedImage) && (
-            <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between">
+          {isCameraActive && !capturedImage && (
+            <div className="absolute bottom-24 left-6 right-6 flex items-end justify-between pointer-events-none">
                <div className="bg-black/40 backdrop-blur-lg px-5 py-3 rounded-2xl border border-white/10 text-white min-w-[140px]">
                   <div className="flex items-center gap-2 mb-1">
                      <Clock className="h-3.5 w-3.5 text-blue-400" />
-                     <span className="text-xs font-black tracking-tight">{currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
+                     <span className="text-xs font-black tracking-tight">{currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                   </div>
                   <div className="flex items-center gap-2">
                      <MapPin className="h-3.5 w-3.5 text-blue-400" />
-                     <span className="text-[10px] font-bold text-white/70 uppercase tracking-tighter max-w-[150px] truncate">
-                        {address || (location ? `${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)}` : 'Scanning GPS...')}
+                     <span className="text-[10px] font-bold text-white/70 uppercase tracking-tighter truncate max-w-[100px]">
+                        {address || 'Locating...'}
                      </span>
                   </div>
                </div>
-               
-               {capturedImage ? (
-                  <button 
-                    onClick={resetCapture}
-                    className="w-14 h-14 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl flex items-center justify-center text-white hover:bg-white/20 transition-all active:scale-90"
-                    title="Retake Photo"
-                  >
-                     <RefreshCcw className="h-6 w-6" />
-                  </button>
-               ) : (
-                  <button 
-                    onClick={handleCapture}
-                    disabled={!isCameraReady || !location}
-                    className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-110 active:scale-90 disabled:opacity-50 disabled:scale-100 ring-8 ring-white/10"
-                  >
-                     <div className="w-16 h-16 border-4 border-slate-900 rounded-full flex items-center justify-center">
-                        <div className="w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center transition-transform hover:scale-90">
-                           <Camera className="h-6 w-6 text-white" />
-                        </div>
-                     </div>
-                  </button>
-               )}
             </div>
           )}
-        </div>
-
-        {/* Metadata info below image */}
-        {capturedImage && (
-          <div className="mt-8 p-6 bg-green-50 rounded-3xl border border-green-100 flex items-center justify-between animate-in slide-in-from-top-4 duration-500">
-            <div className="space-y-1">
-              <p className="text-[10px] font-black text-green-600 uppercase tracking-widest">Metadata Encoded</p>
-              <p className="text-sm font-black text-slate-800 tracking-tight">Geotag & Timestamp applied to Image</p>
-            </div>
-            <CheckCircle className="h-6 w-6 text-green-500 scale-110" />
-          </div>
-        )}
-
-        <div className="mt-10">
-          {!isCameraActive && !capturedImage ? (
-             <p className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest italic">
-               Note: Camera & GPS access required
-             </p>
-          ) : (
-            <button
-              onClick={capturedImage ? handleUpload : handleCapture}
-              disabled={(!isCameraReady || !location) && !capturedImage}
-              className={`w-full h-16 flex items-center justify-center rounded-[1.5rem] font-black text-lg text-white shadow-xl transition-all transform active:scale-95 ${(!isCameraReady || !location) && !capturedImage ? 'bg-slate-200 cursor-not-allowed shadow-none font-bold' : 'bg-gradient-to-br from-blue-600 to-indigo-700 hover:shadow-2xl hover:shadow-blue-300 hover:-translate-y-1'}`}
-            >
-              <span className="flex items-center gap-3">
-                {capturedImage ? (
-                  <>Confirm & Submit <UploadCloud className="h-6 w-6" /></>
-                ) : (
-                  <>Capture Biometric <ArrowRight className="h-6 w-6" /></>
-                )}
-              </span>
-            </button>
-          )}
-          
-          <p className="mt-6 text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] opacity-40">
-            Secure Biometric Terminal &bull; v2.0.4
-          </p>
         </div>
       </div>
     </div>
   );
 };
 
-export default AttendanceCamera;
+export default BiometricTerminal;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, MapPin, Clock, Calendar, ShieldCheck, User, AlertCircle } from 'lucide-react';
+import { X, MapPin, Clock, Calendar, ShieldCheck, User, AlertCircle, LogOut } from 'lucide-react';
 
 const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
   if (!isOpen) return null;
@@ -96,6 +96,43 @@ const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
                   {record.location || 'Location data not available'}
                 </p>
               </div>
+
+              {/* Checkout Info if exists */}
+              {record.checkoutTime && (
+                <div className="space-y-4 pt-4 border-t border-slate-100">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 bg-rose-50 text-rose-600 rounded-lg flex items-center justify-center">
+                       <LogOut className="h-4 w-4" />
+                    </div>
+                    <span className="text-sm font-black text-slate-900">Check-Out Verification</span>
+                  </div>
+                  
+                  <div className="aspect-video rounded-3xl overflow-hidden bg-slate-100 border-2 border-slate-50">
+                    <img 
+                      src={record.checkoutImageUrl} 
+                      alt="Checkout verification" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-4 bg-rose-50/30 rounded-2xl border border-rose-100/50">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Clock className="h-3 w-3 text-rose-500" />
+                        <span className="text-[9px] font-black text-rose-400 uppercase">Checkout Time</span>
+                      </div>
+                      <p className="text-base font-black text-slate-800">{record.checkoutTime}</p>
+                    </div>
+                    <div className="p-4 bg-rose-50/30 rounded-2xl border border-rose-100/50">
+                      <div className="flex items-center gap-2 mb-1">
+                        <MapPin className="h-3 w-3 text-rose-500" />
+                        <span className="text-[9px] font-black text-rose-400 uppercase">Checkout Location</span>
+                      </div>
+                      <p className="text-[10px] font-bold text-slate-700 truncate">{record.checkoutLocation}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </>
           )}
 
