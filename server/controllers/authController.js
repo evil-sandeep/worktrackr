@@ -31,7 +31,7 @@ const registerUser = async (req, res) => {
       phone,
       empId,
       password,
-      role
+      role: 'employee' // Always default to employee on public registration
     });
 
     if (user) {
@@ -134,8 +134,100 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
+// @desc    Update employee (Admin Only)
+const updateEmployee = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (user) {
+      const { name, phone, address, designation, role } = req.body;
+
+      if (name) user.name = name;
+      if (phone) user.phone = phone;
+      if (address) user.address = address;
+      if (designation) user.designation = designation;
+      if (role) user.role = role;
+
+      const updatedUser = await user.save();
+      res.json(updatedUser);
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Delete employee (Admin Only)
+const deleteEmployee = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (user) {
+      // Also delete all attendance associated with this user
+      const Attendance = require('../models/Attendance');
+      await Attendance.deleteMany({ userId: user._id });
+      
+      await User.deleteOne({ _id: user._id });
+      res.json({ message: 'User and associated data removed' });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Get all employees
+const getEmployees = async (req, res) => {
+  try {
+    const employees = await User.find({}).select('-password');
+    res.json(employees);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const getAdminDashboardStats = async (req, res) => {
+  try {
+    const totalEmployees = await User.countDocuments({ role: 'employee' });
+    
+    const now = new Date();
+    const today = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+    
+    const presentToday = await Attendance.countDocuments({ date: today, status: 'present' });
+    
+    // Recent activity (latest 8 check-ins)
+    const recentActivity = await Attendance.find({ date: today })
+      .sort({ updatedAt: -1 })
+      .limit(8);
+
+    const activityWithNames = await Promise.all(recentActivity.map(async (record) => {
+      const user = await User.findById(record.userId).select('name empId profileImg');
+      return {
+        ...record._doc,
+        user
+      };
+    }));
+
+    res.status(200).json({
+      totalEmployees,
+      presentToday,
+      absentToday: totalEmployees - presentToday,
+      recentActivity: activityWithNames
+    });
+  } catch (error) {
+    console.error('Admin Stats Error:', error);
+    res.status(500).json({ message: 'Failed to fetch admin stats' });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   updateUserProfile,
+  getEmployees,
+  updateEmployee,
+  deleteEmployee,
+  getAdminDashboardStats
 };

@@ -155,26 +155,6 @@ const Register = () => {
               </div>
             </div>
 
-            {/* Role Selection */}
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-slate-300 ml-1">Organizational Role</label>
-              <div className="group relative">
-                <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors pointer-events-none" />
-                <select
-                  name="role"
-                  className="w-full pl-12 pr-10 py-4 bg-slate-900/50 border border-slate-800 text-white rounded-2xl focus:bg-slate-900/80 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all font-bold text-sm cursor-pointer appearance-none"
-                  value={formData.role}
-                  onChange={handleChange}
-                >
-                  <option value="employee">Join as Employee</option>
-                  <option value="admin">Join as Administrator</option>
-                </select>
-                <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-600">
-                  <ArrowRight className="h-4 w-4 rotate-90" />
-                </div>
-              </div>
-            </div>
-
             <button
               type="submit"
               className="w-full h-15 mt-4 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-black text-lg rounded-2xl shadow-xl shadow-indigo-900/20 hover:shadow-2xl hover:shadow-indigo-500/30 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3 group active:scale-95"

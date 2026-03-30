@@ -7,6 +7,7 @@ import {
   LogOut, 
   ChevronRight,
   ShieldCheck,
+  Shield,
   X
 } from 'lucide-react';
 import authService from '../services/authService';
@@ -20,6 +21,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     { name: 'Attendance', icon: CalendarCheck, path: '#' },
     { name: 'Profile', icon: UserCircle, path: '/profile' },
   ];
+
+  if (user && user.role === 'admin') {
+    menuItems.push({ name: 'Admin', icon: Shield, path: '/admin' });
+  }
 
   if (!user) return null;
 
