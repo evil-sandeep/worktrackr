@@ -1,4 +1,5 @@
 import React from 'react';
+import { Calendar as CalendarIcon } from 'lucide-react';
 import CalendarHeader from './CalendarHeader';
 import CalendarGrid from './CalendarGrid';
 import { useCalendar } from './useCalendar';
@@ -26,7 +27,7 @@ const Calendar = ({ attendanceData = {}, onDateSelect }) => {
   };
 
   return (
-    <div className="w-full bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 p-4 sm:p-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
       <CalendarHeader
         currentDate={currentDate}
         onPrevMonth={goToPrevMonth}
@@ -41,20 +42,24 @@ const Calendar = ({ attendanceData = {}, onDateSelect }) => {
         onDateClick={handleDateClick}
       />
       
-      <div className="mt-8 flex flex-wrap items-center justify-between gap-4 text-sm text-gray-500 px-2">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.3)]"></span>
-            <span className="font-semibold text-slate-700">Present</span>
+      <div className="mt-10 flex flex-wrap items-center justify-between gap-6 px-2">
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.4)]"></span>
+            <span className="font-black text-[10px] text-slate-400 uppercase tracking-widest">Present</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.3)]"></span>
-            <span className="font-semibold text-slate-700">Absent</span>
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.4)]"></span>
+            <span className="font-black text-[10px] text-slate-400 uppercase tracking-widest">Absent</span>
           </div>
         </div>
-        <p className="font-bold text-slate-900 bg-slate-50 px-4 py-2 rounded-xl border border-slate-100">
-           {selectedDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-        </p>
+        
+        <div className="flex items-center gap-3 bg-slate-50 px-5 py-2.5 rounded-2xl border border-slate-100">
+           <CalendarIcon className="h-4 w-4 text-slate-400" />
+           <p className="text-xs font-black text-slate-900 uppercase tracking-tight">
+              {selectedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+           </p>
+        </div>
       </div>
     </div>
   );

@@ -185,183 +185,145 @@ const Dashboard = () => {
   }, { totalMins: 0, totalEarning: 0 });
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] p-4 sm:p-8 lg:p-12 font-['Inter'] selection:bg-blue-100">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
-        <div className="space-y-2">
-          <div className="flex items-center gap-3">
-             <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-200">
-                <ShieldCheck className="h-6 w-6 text-white" />
-             </div>
-             <h1 className="text-4xl font-black text-slate-900 tracking-tight">WorkTrackr<span className="text-blue-600">.</span></h1>
-          </div>
-          <p className="text-slate-500 font-medium flex items-center gap-2">
-            Professional Biometric Intelligence Terminal 
-            <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-          </p>
+    <div className="space-y-10 animate-in fade-in duration-700">
+      {/* Welcome & Quick Analytics Section */}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div>
+          <h2 className="text-sm font-black text-blue-600 uppercase tracking-[0.3em] mb-2">Workspace Overview</h2>
+          <h1 className="text-4xl font-black text-slate-900 tracking-tight">
+            Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">{user.name.split(' ')[0]}!</span>
+          </h1>
+          <p className="text-slate-500 font-medium mt-1">Here's a summary of your activity for {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
         </div>
 
-        <div className="flex items-center gap-4 bg-white p-2 rounded-[1.5rem] border border-slate-100 shadow-sm">
-          <div className="px-4 py-2 bg-slate-50 rounded-xl text-center min-w-[100px]">
-             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Session Date</p>
+        <div className="flex items-center gap-3 bg-white p-1.5 rounded-2xl border border-slate-100 shadow-sm self-start lg:self-auto">
+          <div className="px-4 py-2.5 bg-slate-50 rounded-xl text-center min-w-[120px]">
+             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1.5">Session Date</p>
              <p className="text-sm font-black text-slate-800 tabular-nums">{todayKey}</p>
           </div>
-          <button 
-            onClick={() => authService.logout()}
-            className="p-3.5 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 transition-all hover:scale-105 active:scale-95"
-          >
-            <LogOut className="h-5 w-5" />
-          </button>
         </div>
       </div>
 
-      {/* Analytics Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        {/* Today's Hours */}
-        <div className="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-[0_15px_40px_rgba(0,0,0,0.02)] flex items-center gap-6 group hover:border-blue-100 transition-all">
-          <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-             <Clock className="h-8 w-8" />
-          </div>
-          <div>
-             <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Today's Hours</p>
-             <p className="text-3xl font-black text-slate-900 tracking-tight">{todayStats.hours}</p>
-          </div>
-        </div>
-
-        {/* Today's Earnings */}
-        <div className="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-[0_15px_40px_rgba(0,0,0,0.02)] flex items-center gap-6 group hover:border-green-100 transition-all">
-          <div className="w-16 h-16 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-             <span className="text-3xl font-black">₹</span>
-          </div>
-          <div>
-             <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Today's Earnings</p>
-             <p className="text-3xl font-black text-slate-900 tracking-tight">₹{todayStats.earning}</p>
-          </div>
-        </div>
-
-        {/* Monthly Summary */}
-        <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-[2rem] p-8 border border-white/10 shadow-2xl flex items-center justify-between text-white group relative overflow-hidden">
-          <div className="relative z-10">
-             <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Monthly Summary</p>
-             <div className="flex items-end gap-3 mb-1">
-                <p className="text-3xl font-black tracking-tight text-white">₹{monthlyStats.totalEarning}</p>
-                <p className="text-xs font-bold text-slate-400 mb-1.5 line-clamp-1">({formatMins(monthlyStats.totalMins)})</p>
-             </div>
-             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total Valuation</p>
-          </div>
-          <div className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center relative z-10">
-             <ArrowUpRight className="h-6 w-6 text-white" />
-          </div>
-          {/* Decorative Circle */}
-          <div className="absolute -right-8 -bottom-8 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all"></div>
-        </div>
-      </div>
-
-      {/* Main Content Area */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        {/* Left Column: Biometric Terminal */}
-        <div className="lg:col-span-4 space-y-10">
-          <div className="bg-white rounded-[3rem] p-10 border border-slate-100 shadow-[0_20px_60px_rgba(0,0,0,0.03)] relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-40 h-40 bg-blue-50 rounded-full -mr-20 -mt-20 group-hover:scale-110 transition-transform duration-700"></div>
-            
-            <div className="relative z-10 space-y-8">
-              <div className="flex items-center justify-between">
-                <h3 className="text-2xl font-black text-slate-900 tracking-tight">Security Terminal</h3>
-                <div className="px-3 py-1 bg-green-50 text-green-600 text-[10px] font-black uppercase tracking-widest rounded-lg border border-green-100 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                  Ready
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Welcome back,</p>
-                  <h2 className="text-4xl font-black text-slate-900 tracking-tighter">
-                    {user.name.split(' ')[0]}
-                  </h2>
-                </div>
-                <div className="bg-white p-2 rounded-2xl shadow-xl shadow-slate-200/40 border border-slate-100 flex items-center gap-4">
-                  <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center">
-                    <CalendarIcon className="h-6 w-6 text-slate-400" />
-                  </div>
-                  <div className="pr-6">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Session</p>
-                    <p className="text-sm font-black text-slate-900">
-                      {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Biometric Terminal logic */}
-              {!isCheckedIn ? (
-                <BiometricTerminal mode="checkin" onSuccess={fetchAttendance} />
-              ) : !isCheckedOut ? (
-                <BiometricTerminal mode="checkout" onSuccess={fetchAttendance} />
-              ) : (
-                <div className="bg-white rounded-[2.5rem] shadow-2xl p-12 border border-slate-100 flex flex-col items-center text-center space-y-6">
-                  <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center border border-green-100">
-                    <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center shadow-lg shadow-green-200">
-                       <CheckCircle2 className="h-8 w-8 text-white" />
+      {/* Main Grid: Terminal & Stats */}
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
+        
+        {/* Left/Main Column: Biometric Terminal */}
+        <div className="xl:col-span-12">
+          <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)] overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-2">
+              {/* Terminal View */}
+              <div className="p-8 lg:p-12 border-b lg:border-b-0 lg:border-r border-slate-50">
+                <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
+                      <ShieldCheck className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-black text-slate-900 tracking-tight">Biometric Terminal</h3>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Security Status: Active</p>
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <h2 className="text-3xl font-black text-slate-900 tracking-tight">Shift Complete!</h2>
-                    <p className="text-slate-500 font-medium max-w-[240px]">Today's biometric cycle is fully synchronized. See you tomorrow!</p>
+                  <div className="px-3 py-1 bg-green-50 text-green-600 text-[10px] font-bold uppercase tracking-widest rounded-full border border-green-100 animate-pulse">
+                    Online
                   </div>
                 </div>
-              )}
+
+                {!isCheckedIn ? (
+                  <BiometricTerminal mode="checkin" onSuccess={fetchAttendance} />
+                ) : !isCheckedOut ? (
+                  <BiometricTerminal mode="checkout" onSuccess={fetchAttendance} />
+                ) : (
+                  <div className="bg-slate-50/50 rounded-[2rem] p-12 flex flex-col items-center text-center space-y-6 border border-dashed border-slate-200">
+                    <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center shadow-lg shadow-green-200">
+                       <CheckCircle2 className="h-10 w-10 text-white" />
+                    </div>
+                    <div className="space-y-2">
+                      <h2 className="text-2xl font-black text-slate-900 tracking-tight">Shift Complete</h2>
+                      <p className="text-slate-500 font-medium text-sm max-w-[280px]">Your identity has been verified. Daily attendance logs are synchronized.</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Real-time Insights & Stats */}
+              <div className="p-8 lg:p-12 bg-slate-50/30 flex flex-col justify-between">
+                <div>
+                  <h3 className="font-black text-slate-900 tracking-tight mb-8">Daily Insights</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4">
+                      <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
+                        <Clock className="h-6 w-6" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Today's Hours</p>
+                        <p className="text-xl font-black text-slate-900">{todayStats.hours}</p>
+                      </div>
+                    </div>
+                    <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4">
+                      <div className="w-12 h-12 bg-green-50 text-green-600 rounded-xl flex items-center justify-center font-black text-xl">₹</div>
+                      <div>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Today's Pay</p>
+                        <p className="text-xl font-black text-slate-900">₹{todayStats.earning}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-8 space-y-4">
+                  <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden group">
+                    <div className="relative z-10 flex items-center justify-between">
+                      <div>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Monthly Valuation</p>
+                        <p className="text-3xl font-black tracking-tight">₹{monthlyStats.totalEarning}</p>
+                        <p className="text-xs font-bold text-slate-500 mt-1 uppercase tracking-widest">Gross Earning Estimate</p>
+                      </div>
+                      <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center">
+                        <ArrowUpRight className="h-6 w-6" />
+                      </div>
+                    </div>
+                    <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all"></div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                     {stats.map(stat => (
+                       <div key={stat.title} className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
+                          <div className="flex items-center gap-2 mb-3">
+                             <stat.icon className={`h-3.5 w-3.5 ${stat.color.replace('bg-', 'text-')}`} />
+                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.title.split(' ')[1]} Status</span>
+                          </div>
+                          <div className="flex items-end justify-between">
+                             <p className="text-2xl font-black text-slate-900">{stat.value}</p>
+                             <div className={`px-2 py-0.5 rounded-lg text-[9px] font-black ${stat.trendUp ? 'bg-green-50 text-green-600' : 'bg-rose-50 text-rose-600'}`}>
+                                {stat.trend}
+                             </div>
+                          </div>
+                       </div>
+                     ))}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {stats.map((stat, i) => (
-              <div
-                key={stat.title}
-                className="group relative bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-2xl shadow-slate-200/50 hover:shadow-blue-500/10 transition-all duration-500 overflow-hidden"
-              >
-                <div className={`absolute top-0 right-0 w-32 h-32 ${stat.color.replace('bg-', 'bg-')} rounded-full -mr-16 -mt-16 opacity-30 group-hover:scale-110 transition-transform duration-700`}></div>
-
-                <div className="flex justify-between items-start relative z-10">
-                  <div className={`${stat.color.replace('bg-', 'bg-')} p-4 rounded-2xl transition-transform group-hover:rotate-6`}>
-                    <stat.icon className={`h-7 w-7 ${stat.color.replace('bg-', 'text-')}`} />
-                  </div>
-                  <div className={`flex items-center gap-1 ${stat.trendUp ? 'text-green-500' : 'text-rose-500'} text-xs font-black`}>
-                    <TrendingUp className="h-3 w-3" />
-                    {stat.trend}
-                  </div>
-                </div>
-
-                <div className="mt-8 relative z-10">
-                  <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-2">{stat.title}</p>
-                  <div className="flex items-end justify-between">
-                    <h3 className="text-4xl font-black text-slate-900 tracking-tighter">{stat.value}</h3>
-                    <div className="h-2 w-24 bg-slate-100 rounded-full overflow-hidden">
-                       <div className={`h-full ${stat.color} w-3/4 animate-in slide-in-from-left duration-1000`}></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
 
-        {/* Records & Activity */}
-        <div className="lg:col-span-8 space-y-6">
-          <div className="bg-white rounded-[3rem] border border-slate-100 shadow-2xl shadow-slate-200/60 overflow-hidden min-h-[500px] relative">
-            <div className="p-8 border-b border-slate-50 flex justify-between items-center bg-slate-50/40 sticky top-0 backdrop-blur-md z-10">
+        {/* History Log Column */}
+        <div className="xl:col-span-12">
+          <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)] overflow-hidden">
+            <div className="p-8 border-b border-slate-50 flex flex-col sm:flex-row justify-between items-center gap-4">
               <div className="flex items-center gap-3">
-                 <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                    <ArrowUpRight className="h-4 w-4 text-white" />
+                 <div className="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center">
+                    <CalendarIcon className="h-5 w-5" />
                  </div>
-                 <h3 className="font-black text-slate-900 tracking-tight">Real-time Logs</h3>
+                 <div>
+                    <h3 className="font-black text-slate-900 tracking-tight">Attendance Logs</h3>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Monthly History</p>
+                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 bg-slate-50 p-1.5 rounded-xl border border-slate-100">
                   <select
                     value={filterDate.month}
                     onChange={(e) => setFilterDate(prev => ({ ...prev, month: e.target.value }))}
-                    className="bg-slate-50 border-none rounded-lg text-xs font-bold p-2 outline-none focus:ring-2 ring-blue-500/20"
+                    className="bg-white border-none rounded-lg text-[10px] font-black uppercase p-2 outline-none focus:ring-2 ring-blue-500/20 cursor-pointer"
                   >
                     {Array.from({ length: 12 }, (_, i) => (
                       <option key={i + 1} value={i + 1}>
@@ -372,51 +334,15 @@ const Dashboard = () => {
                   <select
                     value={filterDate.year}
                     onChange={(e) => setFilterDate(prev => ({ ...prev, year: e.target.value }))}
-                    className="bg-slate-50 border-none rounded-lg text-xs font-bold p-2 outline-none focus:ring-2 ring-blue-500/20"
+                    className="bg-white border-none rounded-lg text-[10px] font-black p-2 outline-none focus:ring-2 ring-blue-500/20 cursor-pointer"
                   >
                      <option value="2025">2025</option>
                      <option value="2026">2026</option>
                   </select>
                </div>
             </div>
-
-            {/* Biometric Terminal logic */}
-            {!isCheckedIn ? (
-              <BiometricTerminal mode="checkin" onSuccess={fetchAttendance} />
-            ) : !isCheckedOut ? (
-              <BiometricTerminal mode="checkout" onSuccess={fetchAttendance} />
-            ) : (
-              <div className="bg-white rounded-[2.5rem] shadow-2xl p-12 border border-slate-100 flex flex-col items-center text-center space-y-6">
-                <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center border border-green-100">
-                  <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center shadow-lg shadow-green-200">
-                     <CheckCircle2 className="h-8 w-8 text-white" />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <h2 className="text-3xl font-black text-slate-900 tracking-tight">Shift Complete!</h2>
-                  <p className="text-slate-500 font-medium max-w-[240px]">Today's biometric cycle is fully synchronized. See you tomorrow!</p>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Records & Activity */}
-        <div className="lg:col-span-7 space-y-6">
-          <div className="bg-white rounded-[3rem] border border-slate-100 shadow-2xl shadow-slate-200/60 overflow-hidden min-h-[500px] relative">
-            <div className="p-8 border-b border-slate-50 flex justify-between items-center bg-slate-50/40 sticky top-0 backdrop-blur-md z-10">
-              <div className="flex items-center gap-3">
-                 <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                    <ArrowUpRight className="h-4 w-4 text-white" />
-                 </div>
-                 <h3 className="font-black text-slate-900 tracking-tight">Real-time Logs</h3>
-              </div>
-              <button className="p-2 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors">
-                 <MoreVertical className="h-4 w-4 text-slate-400" />
-              </button>
-            </div>
             
-            <div className="p-4 sm:p-6 transition-all duration-700">
+            <div className="p-8">
                <Calendar 
                 attendanceData={attendanceMap} 
                 onDateSelect={handleDateSelect}
@@ -432,7 +358,6 @@ const Dashboard = () => {
           date={selectedLogDate}
           record={attendanceMap[selectedLogDate]}
         />
-
       </div>
     </div>
   );

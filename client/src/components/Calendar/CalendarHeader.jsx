@@ -8,38 +8,38 @@ const CalendarHeader = ({ currentDate, onPrevMonth, onNextMonth, onToday }) => {
   ];
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 px-2">
-      <div className="flex items-center gap-6">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-10 px-2">
+      <div className="flex items-center gap-8">
         <div className="flex flex-col">
-          <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+          <h2 className="text-4xl font-black text-slate-900 tracking-tighter">
             {monthNames[currentDate.getMonth()]}
           </h2>
-          <span className="text-lg font-medium text-gray-400 -mt-1">{currentDate.getFullYear()}</span>
+          <span className="text-sm font-black text-blue-600 uppercase tracking-[0.3em] mt-1">{currentDate.getFullYear()}</span>
         </div>
         
         <button
           onClick={onToday}
-          className="px-4 py-2 text-sm font-semibold text-blue-600 bg-blue-50 rounded-full hover:bg-blue-100 transition-all duration-200 active:scale-95"
+          className="px-6 py-2 text-[10px] font-black text-slate-900 bg-slate-100 rounded-xl hover:bg-slate-200 transition-all uppercase tracking-widest active:scale-95"
         >
           Today
         </button>
       </div>
 
-      <div className="flex items-center bg-white p-1 border rounded-2xl shadow-sm">
+      <div className="flex items-center bg-white p-1.5 border border-slate-100 rounded-2xl shadow-sm">
         <button
           onClick={onPrevMonth}
-          className="p-2.5 hover:bg-gray-50 transition-colors rounded-xl group"
+          className="p-3 hover:bg-slate-50 transition-all rounded-xl group active:scale-90"
           aria-label="Previous Month"
         >
-          <ChevronLeft size={22} className="text-gray-400 group-hover:text-blue-600" />
+          <ChevronLeft size={20} className="text-slate-400 group-hover:text-blue-600" />
         </button>
-        <div className="w-px h-6 bg-gray-100 mx-1"></div>
+        <div className="w-px h-6 bg-slate-100 mx-1"></div>
         <button
           onClick={onNextMonth}
-          className="p-2.5 hover:bg-gray-50 transition-colors rounded-xl group"
+          className="p-3 hover:bg-slate-50 transition-all rounded-xl group active:scale-90"
           aria-label="Next Month"
         >
-          <ChevronRight size={22} className="text-gray-400 group-hover:text-blue-600" />
+          <ChevronRight size={20} className="text-slate-400 group-hover:text-blue-600" />
         </button>
       </div>
     </div>

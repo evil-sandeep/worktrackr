@@ -15,16 +15,17 @@ const CalendarGrid = ({ days, currentDate, selectedDate, attendanceData, onDateC
 
   const isSelected = (date) => {
     if (!selectedDate) return false;
-    return date.getDate() === selectedDate.getDate() &&
-      date.getMonth() === selectedDate.getMonth() &&
-      date.getFullYear() === selectedDate.getFullYear();
+    const sDate = new Date(selectedDate);
+    return date.getDate() === sDate.getDate() &&
+      date.getMonth() === sDate.getMonth() &&
+      date.getFullYear() === sDate.getFullYear();
   };
 
   return (
-    <div className="border-t border-l rounded-xl overflow-hidden shadow-sm bg-gray-50">
-      <div className="grid grid-cols-7 border-b bg-gray-50/80 backdrop-blur-sm">
+    <div className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm">
+      <div className="grid grid-cols-7 bg-slate-50/50 border-b border-slate-100/60 backdrop-blur-md">
         {weekDays.map(day => (
-          <div key={day} className="py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-widest">
+          <div key={day} className="py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
             {day}
           </div>
         ))}
@@ -38,9 +39,7 @@ const CalendarGrid = ({ days, currentDate, selectedDate, attendanceData, onDateC
             isToday={isToday(date)}
             isSelected={isSelected(date)}
             attendanceStatus={
-              typeof attendanceData[formatDateKey(date)] === 'object' 
-                ? attendanceData[formatDateKey(date)]?.status 
-                : attendanceData[formatDateKey(date)]
+              attendanceData[formatDateKey(date)]?.status || attendanceData[formatDateKey(date)]
             }
             onClick={onDateClick}
           />

@@ -4,28 +4,43 @@ const CalendarDay = ({ day, isCurrentMonth, isToday, isSelected, attendanceStatu
   return (
     <div
       onClick={() => onClick(day)}
-      className={`relative h-20 sm:h-24 p-2 border-r border-b cursor-pointer transition-all duration-200 hover:bg-gray-50 group
-        ${!isCurrentMonth ? 'bg-gray-50/50 text-gray-400' : 'bg-white text-gray-700'}
-        ${isSelected ? 'ring-2 ring-blue-500 ring-inset z-10' : ''}
+      className={`relative h-24 sm:h-28 p-3 border-r border-b cursor-pointer transition-all duration-300 group
+        ${!isCurrentMonth ? 'bg-slate-50/30 text-slate-300' : 'bg-white text-slate-600'}
+        ${isSelected ? 'bg-blue-50/30 z-10' : 'hover:bg-slate-50/50'}
       `}
     >
       <div className="flex justify-between items-start">
-        <span className={`text-sm font-medium w-8 h-8 flex items-center justify-center rounded-full transition-colors
-          ${isToday ? 'bg-blue-600 text-white' : ''}
-          ${isSelected && !isToday ? 'bg-blue-100 text-blue-700' : ''}
+        <span className={`text-xs font-black w-7 h-7 flex items-center justify-center rounded-lg transition-all duration-300
+          ${isToday ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 scale-110' : ''}
+          ${isSelected && !isToday ? 'bg-slate-900 text-white shadow-md' : ''}
+          ${!isSelected && !isToday && isCurrentMonth ? 'group-hover:bg-slate-100' : ''}
         `}>
           {day.getDate()}
         </span>
+        
+        {isToday && (
+          <span className="text-[8px] font-black text-blue-600 uppercase tracking-widest hidden sm:block">Today</span>
+        )}
       </div>
 
-      <div className="mt-auto flex justify-center pb-2">
+      <div className="absolute inset-x-0 bottom-3 flex flex-col items-center gap-1.5 px-2">
         {attendanceStatus === 'present' && (
-          <div className="w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)] animate-pulse" title="Present" />
+          <>
+            <div className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
+            <span className="text-[8px] font-black text-green-600 uppercase tracking-tighter opacity-0 group-hover:opacity-100 transition-opacity">Present</span>
+          </>
         )}
         {attendanceStatus === 'absent' && (
-          <div className="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.4)]" title="Absent" />
+          <>
+            <div className="w-1.5 h-1.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]" />
+            <span className="text-[8px] font-black text-rose-600 uppercase tracking-tighter opacity-0 group-hover:opacity-100 transition-opacity">Absent</span>
+          </>
         )}
       </div>
+      
+      {isSelected && (
+        <div className="absolute inset-0 border-2 border-blue-500/20 pointer-events-none"></div>
+      )}
     </div>
   );
 };
