@@ -80,7 +80,62 @@ const loginUser = async (req, res) => {
   }
 };
 
+// @desc    Update user profile
+const updateUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+      const { name, phone, address, designation, profileImg } = req.body;
+
+      if (name) user.name = name;
+      if (phone) user.phone = phone;
+      if (address) user.address = address;
+      if (designation) user.designation = designation;
+
+      // Handle profile image upload if provided as base64
+      if (profileImg && profileImg.startsWith('data:image')) {
+        const { uploadImage } = require('../utils/cloudinary');
+        try {
+          const imageUrl = await uploadImage(profileImg);
+          user.profileImg = imageUrl;
+        } catch (uploadError) {
+          console.error('Profile image upload failed:', uploadError);
+          // Continue without updating image if upload fails
+        }
+      } else if (profileImg === '') {
+        // Clear profile image if explicitly set to empty string
+        user.profileImg = '';
+      } else if (profileImg) {
+        // If it's already a URL or other string, just save it
+        user.profileImg = profileImg;
+      }
+
+      const updatedUser = await user.save();
+
+      res.json({
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        phone: updatedUser.phone,
+        empId: updatedUser.empId,
+        role: updatedUser.role,
+        address: updatedUser.address,
+        designation: updatedUser.designation,
+        profileImg: updatedUser.profileImg,
+        token: generateToken(updatedUser._id),
+      });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Update Profile Error:', error);
+    res.status(500).json({ message: error.message || 'Internal server error during profile update' });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
+  updateUserProfile,
 };

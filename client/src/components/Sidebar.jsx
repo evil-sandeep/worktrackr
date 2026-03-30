@@ -18,7 +18,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   const menuItems = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
     { name: 'Attendance', icon: CalendarCheck, path: '#' },
-    { name: 'Profile', icon: UserCircle, path: '#' },
+    { name: 'Profile', icon: UserCircle, path: '/profile' },
   ];
 
   if (!user) return null;

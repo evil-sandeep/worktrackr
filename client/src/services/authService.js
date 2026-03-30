@@ -27,11 +27,23 @@ const getCurrentUser = () => {
   return JSON.parse(localStorage.getItem('user'));
 };
 
+const updateProfile = async (userData) => {
+  const response = await api.put('/auth/profile', userData);
+  if (response.data.token) {
+    localStorage.setItem('token', response.data.token);
+    // Merge existing user data with updated data to preserve any fields not returned by the API
+    const currentUser = getCurrentUser();
+    localStorage.setItem('user', JSON.stringify({ ...currentUser, ...response.data }));
+  }
+  return response.data;
+};
+
 const authService = {
   login,
   register,
   logout,
   getCurrentUser,
+  updateProfile,
 };
 
 export default authService;

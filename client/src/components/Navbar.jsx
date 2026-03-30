@@ -1,5 +1,6 @@
 import React from 'react';
 import { Menu, Bell, Search, ChevronDown, Sparkles } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import authService from '../services/authService';
 
 const Navbar = ({ toggleSidebar }) => {
@@ -51,15 +52,19 @@ const Navbar = ({ toggleSidebar }) => {
             </div>
           </div>
           
-          <button className="flex items-center gap-2 p-1 group">
+          <Link to="/profile" className="flex items-center gap-2 p-1 group">
             <div className="relative">
                <div className="absolute inset-0 bg-blue-600/20 rounded-xl blur-lg group-hover:blur-xl transition-all"></div>
                <div className="w-11 h-11 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center text-white font-black text-sm shadow-xl shadow-blue-500/20 ring-2 ring-white overflow-hidden relative z-10">
-                  {user.name.charAt(0)}
+                  {user.profileImg ? (
+                    <img src={user.profileImg} alt={user.name} className="w-full h-full object-cover" />
+                  ) : (
+                    user.name.charAt(0)
+                  )}
                </div>
             </div>
             <ChevronDown className="h-4 w-4 text-slate-400 group-hover:text-slate-900 group-hover:translate-y-0.5 transition-all hidden sm:block" />
-          </button>
+          </Link>
         </div>
       </div>
     </header>
