@@ -262,12 +262,16 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
               <canvas ref={canvasRef} className="hidden" />
 
               {/* Viewfinder Overlay */}
-              <div className="absolute inset-0 border-[40px] border-black/20 pointer-events-none">
+              <div className="absolute inset-0 pointer-events-none">
                  <div className="w-full h-full border border-white/20 relative">
-                    <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-white/60"></div>
-                    <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-white/60"></div>
-                    <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-white/60"></div>
-                    <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-white/60"></div>
+                    {/* Corner Guides */}
+                    <div className="absolute top-8 left-8 w-12 h-12 border-t-4 border-l-4 border-blue-500/50 rounded-tl-xl"></div>
+                    <div className="absolute top-8 right-8 w-12 h-12 border-t-4 border-r-4 border-blue-500/50 rounded-tr-xl"></div>
+                    <div className="absolute bottom-8 left-8 w-12 h-12 border-b-4 border-l-4 border-blue-500/50 rounded-bl-xl"></div>
+                    <div className="absolute bottom-8 right-8 w-12 h-12 border-b-4 border-r-4 border-blue-500/50 rounded-br-xl"></div>
+                    
+                    {/* Face Recognition Guide - Subtle Central Oval */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[60%] w-64 h-80 border-2 border-white/10 border-dashed rounded-[100%]"></div>
                  </div>
               </div>
 
@@ -283,17 +287,36 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
                 </div>
               )}
               
-              {isCameraReady && (
-                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 group/btn">
-                   <div className="absolute inset-0 bg-white/20 rounded-full blur-2xl group-hover/btn:bg-white/40 transition-all"></div>
-                   <button 
-                     onClick={handleCapture}
-                     className="relative w-20 h-20 rounded-full border-4 border-white overflow-hidden flex items-center justify-center bg-white/10 backdrop-blur-md hover:bg-white/30 transition-all active:scale-90 shadow-2xl shadow-black/40"
-                   >
-                     <div className={`w-14 h-14 rounded-full ${mode === 'checkin' ? 'bg-blue-600' : 'bg-rose-600'} flex items-center justify-center shadow-inner`}>
-                        <Camera className="h-7 w-7 text-white" />
-                     </div>
-                   </button>
+              {/* Capture controls and Info Bar - Responsive Layout */}
+              {isCameraReady && !capturedImage && (
+                <div className="absolute inset-x-0 bottom-0 p-3 sm:p-5 flex items-center justify-between gap-2 pointer-events-none z-20">
+                  {/* Left: Time badge */}
+                  <div className="flex-shrink-0 flex items-center gap-1 sm:gap-2 px-2.5 py-1.5 bg-black/40 backdrop-blur-md rounded-xl border border-white/5 shadow-xl">
+                    <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-blue-400" />
+                    <span className="text-[9px] sm:text-[11px] font-black tracking-widest tabular-nums text-white uppercase">
+                      {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                    </span>
+                  </div>
+
+                  {/* Middle: Professional Capture Button */}
+                  <div className="pointer-events-auto flex-shrink-0">
+                    <button 
+                       onClick={handleCapture}
+                       className="group relative w-12 h-12 sm:w-16 sm:h-16 rounded-full border-2 border-white/20 flex items-center justify-center bg-white/5 backdrop-blur-md hover:bg-white/20 transition-all active:scale-90 shadow-2xl"
+                    >
+                      <div className={`w-9 h-9 sm:w-12 sm:h-12 rounded-full ${mode === 'checkin' ? 'bg-blue-600 shadow-[0_0_15px_rgba(37,99,235,0.4)]' : 'bg-rose-600 shadow-[0_0_15px_rgba(225,29,72,0.4)]'} flex items-center justify-center transition-transform group-hover:scale-105`}>
+                        <Camera className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
+                      </div>
+                    </button>
+                  </div>
+
+                  {/* Right: Location badge */}
+                  <div className="flex-shrink-0 flex items-center gap-1 sm:gap-2 px-2.5 py-1.5 bg-black/40 backdrop-blur-md rounded-xl border border-white/5 shadow-xl max-w-[100px] sm:max-w-[180px]">
+                    <MapPin className="h-3 w-3 sm:h-4 sm:w-4 text-blue-400" />
+                    <span className="text-[8px] sm:text-[10px] font-black text-white/90 uppercase tracking-widest truncate">
+                       {address || 'SEARCHING...'}
+                    </span>
+                  </div>
                 </div>
               )}
 
@@ -306,26 +329,6 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
                 </div>
               )}
 
-              {isCameraActive && !capturedImage && (
-                <div className="absolute bottom-10 left-8 pointer-events-none">
-                   <div className="bg-black/60 backdrop-blur-xl px-6 py-4 rounded-2xl border border-white/10 text-white shadow-2xl space-y-2">
-                      <div className="flex items-center gap-3">
-                         <div className="p-1.5 bg-blue-500/20 rounded-lg">
-                            <Clock className="h-4 w-4 text-blue-400" />
-                         </div>
-                         <span className="text-sm font-black tracking-tight tabular-nums">{currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                         <div className="p-1.5 bg-blue-500/20 rounded-lg">
-                            <MapPin className="h-4 w-4 text-blue-400" />
-                         </div>
-                         <span className="text-[10px] font-black text-white/80 uppercase tracking-widest truncate max-w-[140px]">
-                            {address || 'Locating Point...'}
-                         </span>
-                      </div>
-                   </div>
-                </div>
-              )}
             </>
           )}
         </div>
