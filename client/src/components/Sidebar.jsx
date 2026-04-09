@@ -18,10 +18,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   const user = authService.getCurrentUser();
 
   const allMenuItems = [
+    { name: 'Dashboard', icon: LayoutDashboard, path: '/admindashboard', roles: ['admin'] },
+    { name: 'Employees', icon: Users, path: '/employee', roles: ['admin'] },
     { name: 'Dashboard', icon: LayoutDashboard, path: '/employeedashboard', roles: ['employee'] },
     { name: 'Attendance', icon: CalendarCheck, path: '#', roles: ['employee'] },
     { name: 'Profile', icon: UserCircle, path: '/profile', roles: ['employee'] },
-    { name: 'Employees', icon: Users, path: '/admindashboard', roles: ['admin'] },
   ];
 
   const menuItems = allMenuItems.filter(item => item.roles.includes(user.role));

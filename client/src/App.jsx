@@ -5,6 +5,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import AdminDashboard from './pages/AdminDashboard';
+import EmployeeListPage from './pages/EmployeeListPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 import Toast from './components/Toast';
@@ -67,6 +68,16 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <Layout>
               <AdminDashboard />
+            </Layout>
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/employee" 
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <EmployeeListPage />
             </Layout>
           </ProtectedRoute>
         } 
