@@ -13,6 +13,7 @@ const app = express();
 const authRoutes = require('./routes/authRoutes');
 const attendanceRoutes = require('./routes/attendanceRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const locationRoutes = require('./routes/locationRoutes');
 
 // Middleware
 app.use(cors());
@@ -32,6 +33,7 @@ app.use((req, res, next) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/location', locationRoutes);
 
 // Global Error Handler
 app.use((err, req, res, next) => {
