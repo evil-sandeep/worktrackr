@@ -25,7 +25,7 @@ const TrackingDataViewer = ({ data, loading }) => {
     );
   }
 
-  if (!data || (!data.locations.length && !data.checkIns.length)) {
+  if (!data || (!data.locations.length && !data.checkIns.length && !data.visits.length)) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-12 bg-slate-50 rounded-[2.5rem] border border-dashed border-slate-200 text-center">
         <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
@@ -37,7 +37,7 @@ const TrackingDataViewer = ({ data, loading }) => {
     );
   }
 
-  const { locations, checkIns, summary } = data;
+  const { locations, checkIns, visits, summary } = data;
 
   return (
     <div className="flex-1 space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
@@ -50,6 +50,7 @@ const TrackingDataViewer = ({ data, loading }) => {
             <EmployeeRouteMap 
               locations={locations} 
               checkIns={checkIns} 
+              visits={visits}
             />
         </div>
       </div>
@@ -86,6 +87,7 @@ const TrackingDataViewer = ({ data, loading }) => {
             <Timeline 
               locations={locations} 
               checkIns={checkIns} 
+              visits={visits}
             />
         </div>
       </div>

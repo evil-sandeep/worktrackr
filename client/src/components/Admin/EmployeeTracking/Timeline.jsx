@@ -7,13 +7,38 @@ import {
   ShieldCheck, 
   AlertTriangle,
   ExternalLink,
-  Store
+  Store,
+  Wifi,
+  WifiOff
 } from 'lucide-react';
 
 const TimelineItem = ({ item, isFirst, isLast }) => {
-  const isCheckIn = !!item.outsidePhoto;
+  const isVisit = !!item.outsidePhoto;
+  const isBiometric = !!item.locationName && !item.isGpsEnabled === undefined; // CheckIn model vs LocationLog
+  
+  // Model specific identifiers
+  const isCheckIn = !!item.outsidePhoto; 
   const itemDate = item.timestamp || item.createdAt;
   const timeStr = new Date(itemDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  // Determine Icon and Color based on type
+  const getTypeConfig = () => {
+    if (isCheckIn) return { 
+      icon: <Store className="h-5 w-5" />, 
+      color: 'bg-indigo-600 text-white shadow-indigo-100',
+      label: 'Site Verification',
+      statusColor: 'bg-indigo-50 text-indigo-600 border-indigo-100'
+    };
+    
+    return {
+      icon: <Navigation className="h-5 w-5" />,
+      color: 'bg-white border-2 border-slate-100 text-slate-400 group-hover:border-blue-200 group-hover:text-blue-500',
+      label: item.isGpsEnabled ? 'GPS Pulse' : 'Signal Lost',
+      statusColor: item.isGpsEnabled ? 'bg-green-50 text-green-600 border-green-100' : 'bg-amber-50 text-amber-600 border-amber-100'
+    };
+  };
+
+  const config = getTypeConfig();
 
   return (
     <div className="relative flex gap-6 pb-12 group last:pb-0">
@@ -23,16 +48,14 @@ const TimelineItem = ({ item, isFirst, isLast }) => {
       )}
 
       {/* Icon Column */}
-      <div className={`relative z-10 w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 shadow-sm
-        ${isCheckIn ? 'bg-blue-600 text-white shadow-blue-200' : 'bg-white border-2 border-slate-100 text-slate-400 group-hover:border-blue-200 group-hover:text-blue-500'}`}>
-        {isCheckIn ? <Store className="h-5 w-5" /> : <Navigation className="h-5 w-5" />}
+      <div className={`relative z-10 w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 shadow-sm ${config.color}`}>
+        {config.icon}
         
-        {/* Status Indicator Dot (Only for Pulse Logs) */}
-        {!isCheckIn && (
-          <div className={`absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-white
-            ${item.isGpsEnabled ? 'bg-green-500' : 'bg-amber-500'}`}>
-          </div>
-        )}
+        {/* Signal Status Indicator */}
+        <div className={`absolute -top-1 -right-1 w-4 h-4 rounded-full border-2 border-white flex items-center justify-center shadow-sm
+          ${item.isGpsEnabled === false ? 'bg-amber-500' : 'bg-green-500'}`}>
+          {item.isGpsEnabled === false ? <WifiOff size={8} className="text-white" /> : <Wifi size={8} className="text-white" />}
+        </div>
       </div>
 
       {/* Content Column */}
@@ -41,10 +64,8 @@ const TimelineItem = ({ item, isFirst, isLast }) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <h5 className="text-base font-black text-slate-900 tracking-tight">{timeStr}</h5>
-            <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border
-              ${isCheckIn ? 'bg-blue-50 text-blue-600 border-blue-100' : 
-                item.isGpsEnabled ? 'bg-green-50 text-green-600 border-green-100' : 'bg-amber-50 text-amber-600 border-amber-100'}`}>
-              {isCheckIn ? 'Site Verification' : (item.isGpsEnabled ? 'GPS Pulse' : 'Signal Lost')}
+            <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${config.statusColor}`}>
+              {config.label}
             </span>
           </div>
           <a 
@@ -61,21 +82,21 @@ const TimelineItem = ({ item, isFirst, isLast }) => {
         <div className="flex items-start gap-2 text-slate-500">
            <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
            <p className="text-xs font-bold leading-relaxed">
-             {item.locationName || `${item.latitude.toFixed(6)}, ${item.longitude.toFixed(6)}`}
+             {item.locationName || `${item.latitude?.toFixed(6) || 'N/A'}, ${item.longitude?.toFixed(6) || 'N/A'}`}
            </p>
         </div>
 
-        {/* Check-In Media Preview */}
+        {/* Media Preview (Photos) */}
         {isCheckIn && (
           <div className="grid grid-cols-2 gap-4 mt-4 animate-in fade-in slide-in-from-left-2 duration-700">
              <div className="space-y-2">
-                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Storefront View</p>
+                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Exterior View</p>
                 <div className="aspect-[4/3] rounded-2xl overflow-hidden border-2 border-slate-50 shadow-inner group-media">
                    <img src={item.outsidePhoto} alt="Outside" className="w-full h-full object-cover group-media-hover:scale-110 transition-transform" />
                 </div>
              </div>
              <div className="space-y-2">
-                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Interior Audit</p>
+                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Internal Audit</p>
                 <div className="aspect-[4/3] rounded-2xl overflow-hidden border-2 border-slate-50 shadow-inner group-media">
                    <img src={item.insidePhoto} alt="Inside" className="w-full h-full object-cover group-media-hover:scale-110 transition-transform" />
                 </div>
@@ -87,16 +108,16 @@ const TimelineItem = ({ item, isFirst, isLast }) => {
   );
 };
 
-const Timeline = ({ locations = [], checkIns = [] }) => {
+const Timeline = ({ locations = [], checkIns = [], visits = [] }) => {
   // Unify and sort data by timestamp (Newest at the Top)
   const unifiedEvents = useMemo(() => {
-    const combined = [...locations, ...checkIns];
+    const combined = [...locations, ...checkIns, ...visits];
     return combined.sort((a, b) => {
       const dateA = new Date(a.timestamp || a.createdAt);
       const dateB = new Date(b.timestamp || b.createdAt);
       return dateB - dateA;
     });
-  }, [locations, checkIns]);
+  }, [locations, checkIns, visits]);
 
   if (unifiedEvents.length === 0) {
     return (

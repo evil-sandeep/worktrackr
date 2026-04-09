@@ -37,7 +37,7 @@ const ChangeView = ({ bounds }) => {
   return null;
 };
 
-const EmployeeRouteMap = ({ locations = [], checkIns = [] }) => {
+const EmployeeRouteMap = ({ locations = [], checkIns = [], visits = [] }) => {
   // 1. Prepare coordinates for Polyline
   const routePath = useMemo(() => {
     return locations.map(loc => [loc.latitude, loc.longitude]);
@@ -47,10 +47,11 @@ const EmployeeRouteMap = ({ locations = [], checkIns = [] }) => {
   const bounds = useMemo(() => {
     const allCoords = [
       ...locations.map(l => [l.latitude, l.longitude]),
-      ...checkIns.map(c => [c.latitude, c.longitude])
+      ...checkIns.map(c => [c.latitude, c.longitude]),
+      ...visits.map(v => [v.latitude, v.longitude])
     ];
     return allCoords.length > 0 ? allCoords : [[20.5937, 78.9629]]; // Default center (India)
-  }, [locations, checkIns]);
+  }, [locations, checkIns, visits]);
 
   return (
     <div className="w-full h-full rounded-[2.5rem] overflow-hidden border border-slate-100 shadow-inner bg-slate-50 relative">
@@ -96,7 +97,7 @@ const EmployeeRouteMap = ({ locations = [], checkIns = [] }) => {
           </Marker>
         ))}
 
-        {/* Verification Check-Ins */}
+        {/* Verification Check-Ins (Legacy/Biometric) */}
         {checkIns.map((ci, idx) => (
           <Marker 
             key={`ci-${idx}`} 
@@ -112,7 +113,7 @@ const EmployeeRouteMap = ({ locations = [], checkIns = [] }) => {
                     </p>
                     <p className="text-xs font-black text-slate-900">{ci.locationName}</p>
                   </div>
-                  <span className="text-[10px] font-bold text-slate-400">{new Date(ci.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  <span className="text-[10px] font-bold text-slate-400">{new Date(ci.timestamp || ci.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-2">
@@ -133,6 +134,44 @@ const EmployeeRouteMap = ({ locations = [], checkIns = [] }) => {
             </Popup>
           </Marker>
         ))}
+
+        {/* Modular Site Visits */}
+        {visits.map((visit, idx) => (
+          <Marker 
+            key={`visit-${idx}`} 
+            position={[visit.latitude, visit.longitude]}
+            icon={createCheckInIcon()}
+          >
+            <Popup minWidth={240} className="verification-popup">
+              <div className="p-3 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest flex items-center gap-1.5">
+                      <Store className="h-3 w-3" /> Site Verification
+                    </p>
+                    <p className="text-xs font-black text-slate-900">Audit Proof Uploaded</p>
+                  </div>
+                  <span className="text-[10px] font-bold text-slate-400">{new Date(visit.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1">
+                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest text-center">Outside</p>
+                    <div className="aspect-square rounded-lg overflow-hidden bg-slate-100">
+                      <img src={visit.outsidePhoto} alt="Out" className="w-full h-full object-cover" />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest text-center">Inside</p>
+                    <div className="aspect-square rounded-lg overflow-hidden bg-slate-100">
+                      <img src={visit.insidePhoto} alt="In" className="w-full h-full object-cover" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Popup>
+          </Marker>
+        ))}
       </MapContainer>
 
       {/* Map Legend Overlay */}
@@ -143,7 +182,7 @@ const EmployeeRouteMap = ({ locations = [], checkIns = [] }) => {
          </div>
          <div className="flex items-center gap-3">
             <div className="w-3 h-3 bg-blue-600 rounded-full border-2 border-white shadow-sm animate-pulse"></div>
-            <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Shop Check-In</span>
+            <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Shop Visit / Verification</span>
          </div>
          <div className="flex items-center gap-3">
             <div className="w-6 h-0.5 bg-blue-400 border-t border-dashed"></div>
