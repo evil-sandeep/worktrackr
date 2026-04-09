@@ -1,6 +1,11 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
+console.log('--- DEBUG: FIREBASE CONFIG LOADING ---');
+console.log('API Key exists:', !!import.meta.env.VITE_FIREBASE_API_KEY);
+console.log('Project ID:', import.meta.env.VITE_FIREBASE_PROJECT_ID);
+console.log('---------------------------------------');
+
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
