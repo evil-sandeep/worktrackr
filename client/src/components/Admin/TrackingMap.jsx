@@ -1,73 +1,120 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { 
-  MapContainer, 
-  TileLayer, 
+  GoogleMap, 
+  useJsApiLoader, 
   Polyline, 
   Marker, 
-  Popup, 
-  useMap 
-} from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-import { Store, MapPin, Navigation } from 'lucide-react';
-import { renderToStaticMarkup } from 'react-dom/server';
+  InfoWindow 
+} from '@react-google-maps/api';
+import { 
+  Store, 
+  MapPin, 
+  Navigation,
+  Loader2,
+  AlertCircle
+} from 'lucide-react';
 
-// Custom Map Bounds Updater
-const ChangeView = ({ bounds }) => {
-  const map = useMap();
-  useEffect(() => {
-    if (bounds && bounds.length > 0) {
-      map.fitBounds(bounds, { padding: [50, 50] });
-    }
-  }, [bounds, map]);
-  return null;
+const containerStyle = {
+  width: '100%',
+  height: '100%'
 };
 
-// Custom Icon Generator using Lucide Icons
-const createCustomIcon = (iconComponent, color = '#4f46e5') => {
-  const iconMarkup = renderToStaticMarkup(
-    <div style={{ 
-      backgroundColor: 'white', 
-      borderRadius: '12px', 
-      padding: '8px', 
-      border: `2px solid ${color}`,
-      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-      color: color,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center'
-    }}>
-      {iconComponent}
-    </div>
-  );
-
-  return L.divIcon({
-    html: iconMarkup,
-    className: 'custom-leaflet-icon',
-    iconSize: [40, 40],
-    iconAnchor: [20, 20],
-  });
+const mapOptions = {
+  disableDefaultUI: false,
+  zoomControl: true,
+  streetViewControl: false,
+  mapTypeControl: true,
+  fullscreenControl: true,
+  styles: [
+    {
+      featureType: "poi",
+      elementType: "labels",
+      stylers: [{ visibility: "off" }]
+    }
+  ]
 };
 
 const TrackingMap = ({ locations = [], visits = [] }) => {
-  // 1. Prepare Polyline Coordinates
-  const polylinePositions = useMemo(() => {
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || ''
+  });
+
+  const [map, setMap] = useState(null);
+  const [selectedMarker, setSelectedMarker] = useState(null);
+
+  // 1. Prepare coordinates for Polyline
+  const routePath = useMemo(() => {
     return locations
       .filter(loc => loc.latitude && loc.longitude)
-      .map(loc => [loc.latitude, loc.longitude]);
+      .map(loc => ({ lat: loc.latitude, lng: loc.longitude }));
   }, [locations]);
 
-  // 2. Prepare Bounds for Auto-fitting
-  const bounds = useMemo(() => {
-    const coords = [...polylinePositions];
-    visits.forEach(v => coords.push([v.latitude, v.longitude]));
-    return coords.length > 0 ? coords : null;
-  }, [polylinePositions, visits]);
+  // 2. Prepare all markers
+  const allEvents = useMemo(() => {
+    const list = [];
+    
+    // GPS Pulses
+    locations.forEach((loc, idx) => {
+      list.push({
+        id: `pulse-${idx}`,
+        position: { lat: loc.latitude, lng: loc.longitude },
+        type: 'pulse',
+        time: loc.timestamp,
+        data: loc
+      });
+    });
 
-  const visitIcon = useMemo(() => createCustomIcon(<Store size={20} strokeWidth={3} />, '#4f46e5'), []);
-  const pulseIcon = useMemo(() => createCustomIcon(<Navigation size={16} strokeWidth={3} />, '#94a3b8'), []);
+    // Site Visits
+    visits.forEach((v, idx) => {
+      list.push({
+        id: `visit-${idx}`,
+        position: { lat: v.latitude, lng: v.longitude },
+        type: 'visit',
+        time: v.createdAt,
+        data: v
+      });
+    });
 
-  if (!bounds) {
+    return list;
+  }, [locations, visits]);
+
+  const onSelect = (marker) => setSelectedMarker(marker);
+
+  const onLoad = useCallback(function callback(mapInstance) {
+    if (allEvents.length > 0) {
+      const bounds = new window.google.maps.LatLngBounds();
+      allEvents.forEach(marker => bounds.extend(marker.position));
+      mapInstance.fitBounds(bounds);
+    }
+    setMap(mapInstance);
+  }, [allEvents]);
+
+  const onUnmount = useCallback(function callback(mapInstance) {
+    setMap(null);
+  }, []);
+
+  // Update bounds when events change
+  useEffect(() => {
+    if (map && allEvents.length > 0) {
+      const bounds = new window.google.maps.LatLngBounds();
+      allEvents.forEach(marker => bounds.extend(marker.position));
+      map.fitBounds(bounds);
+    }
+  }, [map, allEvents]);
+
+  if (!isLoaded) {
+    return (
+      <div className="h-[600px] w-full rounded-[2.5rem] bg-slate-50 flex items-center justify-center border border-slate-100">
+         <div className="flex flex-col items-center gap-4">
+            <Loader2 className="h-10 w-10 text-indigo-500 animate-spin" />
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Initialization...</p>
+         </div>
+      </div>
+    );
+  }
+
+  if (allEvents.length === 0) {
     return (
       <div className="h-[500px] w-full bg-slate-50 rounded-[2.5rem] flex flex-col items-center justify-center border-2 border-dashed border-slate-200">
         <MapPin className="h-10 w-10 text-slate-300 mb-4" />
@@ -76,88 +123,86 @@ const TrackingMap = ({ locations = [], visits = [] }) => {
     );
   }
 
+  const getMarkerIcon = (type) => {
+    return {
+      path: window.google.maps.SymbolPath.CIRCLE,
+      fillColor: type === 'visit' ? '#4f46e5' : '#94a3b8',
+      fillOpacity: 1,
+      strokeColor: '#ffffff',
+      strokeWeight: 2,
+      scale: type === 'visit' ? 8 : 4,
+    };
+  };
+
   return (
-    <div className="h-[600px] w-full rounded-[2.5rem] overflow-hidden border-4 border-white shadow-2xl relative z-0">
-      <MapContainer 
-        center={bounds[0]} 
-        zoom={13} 
-        style={{ height: '100%', width: '100%' }}
-        scrollWheelZoom={false}
+    <div className="h-[600px] w-full rounded-[2.5rem] overflow-hidden border-4 border-white shadow-2xl relative">
+      <GoogleMap
+        mapContainerStyle={containerStyle}
+        center={allEvents[0]?.position}
+        zoom={13}
+        onLoad={onLoad}
+        onUnmount={onUnmount}
+        options={mapOptions}
       >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        
-        {/* Update View on Data Change */}
-        <ChangeView bounds={bounds} />
-
-        {/* The Path Taken */}
-        <Polyline 
-          positions={polylinePositions} 
-          pathOptions={{ 
-            color: '#6366f1', 
-            weight: 4, 
-            opacity: 0.6,
-            dashArray: '10, 10'
-          }} 
+        <Polyline
+          path={routePath}
+          options={{
+            strokeColor: '#6366f1',
+            strokeOpacity: 0.6,
+            strokeWeight: 4,
+            icons: [{
+              icon: { path: 'M 0,-1 0,1', strokeOpacity: 1, scale: 4 },
+              offset: '0',
+              repeat: '20px'
+            }]
+          }}
         />
 
-        {/* GPS Pulse Dots (Smaller) */}
-        {locations.map((loc, idx) => (
-          <Marker 
-            key={`pulse-${idx}`} 
-            position={[loc.latitude, loc.longitude]} 
-            icon={pulseIcon}
-          >
-            <Popup className="custom-popup">
-               <div className="p-2">
-                  <p className="text-[10px] font-black uppercase text-slate-400">GPS Pulse</p>
-                  <p className="font-bold text-slate-800">{new Date(loc.timestamp).toLocaleTimeString()}</p>
-                  <p className="text-[9px] text-slate-400 mt-1">{loc.latitude.toFixed(6)}, {loc.longitude.toFixed(6)}</p>
-               </div>
-            </Popup>
-          </Marker>
+        {allEvents.map((marker) => (
+          <Marker
+            key={marker.id}
+            position={marker.position}
+            onClick={() => onSelect(marker)}
+            icon={getMarkerIcon(marker.type)}
+          />
         ))}
 
-        {/* Major Visit Points (Larger) */}
-        {visits.map((visit) => (
-          <Marker 
-            key={visit._id} 
-            position={[visit.latitude, visit.longitude]} 
-            icon={visitIcon}
+        {selectedMarker && (
+          <InfoWindow
+            position={selectedMarker.position}
+            onCloseClick={() => setSelectedMarker(null)}
           >
-            <Popup maxWidth={300} className="custom-popup">
-              <div className="p-1 space-y-3">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 bg-indigo-600 text-white rounded-lg flex items-center justify-center">
-                    <Store size={14} />
+            <div className="p-2 min-w-[200px] space-y-3">
+               <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+                  <div className={`p-1.5 rounded-lg ${selectedMarker.type === 'visit' ? 'bg-indigo-600' : 'bg-slate-400'} text-white`}>
+                     {selectedMarker.type === 'visit' ? <Store size={14} /> : <Navigation size={14} />}
                   </div>
                   <div>
-                    <p className="text-[10px] font-black uppercase text-indigo-600 leading-none">Verified Visit</p>
-                    <p className="text-xs font-bold text-slate-800">{new Date(visit.createdAt).toLocaleTimeString()}</p>
+                     <p className="text-[10px] font-black uppercase text-slate-800 leading-none">
+                        {selectedMarker.type === 'visit' ? 'Verified visit' : 'GPS Pulse'}
+                     </p>
+                     <p className="text-xs font-bold text-slate-800 mt-1">
+                        {new Date(selectedMarker.time).toLocaleTimeString()}
+                     </p>
                   </div>
-                </div>
+               </div>
 
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="space-y-1">
-                    <p className="text-[8px] font-black uppercase text-slate-400">Outside</p>
-                    <img src={visit.outsidePhoto} alt="Outside" className="w-full aspect-square object-cover rounded-lg border border-slate-100" />
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-[8px] font-black uppercase text-slate-400">Inside</p>
-                    <img src={visit.insidePhoto} alt="Inside" className="w-full aspect-square object-cover rounded-lg border border-slate-100" />
-                  </div>
-                </div>
-
-                <div className="pt-2 border-t border-slate-100">
-                  <p className="text-[9px] font-medium text-slate-500 italic">Coordinates secured via native GPS verification.</p>
-                </div>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
-      </MapContainer>
+               {selectedMarker.type === 'visit' && (
+                 <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                      <p className="text-[8px] font-black text-slate-400 uppercase">Outside</p>
+                      <img src={selectedMarker.data.outsidePhoto} alt="Out" className="w-full aspect-square object-cover rounded-lg" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-[8px] font-black text-slate-400 uppercase">Inside</p>
+                      <img src={selectedMarker.data.insidePhoto} alt="In" className="w-full aspect-square object-cover rounded-lg" />
+                    </div>
+                 </div>
+               )}
+            </div>
+          </InfoWindow>
+        )}
+      </GoogleMap>
     </div>
   );
 };
