@@ -12,7 +12,8 @@ import {
 
 const TimelineItem = ({ item, isFirst, isLast }) => {
   const isCheckIn = !!item.outsidePhoto;
-  const timeStr = new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const itemDate = item.timestamp || item.createdAt;
+  const timeStr = new Date(itemDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
   return (
     <div className="relative flex gap-6 pb-12 group last:pb-0">
@@ -90,7 +91,11 @@ const Timeline = ({ locations = [], checkIns = [] }) => {
   // Unify and sort data by timestamp (Newest at the Top)
   const unifiedEvents = useMemo(() => {
     const combined = [...locations, ...checkIns];
-    return combined.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    return combined.sort((a, b) => {
+      const dateA = new Date(a.timestamp || a.createdAt);
+      const dateB = new Date(b.timestamp || b.createdAt);
+      return dateB - dateA;
+    });
   }, [locations, checkIns]);
 
   if (unifiedEvents.length === 0) {
