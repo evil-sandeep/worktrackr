@@ -22,6 +22,10 @@ const visitSchema = new mongoose.Schema({
     type: String, // Cloudinary URL
     default: null,
   },
+  address: {
+    type: String, // Resolved street address
+    default: null,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

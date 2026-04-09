@@ -50,11 +50,10 @@ const getEmployeeDailyTracking = async (req, res) => {
       return res.status(400).json({ message: 'Employee ID and date are required' });
     }
 
-    // Create date range for models that don't have a 'date' string field
-    const startOfDay = new Date(date);
-    startOfDay.setHours(0, 0, 0, 0);
-    const endOfDay = new Date(date);
-    endOfDay.setHours(23, 59, 59, 999);
+    // Construct date range that is inclusive of the client's local day
+    // We treat the 'YYYY-MM-DD' as the start of the day in local time
+    const startOfDay = new Date(`${date}T00:00:00`);
+    const endOfDay = new Date(`${date}T23:59:59.999`);
 
     const rangeQuery = {
       employeeId: id,

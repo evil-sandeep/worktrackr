@@ -7,12 +7,35 @@ const CapturePhoto = ({ label, onCaptured, location }) => {
   const [processing, setProcessing] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState(null);
+  const [resolvedAddress, setResolvedAddress] = useState(null);
   
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const streamRef = useRef(null);
   
   const { addToast } = useUI();
+
+  // Resolve address for watermark
+  useEffect(() => {
+    const resolveAddress = async () => {
+      if (!location) return;
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${location.latitude}&lon=${location.longitude}`,
+          { headers: { 'Accept-Language': 'en' } }
+        );
+        const data = await response.json();
+        if (data && data.display_name) {
+          // Shorten address for watermark (take first 3 parts)
+          const parts = data.display_name.split(',');
+          setResolvedAddress(parts.slice(0, 3).join(','));
+        }
+      } catch (err) {
+        console.warn('Address resolution failed, falling back to coordinates');
+      }
+    };
+    resolveAddress();
+  }, [location]);
 
   // Stop camera stream utility
   const stopCamera = () => {
@@ -72,12 +95,12 @@ const CapturePhoto = ({ label, onCaptured, location }) => {
     const now = new Date();
     const dateStr = now.toLocaleDateString();
     const timeStr = now.toLocaleTimeString();
-    const locStr = location ? `${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}` : 'GPS Not Found';
+    const locStr = resolvedAddress || (location ? `${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}` : 'GPS Not Found');
     
     ctx.fillText(`SECURE AUDIT - ${label.toUpperCase()}`, padding, canvas.height - (fontSize * 3.2));
     ctx.font = `${fontSize * 0.85}px Inter, sans-serif`;
     ctx.fillText(`CAPTURE: ${dateStr} ${timeStr}`, padding, canvas.height - (fontSize * 2));
-    ctx.fillText(`COORDS: ${locStr}`, padding, canvas.height - (fontSize * 0.8));
+    ctx.fillText(`LOC: ${locStr}`, padding, canvas.height - (fontSize * 0.8));
     
     return canvas.toDataURL('image/jpeg', 0.85);
   };

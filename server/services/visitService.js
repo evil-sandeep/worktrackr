@@ -1,15 +1,22 @@
 const Visit = require('../models/Visit');
 const { uploadImage } = require('../utils/cloudinary');
+const { reverseGeocode } = require('../utils/geocoder');
 
 /**
  * Start a new visit with location only, returning the Visit ID
  */
 const startVisit = async (employeeId, latitude, longitude) => {
+  // Resolve address in background or await if needed for consistency
+  // Awaiting here to ensure the record is complete upon return
+  const address = await reverseGeocode(latitude, longitude);
+
   const visit = await Visit.create({
     employeeId,
     latitude,
-    longitude
+    longitude,
+    address
   });
+  
   return visit;
 };
 
