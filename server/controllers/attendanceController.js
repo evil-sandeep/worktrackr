@@ -37,8 +37,9 @@ const markAttendance = async (req, res) => {
     } catch (uploadError) {
       console.error('Cloudinary Upload Error:', uploadError.message);
       return res.status(500).json({ 
-        message: 'Check-In Image upload failed: ' + (uploadError.message || 'Unknown error'),
-        error: uploadError.message 
+        message: 'Attendance capture failed (Cloudinary error). Please verify server setup.',
+        details: uploadError.message,
+        help: 'Ensure CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET are set in production.'
       });
     }
 
@@ -146,7 +147,9 @@ const markCheckout = async (req, res) => {
     } catch (uploadError) {
       console.error('Checkout Cloudinary Error:', uploadError.message);
       return res.status(500).json({ 
-        message: 'Image upload failed during checkout: ' + uploadError.message 
+        message: 'Checkout capture failed (Cloudinary error). Please verify server setup.',
+        details: uploadError.message,
+        help: 'Ensure Cloudinary environment variables are correctly set in your host dashboard.'
       });
     }
 

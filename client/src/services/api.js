@@ -4,6 +4,15 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
 });
 
+// Diagnostic check for production setup
+if (import.meta.env.MODE === 'production') {
+  console.info('--- PRODUCTION API CONFIG ---');
+  console.info('API Base URL:', api.defaults.baseURL);
+  if (api.defaults.baseURL.includes('localhost')) {
+    console.error('CRITICAL: Frontend is pointing to localhost in production!');
+  }
+}
+
 // Add a request interceptor to include the JWT token in all requests
 api.interceptors.request.use(
   (config) => {
