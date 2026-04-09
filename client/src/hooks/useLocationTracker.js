@@ -1,57 +1,102 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import locationService from '../services/locationService';
+import { useUI } from '../context/UIContext';
+
+const CACHE_KEY = 'wt_last_known_pos';
+const QUEUE_KEY = 'wt_pending_pulses';
 
 /**
  * Custom hook to track employee location every hour after check-in.
- * 
- * @param {boolean} isCheckedIn - Whether the employee has checked in.
- * @param {boolean} isCheckedOut - Whether the employee has checked out.
  */
 const useLocationTracker = (isCheckedIn, isCheckedOut) => {
   const intervalRef = useRef(null);
+  const { addToast } = useUI();
+
+  // Helper to get cached location
+  const getLastKnownLocation = () => {
+    const cached = localStorage.getItem(CACHE_KEY);
+    return cached ? JSON.parse(cached) : null;
+  };
+
+  // Helper to queue offline pulses
+  const queueOfflinePulse = (data) => {
+    const queue = JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]');
+    queue.push({ ...data, queuedAt: new Date().toISOString() });
+    localStorage.setItem(QUEUE_KEY, JSON.stringify(queue));
+    console.log('[LocationTracker] Pulse queued (Offline)');
+  };
+
+  // Helper to flush queue
+  const flushOfflineQueue = useCallback(async () => {
+    const queue = JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]');
+    if (queue.length === 0) return;
+
+    console.log(`[LocationTracker] Synchronizing ${queue.length} offline pulses...`);
+    
+    for (const pulse of queue) {
+      try {
+        await locationService.saveLocation(pulse);
+      } catch (err) {
+        console.error('[LocationTracker] Failed to sync pulse:', err);
+      }
+    }
+
+    localStorage.removeItem(QUEUE_KEY);
+    addToast(`Synced ${queue.length} backlog activity items`, 'success');
+  }, [addToast]);
 
   const trackLocation = async () => {
-    console.log('[LocationTracker] Attempting to capture position...');
+    console.log('[LocationTracker] Heartbeat pulse initiated...');
     
     if (!navigator.geolocation) {
-      console.error('[LocationTracker] Geolocation is not supported by this browser.');
+      console.error('[LocationTracker] Geolocation unsupported.');
       return;
     }
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
+        const payload = {
+          latitude,
+          longitude,
+          isGpsEnabled: true,
+          timestamp: new Date().toISOString(),
+        };
+
+        // Cache for future fallbacks
+        localStorage.setItem(CACHE_KEY, JSON.stringify({ latitude, longitude }));
+
         try {
-          await locationService.saveLocation({
-            latitude,
-            longitude,
-            isGpsEnabled: true,
-            timestamp: new Date(),
-          });
-          console.log('[LocationTracker] Location saved successfully (GPS ON)');
+          await locationService.saveLocation(payload);
+          console.log('[LocationTracker] GPS pulse synced successfully');
         } catch (error) {
-          console.error('[LocationTracker] Failed to save location:', error);
+          if (!navigator.onLine) {
+            queueOfflinePulse(payload);
+          }
         }
       },
       async (error) => {
-        // Heartbeat Pulse: Even if GPS fails or is denied, we notify the server 
-        // that the app is active (User is ONLINE, but GPS may be OFF).
-        console.warn(`[LocationTracker] Location capture failed: ${error.message}`);
-        
+        const cached = getLastKnownLocation();
+        const payload = {
+          latitude: cached?.latitude || 0,
+          longitude: cached?.longitude || 0,
+          isGpsEnabled: false,
+          timestamp: new Date().toISOString(),
+        };
+
+        console.warn(`[LocationTracker] GPS Fail: ${error.message}. Using cache.`);
+
         try {
-          await locationService.saveLocation({
-            isGpsEnabled: false,
-            timestamp: new Date(),
-          });
-          console.log('[LocationTracker] Heartbeat pulse sent (GPS OFF)');
+          await locationService.saveLocation(payload);
+          console.log('[LocationTracker] Signal-lost pulse synced');
         } catch (err) {
-          console.error('[LocationTracker] Failed to send heartbeat:', err);
+          if (!navigator.onLine) {
+            queueOfflinePulse(payload);
+          }
         }
 
         if (error.code === error.PERMISSION_DENIED) {
-          console.warn('[LocationTracker] Permission denied. Alerting user.');
-          // Use a debounced or throttled alert if necessary, but for now standard alert
-          // window.alert('Location permission is denied. Please enable it for accurate tracking.');
+          addToast('Location access is REQUIRED for audit compliance. Please enable GPS permissions.', 'error');
         }
       },
       {
@@ -63,38 +108,34 @@ const useLocationTracker = (isCheckedIn, isCheckedOut) => {
   };
 
   useEffect(() => {
-    // Start tracking only if user is checked in and NOT checked out
     const shouldTrack = isCheckedIn && !isCheckedOut;
 
     if (shouldTrack) {
-      // Trigger initial location capture immediately
       trackLocation();
+      intervalRef.current = setInterval(trackLocation, 3600000);
+      
+      // Handle network recovery
+      window.addEventListener('online', flushOfflineQueue);
+      
+      // Immediate sync if internet is back
+      if (navigator.onLine) flushOfflineQueue();
 
-      // Set up interval for every 1 hour (3600000 ms)
-      intervalRef.current = setInterval(() => {
-        trackLocation();
-      }, 3600000);
-
-      console.log('[LocationTracker] Interval started (1 hour)');
+      console.log('[LocationTracker] Audit-loop started');
     } else {
-      // Clear interval if user checks out or logs out
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
-        console.log('[LocationTracker] Interval cleared');
       }
+      window.removeEventListener('online', flushOfflineQueue);
     }
 
-    // Cleanup on unmount
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        console.log('[LocationTracker] Cleanup: Interval cleared');
-      }
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      window.removeEventListener('online', flushOfflineQueue);
     };
-  }, [isCheckedIn, isCheckedOut]);
+  }, [isCheckedIn, isCheckedOut, flushOfflineQueue]);
 
-  return null; // This hook doesn't return anything for now
+  return null;
 };
 
 export default useLocationTracker;

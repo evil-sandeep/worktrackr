@@ -52,6 +52,19 @@ const CapturePhoto = ({ label, onCaptured, location }) => {
     const file = e.target.files[0];
     if (!file) return;
 
+    // SECURITY: Prevent "Fake" Uploads (Gallery photos)
+    // Check if the file was created in the last 5 minutes
+    const now = new Date().getTime();
+    const fileTime = file.lastModified;
+    const diffInMinutes = (now - fileTime) / 1000 / 60;
+
+    if (diffInMinutes > 5) {
+      addToast('SECURITY ALERT: Only live camera captures are permitted. Gallery uploads are blocked.', 'error');
+      // Reset input
+      e.target.value = '';
+      return;
+    }
+
     setProcessing(true);
     const reader = new FileReader();
     reader.onload = async (event) => {
