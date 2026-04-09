@@ -118,27 +118,36 @@ const markCheckout = async (req, res) => {
   try {
     const { image, location, date, time } = req.body;
     const userId = req.user ? req.user._id.toString() : req.body.userId;
+    console.log(`[DIAGNOSTIC] Starting Checkout for user: ${userId}, date: ${date}`);
 
     if (!image || !location || !date || !time || !userId) {
+      console.warn('[DIAGNOSTIC] Missing fields in checkout request');
       return res.status(400).json({ message: 'Missing required checkout data' });
     }
 
     // 0. Security: Today Only
     const now = new Date();
     const serverToday = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+    console.log(`[DIAGNOSTIC] Server Today: ${serverToday}, Request Date: ${date}`);
+
     if (date !== serverToday) {
       return res.status(400).json({ message: 'Backdated checkout is not allowed.' });
     }
 
     // 1. Find existing check-in for today
+    console.log('[DIAGNOSTIC] Querying database for attendance record...');
     const attendance = await Attendance.findOne({ userId, date });
     if (!attendance) {
+      console.warn('[DIAGNOSTIC] No check-in record found for today');
       return res.status(404).json({ message: 'Please check-in first' });
     }
 
     if (attendance.checkOut && attendance.checkOut.time) {
+      console.warn('[DIAGNOSTIC] Checkout already completed for this record');
       return res.status(400).json({ message: 'Check-out already completed' });
     }
+
+    console.log('[DIAGNOSTIC] Valid check-in found. Proceeding to Cloudinary...');
 
     // 2. Upload to Cloudinary
     let uploadedImage;
@@ -162,12 +171,17 @@ const markCheckout = async (req, res) => {
 
     // Calculate duration and earnings
     if (attendance.checkIn && attendance.checkIn.time) {
+      console.log(`[DIAGNOSTIC] Calculating working hours. CheckIn: ${attendance.checkIn.time}, CheckOut: ${time}`);
       const duration = calculateWorkingHours(attendance.checkIn.time, time);
+      console.log(`[DIAGNOSTIC] Duration calculated: ${duration}`);
       attendance.totalHours = duration;
       attendance.earning = calculateEarnings(duration);
+      console.log(`[DIAGNOSTIC] Earnings calculated: ${attendance.earning}`);
     }
 
+    console.log('[DIAGNOSTIC] Saving attendance record...');
     await attendance.save();
+    console.log('[DIAGNOSTIC] Record saved successfully');
 
     res.status(200).json({
       message: 'Checkout logged successfully!',

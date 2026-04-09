@@ -15,6 +15,14 @@ if (!cloud_name || !api_key || !api_secret) {
   console.warn(`NAME: ${cloud_name ? 'SET' : 'MISSING'}, KEY: ${api_key ? 'SET' : 'MISSING'}, SECRET: ${api_secret ? 'SET' : 'MISSING'}`);
   console.warn('Action required: Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET in your production dashboard.');
   console.warn('---------------------------------');
+} else {
+  // Safe diagnostic: Log masked credentials
+  console.log('--- CLOUDINARY DIAGNOSTIC ---');
+  console.log(`Cloud Name: ${cloud_name.substring(0, 3)}...${cloud_name.substring(cloud_name.length - 2)}`);
+  console.log(`API Key: ${api_key.substring(0, 3)}...${api_key.substring(api_key.length - 2)}`);
+  console.log(`API Secret: ${api_secret.substring(0, 2)}...***`);
+  console.log(`Environment Detection: ${process.env.NODE_ENV}`);
+  console.log('-----------------------------');
 }
 
 cloudinary.config({
