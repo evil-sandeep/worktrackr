@@ -2,9 +2,9 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { X, History, Activity, Store } from 'lucide-react';
 
 // Hooks
-import useEmployeeProfile from '../hooks/useEmployeeProfile';
-import useEmployeeAttendance from '../hooks/useEmployeeAttendance';
-import { useUI } from '../context/UIContext';
+import useEmployeeProfile from '../../hooks/useEmployeeProfile';
+import useEmployeeAttendance from '../../hooks/useEmployeeAttendance';
+import { useUI } from '../../context/UIContext';
 
 // Components
 import TrackingCalendar from './EmployeeTracking/TrackingCalendar';
@@ -15,8 +15,8 @@ import AttendanceTab from './EmployeeDetail/AttendanceTab';
 import LogDetailSidebar from './EmployeeDetail/LogDetailSidebar';
 
 // Services/Utils
-import adminService from '../services/adminService';
-import { formatDateISO } from '../utils/employeeUtils';
+import adminService from '../../services/adminService';
+import { formatDateISO } from '../../utils/employeeUtils';
 
 const EmployeeDetailModal = ({ employee: initialEmployee, onClose, onUpdate, onDelete }) => {
   // 1. Business Logic State
