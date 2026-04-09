@@ -187,40 +187,40 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
   };
 
   return (
-    <div className="bg-white rounded-[2rem] overflow-hidden">
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <h2 className="text-xl font-black text-slate-900 tracking-tight leading-none uppercase">
+    <div className="bg-white rounded-[1.25rem] sm:rounded-[2rem] overflow-hidden">
+      <div className="space-y-3 sm:space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
+          <div className="space-y-0.5 sm:space-y-1">
+            <h2 className="text-base sm:text-xl font-black text-slate-900 tracking-tight leading-none uppercase">
               {mode === 'checkin' ? 'Check-In' : 'Check-Out'}
             </h2>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Secure Authentication Required</p>
+            <p className="text-[7px] sm:text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Secure Authentication Required</p>
           </div>
-          <div className={`flex items-center px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${address ? 'bg-green-50 text-green-600 border border-green-100' : 'bg-amber-50 text-amber-600 border border-amber-100'}`}>
-            <MapPin className="h-2.5 w-2.5 mr-1.5" />
+          <div className={`flex items-center self-start sm:self-auto px-1.5 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[7px] sm:text-[9px] font-black uppercase tracking-widest transition-all ${address ? 'bg-green-50 text-green-600 border border-green-100' : 'bg-amber-50 text-amber-600 border border-amber-100'}`}>
+            <MapPin className="h-1.5 w-1.5 sm:h-2.5 sm:w-2.5 mr-1 sm:mr-1.5" />
             {address ? 'Location Secured' : 'Acquiring Signal...'}
           </div>
         </div>
 
-        <div className="relative aspect-video bg-slate-950 rounded-[2.5rem] overflow-hidden shadow-2xl group ring-4 ring-slate-50">
+        <div className="relative aspect-video bg-slate-950 rounded-[1.25rem] sm:rounded-[2.5rem] overflow-hidden shadow-2xl group ring-2 sm:ring-4 ring-slate-50">
           {!isCameraActive && !capturedImage ? (
-            <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center space-y-6 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900">
+            <div className="absolute inset-0 flex flex-col items-center justify-center p-3 sm:p-8 text-center space-y-3 sm:space-y-6 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900">
                <div className="relative">
-                  <div className={`absolute inset-0 ${mode === 'checkin' ? 'bg-blue-600/20' : 'bg-rose-600/20'} rounded-full blur-2xl animate-pulse`}></div>
-                  <div className={`w-20 h-20 ${mode === 'checkin' ? 'bg-blue-600' : 'bg-rose-600'} rounded-[2rem] flex items-center justify-center relative z-10 shadow-2xl`}>
-                     {mode === 'checkin' ? <Camera className="h-8 w-8 text-white" /> : <LogOut className="h-8 w-8 text-white" />}
+                  <div className={`absolute inset-0 ${mode === 'checkin' ? 'bg-blue-600/20' : 'bg-rose-600/20'} rounded-full blur-lg sm:blur-2xl animate-pulse`}></div>
+                  <div className={`w-12 h-12 sm:w-20 sm:h-20 ${mode === 'checkin' ? 'bg-blue-600' : 'bg-rose-600'} rounded-xl sm:rounded-[2rem] flex items-center justify-center relative z-10 shadow-2xl`}>
+                     {mode === 'checkin' ? <Camera className="h-5 w-5 sm:h-8 sm:w-8 text-white" /> : <LogOut className="h-5 w-5 sm:h-8 sm:w-8 text-white" />}
                   </div>
                </div>
-               <div className="space-y-2">
-                 <h3 className="text-white text-lg font-black tracking-tight">{mode === 'checkin' ? 'Begin Daily Session' : 'Terminate Session'}</h3>
-                 <p className="text-slate-400 text-xs font-bold uppercase tracking-widest leading-relaxed">Initialize Biometric Lens</p>
+               <div className="space-y-0.5 sm:space-y-2">
+                 <h3 className="text-white text-sm sm:text-lg font-black tracking-tight">{mode === 'checkin' ? 'Begin Session' : 'Terminate'}</h3>
+                 <p className="text-slate-400 text-[6px] sm:text-xs font-bold uppercase tracking-widest leading-relaxed">Initialize Biometric Lens</p>
                </div>
                <button 
                 onClick={startCamera}
-                className={`group flex items-center gap-2 px-10 py-4 ${mode === 'checkin' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-rose-600 hover:bg-rose-700'} text-white rounded-2xl font-black text-xs tracking-[0.2em] uppercase transition-all shadow-xl hover:shadow-${mode === 'checkin' ? 'blue' : 'rose'}-500/20 active:scale-95`}
+                className={`group flex items-center gap-1.5 px-5 sm:px-10 py-2.5 sm:py-4 ${mode === 'checkin' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-rose-600 hover:bg-rose-700'} text-white rounded-lg sm:rounded-2xl font-black text-[9px] sm:text-xs tracking-[0.2em] uppercase transition-all shadow-xl hover:shadow-${mode === 'checkin' ? 'blue' : 'rose'}-500/20 active:scale-95`}
                >
                  <span>Start Camera</span>
-                 <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+                 <ArrowRight className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 group-hover:translate-x-1 transition-transform" />
                </button>
             </div>
           ) : capturedImage ? (
@@ -230,22 +230,22 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
                 alt="captured" 
                 className="w-full h-full object-cover animate-in fade-in zoom-in duration-500 scale-[1.02] group-hover/captured:scale-100 transition-transform duration-1000" 
               />
-              <div className="absolute inset-x-0 bottom-0 p-8 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex items-center justify-between backdrop-blur-[2px]">
-                <button onClick={resetCapture} className="px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-xl text-white border border-white/20 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95">
+              <div className="absolute inset-x-0 bottom-0 p-3 sm:p-8 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex items-center justify-between backdrop-blur-[2px] gap-2">
+                <button onClick={resetCapture} className="px-3 sm:px-6 py-1.5 sm:py-3 bg-white/10 hover:bg-white/20 backdrop-blur-xl text-white border border-white/20 rounded-lg sm:rounded-2xl font-black text-[7px] sm:text-[10px] uppercase tracking-[0.2em] transition-all active:scale-95">
                   Discard
                 </button>
                 <button 
                   onClick={handleUpload}
-                  className={`px-10 py-3 ${mode === 'checkin' ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/30' : 'bg-rose-600 hover:bg-rose-700 shadow-rose-500/30'} text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-2xl transition-all active:scale-95 flex items-center gap-2.5`}
+                  className={`px-5 sm:px-10 py-1.5 sm:py-3 ${mode === 'checkin' ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/30' : 'bg-rose-600 hover:bg-rose-700 shadow-rose-500/30'} text-white rounded-lg sm:rounded-2xl font-black text-[7px] sm:text-[10px] uppercase tracking-[0.2em] shadow-2xl transition-all active:scale-95 flex items-center gap-1.5`}
                 >
-                  <UploadCloud className="h-4 w-4" />
-                  Finalize {mode === 'checkin' ? 'Entry' : 'Exit'}
+                  <UploadCloud className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden xs:inline">Finalize</span> {mode === 'checkin' ? 'Entry' : 'Exit'}
                 </button>
               </div>
-              <div className="absolute top-6 left-6">
-                 <div className="px-4 py-2 bg-black/60 backdrop-blur-xl rounded-xl border border-white/10 text-white flex items-center gap-2">
-                    <CheckCircle className="h-3.5 w-3.5 text-green-500" />
-                    <span className="text-[10px] font-black uppercase tracking-widest">Snapshot Verified</span>
+              <div className="absolute top-3 sm:top-6 left-3 sm:left-6">
+                 <div className="px-2.5 sm:px-4 py-1.5 sm:py-2 bg-black/60 backdrop-blur-xl rounded-lg sm:rounded-xl border border-white/10 text-white flex items-center gap-1 sm:gap-2">
+                    <CheckCircle className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 text-green-500" />
+                    <span className="text-[7px] sm:text-[10px] font-black uppercase tracking-widest">Snapshot Verified</span>
                  </div>
               </div>
             </div>

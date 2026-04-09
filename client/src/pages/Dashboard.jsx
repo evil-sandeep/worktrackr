@@ -93,7 +93,7 @@ const Dashboard = () => {
         <div className="xl:col-span-12">
           <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)] overflow-hidden">
             <div className="grid grid-cols-1 lg:grid-cols-2">
-              <div className="p-8 lg:p-12 border-b lg:border-b-0 lg:border-r border-slate-50">
+              <div className="p-4 sm:p-8 lg:p-12 border-b lg:border-b-0 lg:border-r border-slate-50">
                 <div className="flex items-center justify-between mb-8">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
@@ -122,7 +122,7 @@ const Dashboard = () => {
                 )}
               </div>
 
-              <div className="p-8 lg:p-12 bg-slate-50/30">
+              <div className="p-4 sm:p-8 lg:p-12 bg-slate-50/30">
                 <h3 className="font-black text-slate-900 tracking-tight mb-8">Daily Insights</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-white p-6 rounded-3xl border border-slate-100 flex items-center gap-4 shadow-sm">
