@@ -1,11 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const { getAllEmployees, getEmployeeById } = require('../controllers/adminController');
+const { 
+  getAllEmployees, 
+  getEmployeeById, 
+  getEmployeeDailyTracking 
+} = require('../controllers/adminController');
 const { protect, admin } = require('../middleware/authMiddleware');
 
 // @route   GET /api/admin/employees
 // @desc    Fetch all registered employees from database
 router.get('/employees', protect, admin, getAllEmployees);
+
+// @route   GET /api/admin/employees/:id/daily?date=YYYY-MM-DD
+// @desc    Fetch complete tracking log for an employee on a specific date
+router.get('/employees/:id/daily', protect, admin, getEmployeeDailyTracking);
 
 // @route   GET /api/admin/employees/:id
 // @desc    Fetch individual employee by ID

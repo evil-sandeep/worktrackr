@@ -30,13 +30,19 @@ const getDashboardStats = async () => {
   return response.data;
 };
 
+const getDailyTracking = async (id, date) => {
+  const response = await api.get(`/admin/employees/${id}/daily?date=${date}`);
+  return response.data;
+};
+
 const adminService = {
   getEmployees,
   getEmployeeById,
   updateEmployee,
   deleteEmployee,
   getEmployeeAttendance,
-  getDashboardStats
+  getDashboardStats,
+  getDailyTracking
 };
 
 export default adminService;

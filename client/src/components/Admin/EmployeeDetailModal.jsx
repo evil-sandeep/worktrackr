@@ -1,4 +1,9 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import Calendar from '../Calendar/Calendar';
+import TrackingCalendar from './EmployeeTracking/TrackingCalendar';
+import TrackingDataViewer from './EmployeeTracking/TrackingDataViewer';
+import adminService from '../../services/adminService';
+import { useUI } from '../../context/UIContext';
+
 import { 
   X, 
   Mail, 
@@ -17,11 +22,10 @@ import {
   Map,
   Image as ImageIcon,
   Camera,
-  History
+  History,
+  Navigation,
+  Activity
 } from 'lucide-react';
-import Calendar from '../Calendar/Calendar';
-import adminService from '../../services/adminService';
-import { useUI } from '../../context/UIContext';
 
 const EmployeeDetailModal = ({ employee, onClose, onUpdate, onDelete }) => {
   const [formData, setFormData] = useState({
@@ -36,7 +40,28 @@ const EmployeeDetailModal = ({ employee, onClose, onUpdate, onDelete }) => {
   const [attendanceRecords, setAttendanceRecords] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [viewDate, setViewDate] = useState(new Date());
+  const [activeTab, setActiveTab] = useState('attendance'); // 'attendance' or 'tracking'
+  const [trackingData, setTrackingData] = useState(null);
+  const [trackingLoading, setTrackingLoading] = useState(false);
   const { showLoader, addToast } = useUI();
+
+  const fetchTrackingData = async (date) => {
+    setTrackingLoading(true);
+    try {
+      const response = await adminService.getDailyTracking(employee._id, date);
+      setTrackingData(response.data);
+    } catch (error) {
+      addToast('Failed to fetch tracking data', 'error');
+    } finally {
+      setTrackingLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'tracking') {
+      fetchTrackingData(selectedDate);
+    }
+  }, [selectedDate, activeTab]);
 
   useEffect(() => {
     const fetchEmployeeDetails = async () => {
@@ -324,168 +349,201 @@ const EmployeeDetailModal = ({ employee, onClose, onUpdate, onDelete }) => {
             {/* Calendar and Main Stats (8 Cols) */}
             <div className="lg:col-span-12 xl:col-span-8 space-y-8">
               <div className="flex items-center justify-between">
-                 <div className="space-y-1">
-                    <h3 className="text-2xl font-black text-slate-900 tracking-tighter flex items-center gap-3">
-                        <History className="h-6 w-6 text-blue-600" />
-                        Engagement History
-                    </h3>
-                    <p className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">
-                        Monthly Summary: {viewDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                    </p>
-                 </div>
-              </div>
-
-              {/* Stat Row */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                 <div className="p-5 bg-blue-50/50 rounded-3xl border border-blue-100 flex flex-col gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-blue-600" />
-                    <div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Present</p>
-                        <p className="text-xl font-black text-slate-900">{stats.present}</p>
-                    </div>
-                 </div>
-                 <div className="p-5 bg-rose-50/50 rounded-3xl border border-rose-100 flex flex-col gap-2">
-                    <AlertCircle className="h-5 w-5 text-rose-600" />
-                    <div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Absent</p>
-                        <p className="text-xl font-black text-slate-900">{stats.absent}</p>
-                    </div>
-                 </div>
-                 <div className="p-5 bg-emerald-50/50 rounded-3xl border border-emerald-100 flex flex-col gap-2">
-                    <IndianRupee className="h-5 w-5 text-emerald-600" />
-                    <div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Earnings</p>
-                        <p className="text-xl font-black text-slate-900">₹{stats.totalEarning}</p>
-                    </div>
-                 </div>
-                 <div className="p-5 bg-slate-50 rounded-3xl border border-slate-100 flex flex-col gap-2">
-                    <Clock className="h-5 w-5 text-slate-600" />
-                    <div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Work Hours</p>
-                        <p className="text-xl font-black text-slate-900">{stats.totalHoursStr}</p>
-                    </div>
-                 </div>
-              </div>
-
-              <div className="bg-white p-2 border border-slate-100 rounded-[2.5rem]">
-                <Calendar 
-                  attendanceData={attendanceMap}
-                  onViewDateChange={(date) => setViewDate(date)}
-                  onDateSelect={(date) => {
-                    // Format Date to YYYY-MM-DD
-                    const dateObj = new Date(date);
-                    const formattedDate = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
-                    setSelectedDate(formattedDate);
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Selected Day Detailed View (4 Cols) */}
-            <div className="lg:col-span-12 xl:col-span-4">
-               <div className="sticky top-0 space-y-6">
                   <div className="space-y-1">
-                      <h4 className="text-lg font-black text-slate-900 tracking-tight">Day Log Detail</h4>
-                      <p className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">Selected: {selectedDate}</p>
+                    <div className="flex items-center gap-6 mb-2">
+                       <button 
+                         onClick={() => setActiveTab('attendance')}
+                         className={`text-2xl font-black tracking-tighter flex items-center gap-3 transition-all ${activeTab === 'attendance' ? 'text-slate-900 border-b-4 border-blue-600 pb-1' : 'text-slate-300 hover:text-slate-400'}`}
+                       >
+                          <History className="h-6 w-6" />
+                          Attendance
+                       </button>
+                       <button 
+                         onClick={() => setActiveTab('tracking')}
+                         className={`text-2xl font-black tracking-tighter flex items-center gap-3 transition-all ${activeTab === 'tracking' ? 'text-slate-900 border-b-4 border-blue-600 pb-1' : 'text-slate-300 hover:text-slate-400'}`}
+                       >
+                          <Activity className="h-6 w-6" />
+                          Pulse Log
+                       </button>
+                    </div>
+                    <p className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">
+                        {activeTab === 'attendance' ? `Monthly Summary: ${viewDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}` : `Daily Audit: ${selectedDate}`}
+                    </p>
+                  </div>
+              </div>              {activeTab === 'attendance' ? (
+                <>
+                  {/* Stat Row */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="p-5 bg-blue-50/50 rounded-3xl border border-blue-100 flex flex-col gap-2">
+                        <CheckCircle2 className="h-5 w-5 text-blue-600" />
+                        <div>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Present</p>
+                            <p className="text-xl font-black text-slate-900">{stats.present}</p>
+                        </div>
+                    </div>
+                    <div className="p-5 bg-rose-50/50 rounded-3xl border border-rose-100 flex flex-col gap-2">
+                        <AlertCircle className="h-5 w-5 text-rose-600" />
+                        <div>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Absent</p>
+                            <p className="text-xl font-black text-slate-900">{stats.absent}</p>
+                        </div>
+                    </div>
+                    <div className="p-5 bg-emerald-50/50 rounded-3xl border border-emerald-100 flex flex-col gap-2">
+                        <IndianRupee className="h-5 w-5 text-emerald-600" />
+                        <div>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Earnings</p>
+                            <p className="text-xl font-black text-slate-900">₹{stats.totalEarning}</p>
+                        </div>
+                    </div>
+                    <div className="p-5 bg-slate-50 rounded-3xl border border-slate-100 flex flex-col gap-2">
+                        <Clock className="h-5 w-5 text-slate-600" />
+                        <div>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Work Hours</p>
+                            <p className="text-xl font-black text-slate-900">{stats.totalHoursStr}</p>
+                        </div>
+                    </div>
                   </div>
 
-                  {selectedRecord ? (
-                    <div className="space-y-6 animate-in slide-in-from-right-4 duration-500">
-                        {/* Status Card */}
-                        <div className={`p-6 rounded-[2rem] border transition-all ${selectedRecord.status === 'absent' ? 'bg-rose-50 border-rose-100' : 'bg-green-50 border-green-100'}`}>
-                            <div className="flex items-center justify-between mb-4">
-                                <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${
-                                    selectedRecord.status === 'absent' 
-                                    ? 'bg-rose-500 text-white border-rose-600' 
-                                    : 'bg-green-600 text-white border-green-700'
-                                }`}>
-                                    {selectedRecord.status || 'Present'}
-                                </span>
-                                <div className="flex items-center gap-1.5 text-slate-900">
-                                    <IndianRupee className="h-4 w-4" />
-                                    <span className="font-black text-lg">₹{selectedRecord.earning || 0}</span>
-                                </div>
-                            </div>
-                            
-                            {selectedRecord.status !== 'absent' && (
-                                <div className="flex items-center gap-3 text-slate-600">
-                                    <Clock className="h-4 w-4" />
-                                    <span className="text-sm font-bold uppercase tracking-widest leading-none">
-                                        Worked {selectedRecord.totalHours || '--:--'}
-                                    </span>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Image Evidence */}
-                        {selectedRecord.status !== 'absent' && (
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-3">
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                                        <Camera className="h-3 w-3" /> Check-In
-                                    </p>
-                                    <div className="aspect-[3/4] rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden relative group">
-                                        {selectedRecord.checkIn?.imageUrl ? (
-                                            <img src={selectedRecord.checkIn.imageUrl} alt="In" className="w-full h-full object-cover transition-transform group-hover:scale-110" />
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center text-slate-300">
-                                                <ImageIcon className="h-8 w-8" />
-                                            </div>
-                                        )}
-                                        <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
-                                            <p className="text-[10px] font-black text-white">{selectedRecord.checkIn?.time || 'N/A'}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="space-y-3">
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                                        <Clock className="h-3 w-3" /> Check-Out
-                                    </p>
-                                    <div className="aspect-[3/4] rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden relative group">
-                                         {selectedRecord.checkOut?.imageUrl ? (
-                                            <img src={selectedRecord.checkOut.imageUrl} alt="Out" className="w-full h-full object-cover transition-transform group-hover:scale-110" />
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center text-slate-300">
-                                                <ImageIcon className="h-8 w-8" />
-                                            </div>
-                                        )}
-                                        <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
-                                            <p className="text-[10px] font-black text-white">{selectedRecord.checkOut?.time || 'N/A'}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Location Context */}
-                        {selectedRecord.status !== 'absent' && (
-                            <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100 space-y-4">
-                                <div className="flex items-start gap-3">
-                                    <MapPin className="h-4 w-4 text-blue-600 mt-1 flex-shrink-0" />
-                                    <div className="min-w-0">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Check-In Location</p>
-                                        <p className="text-xs font-bold text-slate-900 truncate">{selectedRecord.checkIn?.location || 'Not Recorded'}</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-3">
-                                    <Map className="h-4 w-4 text-indigo-600 mt-1 flex-shrink-0" />
-                                    <div className="min-w-0">
-                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Check-Out Location</p>
-                                        <p className="text-xs font-bold text-slate-900 truncate">{selectedRecord.checkOut?.location || 'Not Recorded'}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                  ) : (
-                    <div className="py-20 text-center bg-slate-50 rounded-[2rem] border border-dashed border-slate-200 animate-in fade-in duration-700">
-                        <CalendarIcon className="h-10 w-10 text-slate-300 mx-auto mb-4" />
-                        <p className="text-slate-400 font-bold text-sm">No record for this date.</p>
-                        <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mt-1">Status: Absent / Off-Duty</p>
-                    </div>
-                  )}
-               </div>
+                  <div className="bg-white p-2 border border-slate-100 rounded-[2.5rem]">
+                    <Calendar 
+                      attendanceData={attendanceMap}
+                      onViewDateChange={(date) => setViewDate(date)}
+                      onDateSelect={(date) => {
+                        const dateObj = new Date(date);
+                        const formattedDate = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
+                        setSelectedDate(formattedDate);
+                      }}
+                    />
+                  </div>
+                </>
+              ) : (
+                <div className="space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-500">
+                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                     <div className="lg:col-span-4">
+                        <TrackingCalendar 
+                          selectedDate={selectedDate}
+                          onDateChange={(date) => setSelectedDate(date)}
+                        />
+                     </div>
+                     <div className="lg:col-span-8">
+                        <TrackingDataViewer 
+                          data={trackingData}
+                          loading={trackingLoading}
+                        />
+                     </div>
+                   </div>
+                </div>
+              )}
             </div>
+
+            {/* Selected Day Detailed View - Only show in Attendance Tab */}
+            {activeTab === 'attendance' && (
+              <div className="lg:col-span-12 xl:col-span-4">
+                <div className="sticky top-0 space-y-6">
+                    <div className="space-y-1">
+                        <h4 className="text-lg font-black text-slate-900 tracking-tight">Day Log Detail</h4>
+                        <p className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">Selected: {selectedDate}</p>
+                    </div>
+
+                    {selectedRecord ? (
+                      <div className="space-y-6 animate-in slide-in-from-right-4 duration-500">
+                          {/* Status Card */}
+                          <div className={`p-6 rounded-[2rem] border transition-all ${selectedRecord.status === 'absent' ? 'bg-rose-50 border-rose-100' : 'bg-green-50 border-green-100'}`}>
+                              <div className="flex items-center justify-between mb-4">
+                                  <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${
+                                      selectedRecord.status === 'absent' 
+                                      ? 'bg-rose-500 text-white border-rose-600' 
+                                      : 'bg-green-600 text-white border-green-700'
+                                  }`}>
+                                      {selectedRecord.status || 'Present'}
+                                  </span>
+                                  <div className="flex items-center gap-1.5 text-slate-900">
+                                      <IndianRupee className="h-4 w-4" />
+                                      <span className="font-black text-lg">₹{selectedRecord.earning || 0}</span>
+                                  </div>
+                              </div>
+                              
+                              {selectedRecord.status !== 'absent' && (
+                                  <div className="flex items-center gap-3 text-slate-600">
+                                      <Clock className="h-4 w-4" />
+                                      <span className="text-sm font-bold uppercase tracking-widest leading-none">
+                                          Worked {selectedRecord.totalHours || '--:--'}
+                                      </span>
+                                  </div>
+                              )}
+                          </div>
+
+                          {/* Image Evidence */}
+                          {selectedRecord.status !== 'absent' && (
+                              <div className="grid grid-cols-2 gap-4">
+                                  <div className="space-y-3">
+                                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                          <Camera className="h-3 w-3" /> Check-In
+                                      </p>
+                                      <div className="aspect-[3/4] rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden relative group">
+                                          {selectedRecord.checkIn?.imageUrl ? (
+                                              <img src={selectedRecord.checkIn.imageUrl} alt="In" className="w-full h-full object-cover transition-transform group-hover:scale-110" />
+                                          ) : (
+                                              <div className="w-full h-full flex items-center justify-center text-slate-300">
+                                                  <ImageIcon className="h-8 w-8" />
+                                              </div>
+                                          )}
+                                          <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
+                                              <p className="text-[10px] font-black text-white">{selectedRecord.checkIn?.time || 'N/A'}</p>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div className="space-y-3">
+                                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                          <Clock className="h-3 w-3" /> Check-Out
+                                      </p>
+                                      <div className="aspect-[3/4] rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden relative group">
+                                            {selectedRecord.checkOut?.imageUrl ? (
+                                              <img src={selectedRecord.checkOut.imageUrl} alt="Out" className="w-full h-full object-cover transition-transform group-hover:scale-110" />
+                                          ) : (
+                                              <div className="w-full h-full flex items-center justify-center text-slate-300">
+                                                  <ImageIcon className="h-8 w-8" />
+                                              </div>
+                                          )}
+                                          <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
+                                              <p className="text-[10px] font-black text-white">{selectedRecord.checkOut?.time || 'N/A'}</p>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          )}
+
+                          {/* Location Context */}
+                          {selectedRecord.status !== 'absent' && (
+                              <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100 space-y-4">
+                                  <div className="flex items-start gap-3">
+                                      <MapPin className="h-4 w-4 text-blue-600 mt-1 flex-shrink-0" />
+                                      <div className="min-w-0">
+                                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Check-In Location</p>
+                                          <p className="text-xs font-bold text-slate-900 truncate">{selectedRecord.checkIn?.location || 'Not Recorded'}</p>
+                                      </div>
+                                  </div>
+                                  <div className="flex items-start gap-3">
+                                      <Map className="h-4 w-4 text-indigo-600 mt-1 flex-shrink-0" />
+                                      <div className="min-w-0">
+                                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Check-Out Location</p>
+                                          <p className="text-xs font-bold text-slate-900 truncate">{selectedRecord.checkOut?.location || 'Not Recorded'}</p>
+                                      </div>
+                                  </div>
+                              </div>
+                          )}
+                      </div>
+                    ) : (
+                      <div className="py-20 text-center bg-slate-50 rounded-[2rem] border border-dashed border-slate-200 animate-in fade-in duration-700">
+                          <CalendarIcon className="h-10 w-10 text-slate-300 mx-auto mb-4" />
+                          <p className="text-slate-400 font-bold text-sm">No record for this date.</p>
+                          <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mt-1">Status: Absent / Off-Duty</p>
+                      </div>
+                    )}
+                </div>
+              </div>
+            )}
+/div>
           </div>
         </div>
 

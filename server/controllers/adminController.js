@@ -1,4 +1,7 @@
 const User = require('../models/User');
+const LocationLog = require('../models/LocationLog');
+const CheckIn = require('../models/CheckIn');
+const DailySummary = require('../models/DailySummary');
 
 // @desc    Get all employees
 // @route   GET /api/admin/employees
@@ -32,7 +35,45 @@ const getEmployeeById = async (req, res) => {
   }
 };
 
+/**
+ * @desc    Get complete daily tracking data for an employee
+ * @route   GET /api/admin/employees/:id/daily?date=YYYY-MM-DD
+ * @access  Private/Admin
+ */
+const getEmployeeDailyTracking = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { date } = req.query;
+
+    if (!id || !date) {
+      return res.status(400).json({ message: 'Employee ID and date are required' });
+    }
+
+    // Fetch all data in parallel
+    const [locations, checkIns, summary] = await Promise.all([
+      LocationLog.find({ employeeId: id, date }).sort({ timestamp: 1 }),
+      CheckIn.find({ employeeId: id, date }).sort({ timestamp: 1 }),
+      DailySummary.findOne({ employeeId: id, date })
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      employeeId: id,
+      date,
+      data: {
+        locations,
+        checkIns,
+        summary: summary || { totalCheckins: 0, lastLocation: null, lastActiveTime: null }
+      }
+    });
+  } catch (error) {
+    console.error('Daily Tracking Error:', error);
+    return res.status(500).json({ message: 'Failed to fetch daily tracking data' });
+  }
+};
+
 module.exports = {
   getAllEmployees,
   getEmployeeById,
+  getEmployeeDailyTracking,
 };
