@@ -8,14 +8,14 @@ const { calculateWorkingHours, calculateEarnings } = require('../utils/timeCalcu
 const markAttendance = async (req, res) => {
   try {
     const { image, location, date, time, status = 'present' } = req.body;
-    
+
     // Use userId from authenticated user or fallback to body
     const userId = req.user ? req.user._id.toString() : req.body.userId;
 
     // 0. Security/Business Logic Validations
     const now = new Date();
     const serverToday = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
-    
+
     if (date !== serverToday) {
       return res.status(400).json({ message: 'Backdated attendance is not allowed. Capture today only.' });
     }
@@ -36,7 +36,10 @@ const markAttendance = async (req, res) => {
       imageUrl = await uploadImage(image);
     } catch (uploadError) {
       console.error('Cloudinary Upload Error:', uploadError.message);
-      return res.status(500).json({ message: 'Cloudinary upload failed' });
+      return res.status(500).json({ 
+        message: 'Check-In Image upload failed: ' + (uploadError.message || 'Unknown error'),
+        error: uploadError.message 
+      });
     }
 
     // 2. Save record in MongoDB with nested structure
@@ -66,13 +69,13 @@ const getAttendanceByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
     const { month, year } = req.query; // Optional filters: YYYY-MM
-    
+
     if (!userId) {
       return res.status(400).json({ message: 'User ID is required' });
     }
 
     let query = { userId };
-    
+
     // If filtering by specific month (YYYY-MM style regex)
     if (year && month) {
       const monthStr = `${year}-${month.padStart(2, '0')}`;
@@ -137,7 +140,15 @@ const markCheckout = async (req, res) => {
     }
 
     // 2. Upload to Cloudinary
-    const uploadedImage = await uploadImage(image);
+    let uploadedImage;
+    try {
+      uploadedImage = await uploadImage(image);
+    } catch (uploadError) {
+      console.error('Checkout Cloudinary Error:', uploadError.message);
+      return res.status(500).json({ 
+        message: 'Image upload failed during checkout: ' + uploadError.message 
+      });
+    }
 
     // 3. Update record with checkout data and calculate working hours
     attendance.checkOut = {
