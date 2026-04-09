@@ -168,6 +168,14 @@ const EmployeeDetailModal = ({ employee, onClose, onUpdate, onDelete }) => {
       {/* Modal Container */}
       <div className="relative w-full max-w-[90rem] max-h-[95vh] bg-white rounded-[3rem] shadow-2xl border border-slate-100 flex flex-col xl:flex-row overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-10 duration-500">
         
+        {/* Global Close Button */}
+        <button 
+          onClick={onClose}
+          className="absolute top-8 right-8 z-[110] p-3 bg-white/80 backdrop-blur-md text-slate-400 hover:text-slate-900 hover:bg-white rounded-2xl shadow-lg border border-slate-100 transition-all active:scale-95 group"
+        >
+          <X className="h-6 w-6 transition-transform group-hover:rotate-90" />
+        </button>
+        
         {/* Left Side: Profile & Edit Form */}
         <div className="w-full xl:w-80 p-6 md:p-8 border-b xl:border-b-0 xl:border-r border-slate-100 overflow-y-auto custom-scrollbar bg-slate-50/30 flex-shrink-0">
           <div className="flex justify-between items-start mb-6">
@@ -175,12 +183,6 @@ const EmployeeDetailModal = ({ employee, onClose, onUpdate, onDelete }) => {
               <h2 className="text-2xl font-black text-slate-900 tracking-tighter">Profile</h2>
               <p className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">Employee Management</p>
             </div>
-            <button 
-              onClick={onClose}
-              className="xl:hidden p-3 bg-white text-slate-400 hover:text-slate-900 rounded-2xl shadow-sm border border-slate-100 transition-all"
-            >
-              <X className="h-4 w-4" />
-            </button>
           </div>
 
           <div className="space-y-6">
@@ -290,12 +292,6 @@ const EmployeeDetailModal = ({ employee, onClose, onUpdate, onDelete }) => {
         {/* Middle & Right Content: Stats, Calendar, and Detail View */}
         <div className="flex-1 overflow-y-auto custom-scrollbar bg-white relative">
           <div className="p-6 md:p-10 min-h-full flex flex-col">
-          <button 
-            onClick={onClose}
-            className="hidden xl:flex absolute top-10 right-10 p-3 bg-slate-50 text-slate-400 hover:text-slate-900 border border-slate-100 rounded-2xl transition-all"
-          >
-            <X className="h-5 w-5" />
-          </button>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 flex-grow">
             {/* Calendar and Main Stats (8 Cols) */}
