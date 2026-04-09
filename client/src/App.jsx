@@ -6,6 +6,8 @@ import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import AdminDashboard from './pages/AdminDashboard';
 import EmployeeListPage from './pages/EmployeeListPage';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 import Toast from './components/Toast';
@@ -40,6 +42,8 @@ const AppRoutes = () => {
       {/* Public Routes - No Layout */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/forgot" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       
       {/* Protected Routes - With Global Layout */}
       <Route 

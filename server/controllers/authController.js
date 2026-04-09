@@ -225,6 +225,53 @@ const getAdminDashboardStats = async (req, res) => {
   }
 };
 
+// @desc    Verify if user exists by empId and phone (for forgot password)
+const verifyUser = async (req, res) => {
+  try {
+    const { empId, phone } = req.body;
+
+    if (!empId || !phone) {
+      return res.status(400).json({ success: false, message: 'Please provide both Employee ID and Mobile Number' });
+    }
+
+    // Standardize phone format if needed - assuming user sends it correctly or handle it here
+    const user = await User.findOne({ empId, phone });
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'No user found with these credentials' });
+    }
+
+    res.status(200).json({ success: true, message: 'User verified' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Reset password (after OTP verification)
+const resetPassword = async (req, res) => {
+  try {
+    const { phone, newPassword } = req.body;
+
+    if (!phone || !newPassword) {
+      return res.status(400).json({ success: false, message: 'Missing mobile number or password' });
+    }
+
+    const user = await User.findOne({ phone });
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Update password (pre-save middleware in User model handles hashing)
+    user.password = newPassword;
+    await user.save();
+
+    res.status(200).json({ success: true, message: 'Password reset successful. You can now login.' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -232,5 +279,7 @@ module.exports = {
   getEmployees,
   updateEmployee,
   deleteEmployee,
-  getAdminDashboardStats
+  getAdminDashboardStats,
+  verifyUser,
+  resetPassword
 };

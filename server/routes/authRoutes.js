@@ -7,7 +7,9 @@ const {
   getEmployees,
   updateEmployee,
   deleteEmployee,
-  getAdminDashboardStats
+  getAdminDashboardStats,
+  verifyUser,
+  resetPassword
 } = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -40,5 +42,13 @@ router.put('/employees/:id', protect, updateEmployee);
 // @route   DELETE /api/auth/employees/:id
 // @desc    Delete employee (Admin Only)
 router.delete('/employees/:id', protect, deleteEmployee);
+
+// @route   POST /api/auth/verify-user
+// @desc    Verify user for forgot password
+router.post('/verify-user', verifyUser);
+
+// @route   POST /api/auth/reset-password
+// @desc    Reset password
+router.post('/reset-password', resetPassword);
 
 module.exports = router;

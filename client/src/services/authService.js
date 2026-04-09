@@ -38,12 +38,24 @@ const updateProfile = async (userData) => {
   return response.data;
 };
 
+const verifyUser = async (empId, phone) => {
+  const response = await api.post('/auth/verify-user', { empId, phone });
+  return response.data;
+};
+
+const resetPassword = async (phone, newPassword) => {
+  const response = await api.post('/auth/reset-password', { phone, newPassword });
+  return response.data;
+};
+
 const authService = {
   login,
   register,
   logout,
   getCurrentUser,
   updateProfile,
+  verifyUser,
+  resetPassword,
 };
 
 export default authService;
