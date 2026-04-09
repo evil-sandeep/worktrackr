@@ -1,9 +1,8 @@
-const CheckIn = require('../models/CheckIn');
-const DailySummary = require('../models/DailySummary');
-const { uploadImage } = require('../utils/cloudinary');
+const checkInService = require('../services/checkInService');
 
 /**
  * Controller for Check-In APIs
+ * Focuses on request validation and response handling
  */
 const createCheckIn = async (req, res) => {
   try {
@@ -16,61 +15,45 @@ const createCheckIn = async (req, res) => {
       timestamp 
     } = req.body;
 
+    // Use authenticated user ID if available, otherwise fallback to provided ID
     const employeeId = req.user ? req.user._id : req.body.employeeId;
 
-    if (!outsidePhoto || !insidePhoto || latitude === undefined || longitude === undefined) {
-      return res.status(400).json({ message: 'Outside photo, inside photo, and GPS coordinates are required' });
+    // 1. Validation
+    if (!outsidePhoto || !insidePhoto) {
+      return res.status(400).json({ message: 'Both outside and inside photos are required' });
     }
 
-    const checkInDate = new Date().toISOString().split('T')[0];
-
-    // 1. Upload both photos to Cloudinary
-    console.log('[CheckIn] Uploading photos to Cloudinary...');
-    let outsidePhotoUrl, insidePhotoUrl;
-    try {
-      [outsidePhotoUrl, insidePhotoUrl] = await Promise.all([
-        uploadImage(outsidePhoto),
-        uploadImage(insidePhoto)
-      ]);
-    } catch (uploadError) {
-      console.error('Cloudinary Upload Error:', uploadError);
-      return res.status(500).json({ message: 'Failed to upload images to cloud storage', error: uploadError.message });
+    if (latitude === undefined || longitude === undefined) {
+      return res.status(400).json({ message: 'GPS coordinates are required' });
     }
 
-    // 2. Create the CheckIn record
-    const checkIn = await CheckIn.create({
+    if (!employeeId) {
+      return res.status(400).json({ message: 'Employee ID is required' });
+    }
+
+    // 2. Delegate business logic to Service
+    const checkIn = await checkInService.processCheckIn({
       employeeId,
-      locationName: locationName || 'Unknown Location',
-      outsidePhoto: outsidePhotoUrl,
-      insidePhoto: insidePhotoUrl,
+      outsidePhoto,
+      insidePhoto,
       latitude,
       longitude,
-      timestamp: timestamp || new Date(),
-      date: checkInDate
+      locationName,
+      timestamp
     });
 
-    // 3. Update Daily Summary
-    // Increment totalCheckins and update last seen info
-    await DailySummary.findOneAndUpdate(
-      { employeeId, date: checkInDate },
-      { 
-        $inc: { totalCheckins: 1 },
-        $set: { 
-          lastLocation: { latitude, longitude, name: locationName },
-          lastActiveTime: new Date()
-        }
-      },
-      { upsert: true, new: true }
-    );
-
+    // 3. Response
     res.status(201).json({
       success: true,
       message: 'Check-in recorded successfully',
       data: checkIn
     });
   } catch (error) {
-    console.error('Create Check-In Error:', error);
-    res.status(500).json({ message: 'Internal server error', error: error.message });
+    console.error('Check-In Controller Error:', error);
+    res.status(500).json({ 
+      message: error.message || 'Internal server error',
+      success: false 
+    });
   }
 };
 
