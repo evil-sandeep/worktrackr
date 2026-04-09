@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import Calendar from '../components/Calendar/Calendar';
 import { formatDateKey } from '../components/Calendar/useCalendar';
+import useLocationTracker from '../hooks/useLocationTracker';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -57,6 +58,9 @@ const Dashboard = () => {
   const todayLog = attendanceMap[todayKey];
   const isCheckedIn = !!todayLog;
   const isCheckedOut = !!(todayLog?.checkOut?.time || todayLog?.checkoutTime);
+
+  // Initialize hourly location tracking if checked in and not checked out
+  useLocationTracker(isCheckedIn, isCheckedOut);
 
   const handleDateSelect = (date) => {
     if (new Date(date) > new Date()) return;
