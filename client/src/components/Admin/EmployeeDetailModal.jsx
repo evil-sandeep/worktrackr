@@ -1,3 +1,4 @@
+import React, { useState, useEffect, useMemo } from 'react';
 import Calendar from '../Calendar/Calendar';
 import TrackingCalendar from './EmployeeTracking/TrackingCalendar';
 import TrackingDataViewer from './EmployeeTracking/TrackingDataViewer';
@@ -99,7 +100,7 @@ const EmployeeDetailModal = ({ employee, onClose, onUpdate, onDelete }) => {
 
   // Real-time Status Logic: 70 min threshold for OFFLINE
   const getStatus = (emp) => {
-    if (!emp) return { label: 'OFFLINE', color: 'bg-slate-400', bg: 'bg-slate-50 border-slate-100' };
+    if (!emp || !emp.lastSeen) return { label: 'OFFLINE', color: 'bg-slate-400', bg: 'bg-slate-50 border-slate-100' };
     
     const lastSeen = new Date(emp.lastSeen);
     const now = new Date();
@@ -282,11 +283,15 @@ const EmployeeDetailModal = ({ employee, onClose, onUpdate, onDelete }) => {
                   <span className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest text-white ${getStatus(fullEmployeeData).color}`}>
                     {getStatus(fullEmployeeData).label}
                   </span>
-                  <span className="text-[9px] font-bold text-slate-400">{new Date(fullEmployeeData.lastSeen).toLocaleTimeString()}</span>
+                  <span className="text-[9px] font-bold text-slate-400">
+                    {fullEmployeeData.lastSeen ? new Date(fullEmployeeData.lastSeen).toLocaleTimeString() : 'N/A'}
+                  </span>
                </div>
                <p className="text-[10px] font-bold text-slate-600 leading-tight">
                  Last active pulse: <br/>
-                 <span className="text-slate-400 font-medium">{new Date(fullEmployeeData.lastSeen).toLocaleString()}</span>
+                 <span className="text-slate-400 font-medium">
+                   {fullEmployeeData.lastSeen ? new Date(fullEmployeeData.lastSeen).toLocaleString() : 'Never Active'}
+                 </span>
                </p>
             </div>
 
@@ -578,7 +583,6 @@ const EmployeeDetailModal = ({ employee, onClose, onUpdate, onDelete }) => {
                 </div>
               </div>
             )}
-/div>
           </div>
         </div>
 

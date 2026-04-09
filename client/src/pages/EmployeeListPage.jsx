@@ -163,7 +163,7 @@ const EmployeeListPage = () => {
                     {emp.profileImg ? (
                       <img src={emp.profileImg} className="w-full h-full object-cover" />
                     ) : (
-                      emp.name.charAt(0).toUpperCase()
+                      emp.name?.charAt(0).toUpperCase() || 'U'
                     )}
                     {/* Tiny Indicator */}
                     <div className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white shadow-sm ${getStatus(emp).color}`}></div>
@@ -190,7 +190,7 @@ const EmployeeListPage = () => {
                       </span>
                    </div>
                    <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight">
-                      {Math.floor((new Date() - new Date(emp.lastSeen)) / 60000)}m ago
+                      {emp.lastSeen ? `${Math.floor((new Date() - new Date(emp.lastSeen)) / 60000)}m ago` : 'No signals'}
                    </p>
                 </div>
                 <div className="col-span-3 flex justify-end">
