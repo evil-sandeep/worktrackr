@@ -36,6 +36,7 @@ app.use('/api/attendance', attendanceRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/location', locationRoutes);
 app.use('/api/checkin', checkInRoutes);
+app.use('/api/store-visits', require('./routes/storeVisitRoutes'));
 
 // Global Error Handler
 app.use((err, req, res, next) => {

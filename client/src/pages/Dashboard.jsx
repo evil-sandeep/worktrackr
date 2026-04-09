@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BiometricTerminal from '../components/BiometricTerminal';
 import AttendanceDetailModal from '../components/AttendanceDetailModal';
+import StoreVisitTerminal from '../components/StoreVisit/StoreVisitTerminal';
 import attendanceService from '../services/attendanceService';
 import authService from '../services/authService';
 import { 
@@ -176,6 +177,11 @@ const Dashboard = () => {
                <Calendar attendanceData={attendanceMap} onDateSelect={handleDateSelect} />
             </div>
           </div>
+        </div>
+
+        {/* Store Visits Column */}
+        <div className="xl:col-span-12">
+           <StoreVisitTerminal onSuccess={() => {}} />
         </div>
 
         <AttendanceDetailModal isOpen={isLogModalOpen} onClose={() => setIsLogModalOpen(false)} date={selectedLogDate} record={attendanceMap[selectedLogDate]} />
