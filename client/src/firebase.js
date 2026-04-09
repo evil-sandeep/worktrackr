@@ -2,13 +2,13 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCMKHQrLuac8gp4Ad30zRkcK2z-KNhHpVk",
-  authDomain: "employeetrackr-46e63.firebaseapp.com",
-  projectId: "employeetrackr-46e63",
-  storageBucket: "employeetrackr-46e63.firebasestorage.app",
-  messagingSenderId: "964196505438",
-  appId: "1:964196505438:web:646304679e374a891921cf",
-  measurementId: "G-B6S5VREED4"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase

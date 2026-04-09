@@ -234,8 +234,19 @@ const verifyUser = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Please provide both Employee ID and Mobile Number' });
     }
 
-    // Standardize phone format if needed - assuming user sends it correctly or handle it here
-    const user = await User.findOne({ empId, phone });
+    // Clean the phone number for DB search (remove +91 if user search has it but DB might not)
+    const phoneNoPrefix = phone.startsWith('+91') ? phone.substring(3) : phone;
+    const phoneWithPrefix = phone.startsWith('+91') ? phone : `+91${phone}`;
+
+    // Case-insensitive check for empId and check both phone formats
+    const user = await User.findOne({ 
+      empId: { $regex: new RegExp(`^${empId}$`, 'i') }, 
+      $or: [
+        { phone: phoneNoPrefix },
+        { phone: phoneWithPrefix },
+        { phone: phone }
+      ]
+    });
 
     if (!user) {
       return res.status(404).json({ success: false, message: 'No user found with these credentials' });
@@ -256,7 +267,16 @@ const resetPassword = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Missing mobile number or password' });
     }
 
-    const user = await User.findOne({ phone });
+    const phoneNoPrefix = phone.startsWith('+91') ? phone.substring(3) : phone;
+    const phoneWithPrefix = phone.startsWith('+91') ? phone : `+91${phone}`;
+
+    const user = await User.findOne({ 
+      $or: [
+        { phone: phoneNoPrefix },
+        { phone: phoneWithPrefix },
+        { phone: phone }
+      ]
+    });
 
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
