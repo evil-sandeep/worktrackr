@@ -34,20 +34,24 @@ const useLocationTracker = (isCheckedIn, isCheckedOut) => {
         }
       },
       async (error) => {
+        // Heartbeat Pulse: Even if GPS fails or is denied, we notify the server 
+        // that the app is active (User is ONLINE, but GPS may be OFF).
+        console.warn(`[LocationTracker] Location capture failed: ${error.message}`);
+        
+        try {
+          await locationService.saveLocation({
+            isGpsEnabled: false,
+            timestamp: new Date(),
+          });
+          console.log('[LocationTracker] Heartbeat pulse sent (GPS OFF)');
+        } catch (err) {
+          console.error('[LocationTracker] Failed to send heartbeat:', err);
+        }
+
         if (error.code === error.PERMISSION_DENIED) {
-          window.alert('Location permission is denied. Please enable it to track your attendance properly.');
-          console.warn('[LocationTracker] Permission denied by user.');
-        } else {
-          // GPS is likely OFF or timeout, send last known status
-          console.warn('[LocationTracker] GPS is unavailable. Notifying backend to use last known location.');
-          try {
-            await locationService.saveLocation({
-              isGpsEnabled: false,
-              timestamp: new Date(),
-            });
-          } catch (err) {
-            console.error('[LocationTracker] Failed to notifying backend:', err);
-          }
+          console.warn('[LocationTracker] Permission denied. Alerting user.');
+          // Use a debounced or throttled alert if necessary, but for now standard alert
+          // window.alert('Location permission is denied. Please enable it for accurate tracking.');
         }
       },
       {

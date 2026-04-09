@@ -20,6 +20,25 @@ const EmployeeListPage = () => {
   const [sortDirection, setSortDirection] = useState('asc');
   const { showLoader, addToast } = useUI();
 
+  // 70 min threshold for OFFLINE check
+  const getStatus = (emp) => {
+    if (!emp || !emp.lastSeen) return { label: 'OFFLINE', color: 'bg-slate-400', font: 'text-slate-400' };
+    
+    const lastSeen = new Date(emp.lastSeen);
+    const now = new Date();
+    const diffInMinutes = Math.floor((now - lastSeen) / 60000);
+
+    if (diffInMinutes > 70) {
+      return { label: 'OFFLINE', color: 'bg-slate-400', font: 'text-slate-400' };
+    }
+
+    if (emp.trackingStatus === 'GPS OFF') {
+      return { label: 'GPS OFF', color: 'bg-amber-500', font: 'text-amber-500' };
+    }
+
+    return { label: 'ONLINE', color: 'bg-green-500', font: 'text-green-500' };
+  };
+
   const fetchEmployees = async () => {
     showLoader(true);
     try {
@@ -122,9 +141,10 @@ const EmployeeListPage = () => {
       <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 overflow-hidden">
         <div className="grid grid-cols-12 gap-4 px-10 py-6 bg-slate-50/80 border-b border-slate-100">
           <div className="col-span-1 text-[10px] font-black text-slate-400 uppercase tracking-widest">#</div>
-          <div className="col-span-4"><SortHeader field="name">Team Member</SortHeader></div>
-          <div className="col-span-3"><SortHeader field="empId">Employee ID</SortHeader></div>
-          <div className="col-span-4 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">Action</div>
+          <div className="col-span-3"><SortHeader field="name">Team Member</SortHeader></div>
+          <div className="col-span-2"><SortHeader field="empId">ID</SortHeader></div>
+          <div className="col-span-3 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</div>
+          <div className="col-span-3 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">Action</div>
         </div>
 
         <div className="divide-y divide-slate-50">
@@ -138,13 +158,15 @@ const EmployeeListPage = () => {
                 <div className="col-span-1 text-xs font-bold text-slate-300 group-hover:text-blue-400">
                   {String(index + 1).padStart(2, '0')}
                 </div>
-                <div className="col-span-4 flex items-center gap-4 min-w-0">
-                  <div className="w-12 h-12 flex-shrink-0 bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl flex items-center justify-center font-black text-slate-400 overflow-hidden ring-2 ring-white shadow-sm group-hover:ring-blue-100 transition-all">
+                <div className="col-span-3 flex items-center gap-4 min-w-0">
+                  <div className="w-12 h-12 flex-shrink-0 bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl flex items-center justify-center font-black text-slate-400 overflow-hidden ring-2 ring-white shadow-sm group-hover:ring-blue-100 transition-all relative">
                     {emp.profileImg ? (
                       <img src={emp.profileImg} className="w-full h-full object-cover" />
                     ) : (
                       emp.name.charAt(0).toUpperCase()
                     )}
+                    {/* Tiny Indicator */}
+                    <div className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white shadow-sm ${getStatus(emp).color}`}></div>
                   </div>
                   <div className="min-w-0">
                     <p className="font-black text-sm text-slate-900 truncate group-hover:text-blue-600 transition-colors uppercase tracking-tight">
@@ -155,12 +177,23 @@ const EmployeeListPage = () => {
                     </p>
                   </div>
                 </div>
-                <div className="col-span-3">
+                <div className="col-span-2">
                   <span className="inline-flex items-center px-3 py-1.5 bg-slate-100 border border-slate-200/50 rounded-xl text-[10px] font-black text-slate-600 tracking-widest group-hover:bg-blue-50 group-hover:text-blue-700 transition-all">
                     {emp.empId}
                   </span>
                 </div>
-                <div className="col-span-4 flex justify-end">
+                <div className="col-span-3 flex flex-col items-center justify-center gap-1">
+                   <div className="flex items-center gap-2">
+                      <div className={`w-2 h-2 rounded-full ${getStatus(emp).color} ${getStatus(emp).label === 'ONLINE' ? 'animate-pulse' : ''}`}></div>
+                      <span className={`text-[10px] font-black uppercase tracking-widest ${getStatus(emp).font}`}>
+                        {getStatus(emp).label}
+                      </span>
+                   </div>
+                   <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight">
+                      {Math.floor((new Date() - new Date(emp.lastSeen)) / 60000)}m ago
+                   </p>
+                </div>
+                <div className="col-span-3 flex justify-end">
                   <button className="flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all">
                     <Eye className="h-4 w-4" />
                     <span>View Detail</span>

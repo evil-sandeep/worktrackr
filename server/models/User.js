@@ -45,6 +45,15 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  trackingStatus: {
+    type: String,
+    enum: ['ONLINE', 'GPS OFF', 'OFFLINE'],
+    default: 'OFFLINE',
+  },
+  lastSeen: {
+    type: Date,
+    default: Date.now,
+  },
 }, {
   timestamps: true,
 });

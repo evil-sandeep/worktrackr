@@ -57,6 +57,12 @@ class LocationService {
       { upsert: true, new: true }
     );
 
+    // 3. Update User Status
+    await require('../models/User').findByIdAndUpdate(employeeId, {
+      trackingStatus: gpsStatus ? 'ONLINE' : 'GPS OFF',
+      lastSeen: new Date()
+    });
+
     return locationLog;
   }
 

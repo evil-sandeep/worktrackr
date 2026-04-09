@@ -97,6 +97,25 @@ const EmployeeDetailModal = ({ employee, onClose, onUpdate, onDelete }) => {
     fetchAttendance();
   }, [employee._id, showLoader]);
 
+  // Real-time Status Logic: 70 min threshold for OFFLINE
+  const getStatus = (emp) => {
+    if (!emp) return { label: 'OFFLINE', color: 'bg-slate-400', bg: 'bg-slate-50 border-slate-100' };
+    
+    const lastSeen = new Date(emp.lastSeen);
+    const now = new Date();
+    const diffInMinutes = Math.floor((now - lastSeen) / 60000);
+
+    if (diffInMinutes > 70) {
+      return { label: 'OFFLINE', color: 'bg-slate-400', bg: 'bg-slate-50 border-slate-100 transition-all' };
+    }
+
+    if (emp.trackingStatus === 'GPS OFF') {
+      return { label: 'GPS OFF', color: 'bg-amber-500', bg: 'bg-amber-50 border-amber-100 transition-all' };
+    }
+
+    return { label: 'ONLINE', color: 'bg-green-500', bg: 'bg-green-50 border-green-100 transition-all' };
+  };
+
   // Derive attendance map for the Calendar checkmarks
   const attendanceMap = useMemo(() => {
     const map = {};
@@ -237,14 +256,16 @@ const EmployeeDetailModal = ({ employee, onClose, onUpdate, onDelete }) => {
             </div>
           </div>
 
-          <div className="space-y-6">
-            <div className="flex items-center gap-4 p-4 bg-white rounded-[1.5rem] border border-slate-100 shadow-sm">
-               <div className="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl flex items-center justify-center font-black text-xl text-slate-400 shadow-inner overflow-hidden ring-4 ring-slate-50">
+          <div className="space-y-4">
+            <div className="flex items-center gap-4 p-4 bg-white rounded-[1.5rem] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-blue-200 transition-colors">
+               <div className="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl flex items-center justify-center font-black text-xl text-slate-400 shadow-inner overflow-hidden ring-4 ring-slate-50 relative">
                   {fullEmployeeData.profileImg ? (
-                    <img src={fullEmployeeData.profileImg} alt={fullEmployeeData.name} className="w-full h-full object-cover" />
+                    <img src={fullEmployeeData.profileImg} alt={fullEmployeeData.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                   ) : (
                     fullEmployeeData.name?.charAt(0) || 'U'
                   )}
+                  {/* Real-time Status Mini Indicator */}
+                  <div className={`absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-white shadow-sm ${getStatus(fullEmployeeData).color.replace('bg-', 'bg-').split(' ')[0]}`}></div>
                </div>
                <div className="space-y-0.5 truncate">
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Emp ID</p>
@@ -253,6 +274,20 @@ const EmployeeDetailModal = ({ employee, onClose, onUpdate, onDelete }) => {
                     {fullEmployeeData.empId}
                   </p>
                </div>
+            </div>
+
+            {/* Status Connectivity Insight */}
+            <div className={`p-4 rounded-[1.5rem] border ${getStatus(fullEmployeeData).bg} space-y-2 animate-in slide-in-from-top-2 duration-500`}>
+               <div className="flex items-center justify-between">
+                  <span className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest text-white ${getStatus(fullEmployeeData).color}`}>
+                    {getStatus(fullEmployeeData).label}
+                  </span>
+                  <span className="text-[9px] font-bold text-slate-400">{new Date(fullEmployeeData.lastSeen).toLocaleTimeString()}</span>
+               </div>
+               <p className="text-[10px] font-bold text-slate-600 leading-tight">
+                 Last active pulse: <br/>
+                 <span className="text-slate-400 font-medium">{new Date(fullEmployeeData.lastSeen).toLocaleString()}</span>
+               </p>
             </div>
 
             <div className="grid grid-cols-1 gap-4">
