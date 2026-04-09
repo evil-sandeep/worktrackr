@@ -1,4 +1,3 @@
-import React from 'react';
 import { 
   MapPin, 
   Clock, 
@@ -9,8 +8,10 @@ import {
   ShieldCheck,
   AlertCircle,
   Navigation,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Map as MapIcon
 } from 'lucide-react';
+import EmployeeRouteMap from './EmployeeRouteMap';
 
 const TrackingDataViewer = ({ data, loading }) => {
   if (loading) {
@@ -38,6 +39,19 @@ const TrackingDataViewer = ({ data, loading }) => {
 
   return (
     <div className="flex-1 space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
+      {/* Route Visualization Map */}
+      <div className="space-y-4">
+        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2 flex items-center gap-2">
+            <MapIcon className="h-3 w-3" /> Route Visualization
+        </h4>
+        <div className="h-[400px] w-full">
+            <EmployeeRouteMap 
+              locations={locations} 
+              checkIns={checkIns} 
+            />
+        </div>
+      </div>
+
       {/* Last Seen Quick Link */}
       {summary?.lastLocation && (
         <div className="p-6 bg-blue-600 rounded-[2rem] border-4 border-blue-100 shadow-xl shadow-blue-100 flex items-center justify-between text-white">
