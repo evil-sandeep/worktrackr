@@ -12,6 +12,7 @@ const app = express();
 // Routes
 const authRoutes = require('./routes/authRoutes');
 const attendanceRoutes = require('./routes/attendanceRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 // Middleware
 app.use(cors());
@@ -26,6 +27,7 @@ app.get('/', (req, res) => {
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/attendance', attendanceRoutes);
+app.use('/api/admin', adminRoutes);
 
 const PORT = process.env.PORT || 5000;
 

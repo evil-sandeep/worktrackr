@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Sandeep Kumar sahoo",
+    "role": "employee",
+    "empId": "BRO-02"
+  },
+  {
+    "name": "Super Admin",
+    "role": "admin",
+    "empId": "ADMIN001"
+  },
+  {
+    "name": "Sandeep Kumar SAHOO",
+    "role": "employee",
+    "empId": "9078"
+  },
+  {
+    "name": "Sandeep Kumar sahoo",
+    "role": "employee",
+    "empId": "BRO-01"
+  }
+]

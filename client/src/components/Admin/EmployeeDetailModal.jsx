@@ -12,7 +12,8 @@ import {
   Calendar as CalendarIcon,
   CheckCircle2,
   AlertCircle,
-  Clock
+  Clock,
+  IndianRupee
 } from 'lucide-react';
 import Calendar from '../Calendar/Calendar';
 import adminService from '../../services/adminService';
@@ -20,17 +21,40 @@ import { useUI } from '../../context/UIContext';
 
 const EmployeeDetailModal = ({ employee, onClose, onUpdate, onDelete }) => {
   const [formData, setFormData] = useState({
-    name: employee.name,
-    phone: employee.phone,
-    address: employee.address || '',
-    designation: employee.designation || '',
-    role: employee.role
+    name: employee?.name || '',
+    phone: employee?.phone || '',
+    address: employee?.address || '',
+    designation: employee?.designation || '',
+    role: employee?.role || 'employee',
+    salary: employee?.salary || 0
   });
+  const [fullEmployeeData, setFullEmployeeData] = useState(employee);
   const [attendanceData, setAttendanceData] = useState({});
   const [stats, setStats] = useState({ present: 0, absent: 0 });
   const { setLoading, showToast } = useUI();
 
   useEffect(() => {
+    const fetchEmployeeDetails = async () => {
+      try {
+        setLoading(true);
+        // Fetch specific individual data from API
+        const fullData = await adminService.getEmployeeById(employee._id);
+        setFullEmployeeData(fullData);
+        setFormData({
+          name: fullData.name,
+          phone: fullData.phone,
+          address: fullData.address || '',
+          designation: fullData.designation || '',
+          role: fullData.role,
+          salary: fullData.salary || 0
+        });
+      } catch (error) {
+        console.error('Failed to fetch full employee data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     const fetchAttendance = async () => {
       try {
         const response = await adminService.getEmployeeAttendance(employee._id);
@@ -54,6 +78,7 @@ const EmployeeDetailModal = ({ employee, onClose, onUpdate, onDelete }) => {
       }
     };
 
+    fetchEmployeeDetails();
     fetchAttendance();
   }, [employee._id]);
 
@@ -126,17 +151,17 @@ const EmployeeDetailModal = ({ employee, onClose, onUpdate, onDelete }) => {
             {/* Profile Avatar Section */}
             <div className="flex items-center gap-6 p-6 bg-white rounded-[2rem] border border-slate-100 shadow-sm">
                <div className="w-20 h-20 bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl flex items-center justify-center font-black text-2xl text-slate-400 shadow-inner overflow-hidden ring-4 ring-slate-50">
-                  {employee.profileImg ? (
-                    <img src={employee.profileImg} alt={employee.name} className="w-full h-full object-cover" />
+                  {fullEmployeeData.profileImg ? (
+                    <img src={fullEmployeeData.profileImg} alt={fullEmployeeData.name} className="w-full h-full object-cover" />
                   ) : (
-                    employee.name.charAt(0)
+                    fullEmployeeData.name?.charAt(0) || 'U'
                   )}
                </div>
                <div className="space-y-1">
                   <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Employee ID</p>
                   <p className="text-lg font-black text-slate-900 tracking-tight flex items-center gap-2">
                     <IdCard className="h-4 w-4 text-blue-500" />
-                    {employee.empId}
+                    {fullEmployeeData.empId}
                   </p>
                </div>
             </div>
@@ -212,6 +237,22 @@ const EmployeeDetailModal = ({ employee, onClose, onUpdate, onDelete }) => {
                     onChange={handleChange}
                     rows="3"
                     className="w-full pl-12 pr-4 py-4 bg-white border border-slate-100 rounded-2xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all font-bold text-slate-900 shadow-sm resize-none"
+                   />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Monthly Salary (₹)</label>
+                <div className="relative group">
+                   <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                      <IndianRupee className="h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
+                   </div>
+                   <input 
+                    name="salary"
+                    type="number"
+                    value={formData.salary}
+                    onChange={handleChange}
+                    placeholder="e.g. 50000"
+                    className="w-full pl-12 pr-4 py-4 bg-white border border-slate-100 rounded-2xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all font-bold text-slate-900 shadow-sm"
                    />
                 </div>
               </div>

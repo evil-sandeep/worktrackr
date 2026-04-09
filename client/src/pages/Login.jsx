@@ -16,9 +16,15 @@ const Login = () => {
     showLoader(true);
 
     try {
-      await authService.login(email, password);
+      const user = await authService.login(email, password);
       addToast('Login successful! Welcome back.', 'success');
-      navigate('/dashboard');
+      
+      // Role-based navigation
+      if (user.role === 'admin') {
+        navigate('/admindashboard');
+      } else {
+        navigate('/employeedashboard');
+      }
     } catch (err) {
       addToast(err.response?.data?.message || 'Invalid credentials.', 'error');
     } finally {

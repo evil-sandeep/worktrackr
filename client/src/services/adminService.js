@@ -1,7 +1,12 @@
 import api from './api';
 
 const getEmployees = async () => {
-  const response = await api.get('/auth/employees');
+  const response = await api.get('/admin/employees');
+  return response.data;
+};
+
+const getEmployeeById = async (id) => {
+  const response = await api.get(`/admin/employees/${id}`);
   return response.data;
 };
 
@@ -27,6 +32,7 @@ const getDashboardStats = async () => {
 
 const adminService = {
   getEmployees,
+  getEmployeeById,
   updateEmployee,
   deleteEmployee,
   getEmployeeAttendance,

@@ -8,7 +8,8 @@ import {
   ChevronRight,
   ShieldCheck,
   Shield,
-  X
+  X,
+  Users
 } from 'lucide-react';
 import authService from '../services/authService';
 
@@ -16,15 +17,14 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   const location = useLocation();
   const user = authService.getCurrentUser();
 
-  const menuItems = [
-    { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
-    { name: 'Attendance', icon: CalendarCheck, path: '#' },
-    { name: 'Profile', icon: UserCircle, path: '/profile' },
+  const allMenuItems = [
+    { name: 'Dashboard', icon: LayoutDashboard, path: '/employeedashboard', roles: ['employee'] },
+    { name: 'Attendance', icon: CalendarCheck, path: '#', roles: ['employee'] },
+    { name: 'Profile', icon: UserCircle, path: '/profile', roles: ['employee'] },
+    { name: 'Employees', icon: Users, path: '/admindashboard', roles: ['admin'] },
   ];
 
-  if (user && user.role === 'admin') {
-    menuItems.push({ name: 'Admin', icon: Shield, path: '/admin' });
-  }
+  const menuItems = allMenuItems.filter(item => item.roles.includes(user.role));
 
   if (!user) return null;
 

@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Attendance = require('../models/Attendance');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
@@ -140,13 +141,14 @@ const updateEmployee = async (req, res) => {
     const user = await User.findById(req.params.id);
 
     if (user) {
-      const { name, phone, address, designation, role } = req.body;
+      const { name, phone, address, designation, role, salary } = req.body;
 
       if (name) user.name = name;
       if (phone) user.phone = phone;
       if (address) user.address = address;
       if (designation) user.designation = designation;
       if (role) user.role = role;
+      if (salary !== undefined) user.salary = salary;
 
       const updatedUser = await user.save();
       res.json(updatedUser);
@@ -178,10 +180,11 @@ const deleteEmployee = async (req, res) => {
   }
 };
 
-// @desc    Get all employees
 const getEmployees = async (req, res) => {
   try {
-    const employees = await User.find({}).select('-password');
+    console.log('Fetching all database users...');
+    const employees = await User.find({}).sort({ createdAt: -1 }).select('-password');
+    console.log(`Found ${employees.length} users in the database.`);
     res.json(employees);
   } catch (error) {
     res.status(500).json({ message: error.message });

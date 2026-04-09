@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
@@ -10,6 +10,16 @@ import Layout from './components/Layout';
 import Toast from './components/Toast';
 import Loader from './components/Loader';
 import { UIProvider, useUI } from './context/UIContext';
+
+import authService from './services/authService';
+
+const HomeRedirect = () => {
+  const user = authService.getCurrentUser();
+  if (!user) return <Navigate to="/login" replace />;
+  return user.role === 'admin' 
+    ? <Navigate to="/admindashboard" replace /> 
+    : <Navigate to="/employeedashboard" replace />;
+};
 
 const GlobalUI = () => {
   const { loading } = useUI();
@@ -32,7 +42,7 @@ const AppRoutes = () => {
       
       {/* Protected Routes - With Global Layout */}
       <Route 
-        path="/dashboard" 
+        path="/employeedashboard" 
         element={
           <ProtectedRoute>
             <Layout>
@@ -52,7 +62,7 @@ const AppRoutes = () => {
         } 
       />
       <Route 
-        path="/admin" 
+        path="/admindashboard" 
         element={
           <ProtectedRoute>
             <Layout>
@@ -62,8 +72,9 @@ const AppRoutes = () => {
         } 
       />
       
-      {/* Default Redirect */}
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      {/* Default Redirect Logic */}
+      <Route path="/" element={<HomeRedirect />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
     </UIProvider>
   );
@@ -71,9 +82,7 @@ const AppRoutes = () => {
 
 function App() {
   return (
-    <Router>
-      <AppRoutes />
-    </Router>
+    <AppRoutes />
   );
 }
 
