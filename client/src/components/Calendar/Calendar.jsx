@@ -10,7 +10,7 @@ import { useCalendar } from './useCalendar';
  * @param {Object} attendanceData - Object: { 'YYYY-MM-DD': 'present' | 'absent' }
  * @param {Function} onDateSelect - Callback when a date is clicked
  */
-const Calendar = ({ attendanceData = {}, onDateSelect }) => {
+const Calendar = ({ attendanceData = {}, onDateSelect, onViewDateChange }) => {
   const {
     currentDate,
     selectedDate,
@@ -20,6 +20,13 @@ const Calendar = ({ attendanceData = {}, onDateSelect }) => {
     goToToday,
     setSelectedDate
   } = useCalendar();
+
+  // Notify parent of view changes (month/year)
+  React.useEffect(() => {
+    if (onViewDateChange) {
+      onViewDateChange(currentDate);
+    }
+  }, [currentDate, onViewDateChange]);
 
   const handleDateClick = (date) => {
     setSelectedDate(date);

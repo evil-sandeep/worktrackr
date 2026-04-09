@@ -35,6 +35,7 @@ const EmployeeDetailModal = ({ employee, onClose, onUpdate, onDelete }) => {
   const [fullEmployeeData, setFullEmployeeData] = useState(employee);
   const [attendanceRecords, setAttendanceRecords] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [viewDate, setViewDate] = useState(new Date());
   const { showLoader, addToast } = useUI();
 
   useEffect(() => {
@@ -80,14 +81,27 @@ const EmployeeDetailModal = ({ employee, onClose, onUpdate, onDelete }) => {
     return map;
   }, [attendanceRecords]);
 
-  // Stats calculation
+  // Stats calculation (Filtered by viewed month)
   const stats = useMemo(() => {
     let present = 0;
-    let absent = 0;
     let totalEarning = 0;
     let totalMinutes = 0;
 
+    const viewMonth = viewDate.getMonth();
+    const viewYear = viewDate.getFullYear();
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+
+    // 1. Calculate Present, Earnings, and Hours from existing records
     attendanceRecords.forEach(record => {
+      const recordDate = new Date(record.date);
+      
+      // Filter by visible month
+      if (recordDate.getMonth() !== viewMonth || recordDate.getFullYear() !== viewYear) {
+        return;
+      }
+
       if (record.status === 'present' || !record.status) {
         present++;
         totalEarning += (record.earning || 0);
@@ -97,10 +111,23 @@ const EmployeeDetailModal = ({ employee, onClose, onUpdate, onDelete }) => {
             const [h, m] = record.totalHours.split(':').map(Number);
             totalMinutes += (h * 60) + m;
         }
-      } else {
-        absent++;
       }
     });
+
+    // 2. Calculate Absent based on logic: (Days Elapsed in Month) - (Days Present)
+    let daysToCount = 0;
+    if (viewYear < currentYear || (viewYear === currentYear && viewMonth < currentMonth)) {
+      // Past month: All days in month
+      daysToCount = new Date(viewYear, viewMonth + 1, 0).getDate();
+    } else if (viewYear === currentYear && viewMonth === currentMonth) {
+      // Current month: Days elapsed up to today
+      daysToCount = today.getDate();
+    } else {
+      // Future month: Not yet applicable
+      daysToCount = 0;
+    }
+
+    const absent = Math.max(0, daysToCount - present);
 
     const hours = Math.floor(totalMinutes / 60);
     const mins = totalMinutes % 60;
@@ -111,7 +138,7 @@ const EmployeeDetailModal = ({ employee, onClose, onUpdate, onDelete }) => {
         totalEarning, 
         totalHoursStr: `${hours}h ${mins}m`
     };
-  }, [attendanceRecords]);
+  }, [attendanceRecords, viewDate]);
 
   // Selected date record
   const selectedRecord = useMemo(() => {
@@ -302,7 +329,9 @@ const EmployeeDetailModal = ({ employee, onClose, onUpdate, onDelete }) => {
                         <History className="h-6 w-6 text-blue-600" />
                         Engagement History
                     </h3>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Performance & Financial Tracking</p>
+                    <p className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">
+                        Monthly Summary: {viewDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                    </p>
                  </div>
               </div>
 
@@ -341,6 +370,7 @@ const EmployeeDetailModal = ({ employee, onClose, onUpdate, onDelete }) => {
               <div className="bg-white p-2 border border-slate-100 rounded-[2.5rem]">
                 <Calendar 
                   attendanceData={attendanceMap}
+                  onViewDateChange={(date) => setViewDate(date)}
                   onDateSelect={(date) => {
                     // Format Date to YYYY-MM-DD
                     const dateObj = new Date(date);
