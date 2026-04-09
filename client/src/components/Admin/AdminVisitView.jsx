@@ -7,32 +7,39 @@ import {
   ChevronRight, 
   ExternalLink,
   Loader2,
-  FileText
+  FileText,
+  Map as MapIcon,
+  List as ListIcon
 } from 'lucide-react';
-import visitService from '../../services/visitService';
+import adminService from '../../services/adminService';
+import TrackingMap from './TrackingMap';
 
 const AdminVisitView = ({ employeeId }) => {
-  const [visits, setVisits] = useState([]);
+  const [data, setData] = useState({ visits: [], locations: [], checkIns: [] });
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [viewMode, setViewMode] = useState('list'); // 'list' or 'map'
 
   useEffect(() => {
-    const fetchVisits = async () => {
+    const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await visitService.getEmployeeVisits(employeeId, selectedDate);
+        const response = await adminService.getDailyTracking(employeeId, selectedDate);
         if (response.success) {
-          setVisits(response.data);
+          setData(response.data);
         }
       } catch (error) {
-        console.error('Fetch Visits Error:', error);
+        console.error('Fetch Tracking Data Error:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    if (employeeId) fetchVisits();
+    if (employeeId) fetchData();
   }, [employeeId, selectedDate]);
+
+  const visits = data.visits || [];
+  const locations = data.locations || [];
 
   return (
     <div className="space-y-6">
@@ -47,14 +54,34 @@ const AdminVisitView = ({ employeeId }) => {
           </div>
         </div>
 
-        <div className="relative group">
-           <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-hover:text-indigo-500 transition-colors" />
-           <input 
-             type="date"
-             value={selectedDate}
-             onChange={(e) => setSelectedDate(e.target.value)}
-             className="pl-12 pr-6 py-3 bg-white border-2 border-slate-100 rounded-2xl text-xs font-black text-slate-500 uppercase tracking-widest focus:border-indigo-500 outline-none transition-all cursor-pointer"
-           />
+        <div className="flex items-center gap-4">
+          {/* View Toggle */}
+          <div className="flex bg-slate-100 p-1 rounded-xl">
+             <button 
+               onClick={() => setViewMode('list')}
+               className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-400 hover:text-slate-600'}`}
+               title="List View"
+             >
+               <ListIcon className="h-5 w-5" />
+             </button>
+             <button 
+               onClick={() => setViewMode('map')}
+               className={`p-2 rounded-lg transition-all ${viewMode === 'map' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-400 hover:text-slate-600'}`}
+               title="Map View"
+             >
+               <MapIcon className="h-5 w-5" />
+             </button>
+          </div>
+
+          <div className="relative group">
+             <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-hover:text-indigo-500 transition-colors" />
+             <input 
+               type="date"
+               value={selectedDate}
+               onChange={(e) => setSelectedDate(e.target.value)}
+               className="pl-12 pr-6 py-3 bg-white border-2 border-slate-100 rounded-2xl text-xs font-black text-slate-500 uppercase tracking-widest focus:border-indigo-500 outline-none transition-all cursor-pointer"
+             />
+          </div>
         </div>
       </div>
 
@@ -63,13 +90,17 @@ const AdminVisitView = ({ employeeId }) => {
            <Loader2 className="h-10 w-10 text-indigo-500 animate-spin" />
            <p className="text-xs font-black text-slate-400 uppercase tracking-widest mt-4">Synchronizing Audit Records...</p>
         </div>
+      ) : viewMode === 'map' ? (
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+           <TrackingMap locations={locations} visits={visits} />
+        </div>
       ) : visits.length === 0 ? (
         <div className="py-20 text-center bg-slate-50/50 rounded-[2.5rem] border border-dashed border-slate-200">
            <FileText className="h-12 w-12 text-slate-200 mx-auto mb-4" />
            <p className="text-slate-400 font-bold text-sm uppercase tracking-widest">No visit audits recorded for this date</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-6">
+        <div className="grid grid-cols-1 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
           {visits.map((visit) => (
             <div key={visit._id} className="bg-white border-2 border-slate-50 rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl hover:border-indigo-100 transition-all group">
               <div className="p-6 sm:p-8 flex flex-col lg:flex-row gap-8">

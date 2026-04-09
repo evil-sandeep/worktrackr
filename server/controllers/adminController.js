@@ -2,6 +2,7 @@ const User = require('../models/User');
 const LocationLog = require('../models/LocationLog');
 const CheckIn = require('../models/CheckIn');
 const DailySummary = require('../models/DailySummary');
+const Visit = require('../models/Visit');
 
 // @desc    Get all employees
 // @route   GET /api/admin/employees
@@ -43,16 +44,34 @@ const getEmployeeById = async (req, res) => {
 const getEmployeeDailyTracking = async (req, res) => {
   try {
     const { id } = req.params;
-    const { date } = req.query;
+    const { date } = req.query; // Format: YYYY-MM-DD
 
     if (!id || !date) {
       return res.status(400).json({ message: 'Employee ID and date are required' });
     }
 
+    // Create date range for models that don't have a 'date' string field
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const rangeQuery = {
+      employeeId: id,
+      timestamp: { $gte: startOfDay, $lte: endOfDay }
+    };
+
+    // Note: Visit model uses 'createdAt' instead of 'timestamp'
+    const visitRangeQuery = {
+      employeeId: id,
+      createdAt: { $gte: startOfDay, $lte: endOfDay }
+    };
+
     // Fetch all data in parallel
-    const [locations, checkIns, summary] = await Promise.all([
-      LocationLog.find({ employeeId: id, date }).sort({ timestamp: 1 }),
-      CheckIn.find({ employeeId: id, date }).sort({ timestamp: 1 }),
+    const [locations, checkIns, visits, summary] = await Promise.all([
+      LocationLog.find(rangeQuery).sort({ timestamp: 1 }),
+      CheckIn.find({ employeeId: id, date }).sort({ timestamp: 1 }), // Uses 'date' string
+      Visit.find(visitRangeQuery).sort({ createdAt: 1 }),
       DailySummary.findOne({ employeeId: id, date })
     ]);
 
@@ -63,6 +82,7 @@ const getEmployeeDailyTracking = async (req, res) => {
       data: {
         locations,
         checkIns,
+        visits: visits || [],
         summary: summary || { totalCheckins: 0, lastLocation: null, lastActiveTime: null }
       }
     });
