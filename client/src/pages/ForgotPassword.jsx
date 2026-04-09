@@ -71,7 +71,20 @@ const ForgotPassword = () => {
       addToast('OTP sent successfully!', 'success');
     } catch (err) {
       console.error('Send OTP Error:', err);
-      const msg = err.response?.data?.message || err.message || 'Failed to send OTP';
+      let msg = err.message || 'Failed to send OTP';
+      
+      if (err.code === 'auth/billing-not-enabled') {
+        msg = 'Firebase SMS service requires a billing account. Please upgrade to the Blaze Plan or add "Test Phone Numbers" in your Firebase Console to continue testing.';
+      } else if (err.code === 'auth/operation-not-allowed') {
+        msg = 'Phone Sign-in is disabled. Please enable it in Firebase Console > Authentication > Sign-in method.';
+      } else if (err.code === 'auth/invalid-phone-number') {
+        msg = 'The phone number provided is incorrect. Please use the format +91XXXXXXXXXX.';
+      } else if (err.code === 'auth/too-many-requests') {
+        msg = 'Quota exceeded or too many attempts. Try again later or use a different number.';
+      } else if (err.response?.data?.message) {
+        msg = err.response.data.message;
+      }
+      
       addToast(msg, 'error');
     } finally {
       setLoading(false);
@@ -177,6 +190,9 @@ const ForgotPassword = () => {
                     </>
                   )}
                 </button>
+                <p className="mt-4 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-relaxed">
+                  Tip: Use "Test Phone Numbers" in Firebase Console <br/> to avoid billing during development.
+                </p>
               </>
             ) : (
               <>
