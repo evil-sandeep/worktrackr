@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const locationLogSchema = new mongoose.Schema({
+const visitSchema = new mongoose.Schema({
   employeeId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -14,17 +14,18 @@ const locationLogSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  timestamp: {
+  outsidePhoto: {
+    type: String, // Cloudinary URL
+    default: null,
+  },
+  insidePhoto: {
+    type: String, // Cloudinary URL
+    default: null,
+  },
+  createdAt: {
     type: Date,
     default: Date.now,
-  },
-  isGpsEnabled: {
-    type: Boolean,
-    default: true,
   }
 });
 
-// Index for querying by employee and timestamp
-locationLogSchema.index({ employeeId: 1, timestamp: -1 });
-
-module.exports = mongoose.model('LocationLog', locationLogSchema);
+module.exports = mongoose.model('Visit', visitSchema);
