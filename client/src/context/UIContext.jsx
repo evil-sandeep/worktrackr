@@ -29,6 +29,10 @@ export const UIProvider = ({ children }) => {
     ]);
   }, []);
 
+  const removeNotification = useCallback((id) => {
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
+  }, []);
+
   const markAllNotificationsRead = useCallback(() => {
     setNotifications((prev) => prev.map(n => ({ ...n, read: true })));
   }, []);
@@ -41,7 +45,7 @@ export const UIProvider = ({ children }) => {
     <UIContext.Provider value={{ 
       loading, showLoader, 
       toasts, addToast, removeToast,
-      notifications, addNotification, markAllNotificationsRead, clearNotifications
+      notifications, addNotification, removeNotification, markAllNotificationsRead, clearNotifications
     }}>
       {children}
     </UIContext.Provider>

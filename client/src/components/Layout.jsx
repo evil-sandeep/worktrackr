@@ -8,26 +8,21 @@ const Layout = ({ children }) => {
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex text-slate-900">
+    <div className="h-screen overflow-hidden bg-[#F8FAFC] bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:32px_32px] flex text-slate-900">
       {/* Sidebar Navigation */}
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
       {/* Main Content Area */}
-      <div className="flex-1 lg:ml-72 flex flex-col min-h-screen">
+      <div className="flex-1 lg:ml-72 flex flex-col h-screen overflow-hidden bg-slate-50/50">
         {/* Top Navbar */}
         <Navbar toggleSidebar={toggleSidebar} />
 
-        {/* Content */}
-        <main className="p-6 md:p-10 flex-1 overflow-x-hidden">
-          <div className="max-w-7xl mx-auto">
+        {/* Content - Zero Scroll Main */}
+        <main className="p-4 md:p-6 flex-1 overflow-hidden">
+          <div className="max-w-[1600px] mx-auto h-full overflow-hidden flex flex-col">
             {children}
           </div>
         </main>
-
-        {/* Footer */}
-        <footer className="px-10 py-6 text-center text-slate-400 text-xs font-semibold uppercase tracking-widest bg-white/50 backdrop-blur-sm border-t border-slate-100">
-            WorkTrackr &copy; {new Date().getFullYear()} &bull; Precise Workforce Management
-        </footer>
       </div>
     </div>
   );

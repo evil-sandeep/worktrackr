@@ -194,34 +194,32 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
   };
 
   return (
-    <div className="space-y-6">
-
-      <div className="relative aspect-square sm:aspect-video min-h-[300px] sm:min-h-[400px] bg-slate-950 rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-2xl group ring-1 ring-slate-100/10">
+    <div className="flex-1 w-full flex flex-col min-h-0">
+      <div className="relative flex-1 w-full bg-slate-950 rounded-3xl overflow-hidden shadow-2xl group ring-1 ring-slate-100/10 min-h-0 min-w-[300px]">
         {!isCameraActive && !capturedImage ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 sm:p-8 text-center space-y-4 sm:space-y-6 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-from)_0%,_var(--tw-gradient-to)_100%)] from-slate-900 to-slate-950">
-             <div className="relative">
-                <div className={`absolute inset-0 ${mode === 'checkin' ? 'bg-blue-600/30' : 'bg-rose-600/30'} rounded-full blur-[30px] animate-pulse`}></div>
-                <div className={`w-16 h-16 sm:w-20 sm:h-20 ${mode === 'checkin' ? 'bg-blue-600 shadow-xl shadow-blue-500/20' : 'bg-rose-600 shadow-xl shadow-rose-500/20'} rounded-2xl sm:rounded-[2rem] flex items-center justify-center relative z-10 transform hover:scale-110 transition-all duration-500`}>
-                   {mode === 'checkin' ? (
-                     <Camera className="h-7 w-7 sm:h-8 sm:w-8 text-white filter drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]" />
-                   ) : (
-                     <LogOut className="h-7 w-7 sm:h-8 sm:w-8 text-white filter drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]" />
-                   )}
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center space-y-10 bg-slate-950">
+             <div className="relative group/btn cursor-pointer" onClick={startCamera}>
+                {/* Massive Glow Effect */}
+                <div className="absolute inset-0 bg-rose-600/40 rounded-full blur-[60px] animate-pulse group-hover/btn:bg-rose-600/60 transition-all duration-700"></div>
+                
+                <button 
+                  className="relative w-28 h-28 sm:w-32 sm:h-32 bg-rose-600 text-white rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(225,29,72,0.4)] transform group-hover/btn:scale-110 active:scale-95 transition-all duration-500 border-4 border-white/10"
+                >
+                   <ShieldCheck className="h-10 w-10 sm:h-12 sm:w-12 filter drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]" />
+                </button>
+                
+                {/* Orbital Ring */}
+                <div className="absolute -inset-4 border-2 border-slate-800 rounded-full animate-[spin_10s_linear_infinite] pointer-events-none">
+                   <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 bg-rose-500 rounded-full shadow-[0_0_10px_rgba(225,29,72,1)]"></div>
                 </div>
              </div>
-             <div className="space-y-2 max-w-xs">
-               <h3 className="text-white text-base sm:text-lg font-black uppercase tracking-tight">System Initialization</h3>
-               <p className="text-white/40 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest leading-relaxed">
-                 Identity scan required for session {mode === 'checkin' ? 'auth' : 'exit'}
+
+             <div className="space-y-3">
+               <h3 className="text-white text-xl font-black uppercase tracking-tighter">System Initialization</h3>
+               <p className="text-white/40 text-[10px] font-bold uppercase tracking-[0.4em] leading-relaxed">
+                 Identity scan required for terminal {mode === 'checkin' ? 'access' : 'exit'}
                </p>
              </div>
-             <button 
-              onClick={startCamera}
-              className={`group flex items-center gap-3 px-8 py-3.5 ${mode === 'checkin' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-rose-600 hover:bg-rose-700'} text-white rounded-xl sm:rounded-2xl font-black transition-all shadow-2xl hover:shadow-${mode === 'checkin' ? 'blue' : 'rose'}-500/40 active:scale-95 transform hover:-translate-y-1`}
-             >
-               <span className="text-[10px] font-black tracking-[0.25em] uppercase">Authenticate</span>
-               <ShieldCheck className="h-4 w-4 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all" />
-            </button>
           </div>
         ) : capturedImage ? (
           <div className="relative w-full h-full animate-in fade-in duration-700">
@@ -275,13 +273,16 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
                   <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(255,0,0,0.03),rgba(0,255,0,0.01),rgba(0,0,255,0.03))] bg-[length:100%_4px,3px_100%]"></div>
                   
                   {/* Corners */}
-                  <div className="absolute top-8 left-8 w-12 h-12 border-t-2 border-l-2 border-blue-500/60 rounded-tl-xl shadow-[-2px_-2px_10px_rgba(59,130,246,0.3)]"></div>
-                  <div className="absolute top-8 right-8 w-12 h-12 border-t-2 border-r-2 border-blue-500/60 rounded-tr-xl shadow-[2px_-2px_10px_rgba(59,130,246,0.3)]"></div>
-                  <div className="absolute bottom-8 left-8 w-12 h-12 border-b-2 border-l-2 border-blue-500/60 rounded-bl-xl shadow-[-2px_2px_10px_rgba(59,130,246,0.3)]"></div>
-                  <div className="absolute bottom-8 right-8 w-12 h-12 border-b-2 border-r-2 border-blue-500/60 rounded-br-xl shadow-[2px_2px_10px_rgba(59,130,246,0.3)]"></div>
+                  <div className="absolute top-12 left-12 w-16 h-16 border-t-4 border-l-4 border-rose-500/40 rounded-tl-3xl shadow-[-10px_-10px_30px_rgba(225,29,72,0.2)]"></div>
+                  <div className="absolute top-12 right-12 w-16 h-16 border-t-4 border-r-4 border-rose-500/40 rounded-tr-3xl shadow-[10px_-10px_30px_rgba(225,29,72,0.2)]"></div>
+                  <div className="absolute bottom-12 left-12 w-16 h-16 border-b-4 border-l-4 border-rose-500/40 rounded-bl-3xl shadow-[-10px_10px_30px_rgba(225,29,72,0.2)]"></div>
+                  <div className="absolute bottom-12 right-12 w-16 h-16 border-b-4 border-r-4 border-rose-500/40 rounded-br-3xl shadow-[10px_10px_30px_rgba(225,29,72,0.2)]"></div>
                   
-                  {/* Face Recognition Hub */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[60%] w-64 h-80 border-2 border-blue-400/20 border-dashed rounded-[3rem] animate-pulse-subtle"></div>
+                  {/* Digital Target */}
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[60%] w-72 h-72 border border-white/20 rounded-full animate-pulse flex items-center justify-center">
+                     <div className="w-64 h-64 border border-white/10 rounded-full"></div>
+                     <div className="absolute inset-0 bg-[conic-gradient(from_0deg,transparent,rgba(225,29,72,0.1),transparent)] animate-[spin_4s_linear_infinite] rounded-full"></div>
+                  </div>
                </div>
             </div>
 

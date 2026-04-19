@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Outfit:wght@100..900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,9 +6,8 @@
 
 @layer base {
   body {
-    @apply bg-[#f8fafc] text-slate-900 antialiased;
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-    font-feature-settings: 'ss01' on, 'ss02' on, 'cv01' on, 'cv03' on;
+    @apply bg-[#F8FAFC] text-slate-900 antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
 }
 
@@ -45,22 +44,22 @@
 
 @layer components {
   .btn-primary {
-    @apply text-white font-semibold py-4 px-10 rounded-2xl hover:bg-blue-700 transition-all transform hover:scale-[1.01] active:scale-[0.99] shadow-xl shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed;
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    font-family: 'Outfit', sans-serif;
-    letter-spacing: 0.01em;
+    @apply text-white font-bold py-4 px-10 rounded-2xl transition-all shadow-xl shadow-indigo-500/20 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+    background: #4F46E5;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: -0.01em;
   }
   
   .card-premium {
-    @apply bg-white rounded-[2.5rem] shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-slate-100/60 p-10 transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.06)];
+    @apply bg-white rounded-2xl shadow-[0_1px_3px_0_rgba(0,0,0,0.1),0_1px_2px_0_rgba(0,0,0,0.06)] ring-1 ring-slate-200/60 p-6 transition-all hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.1),0_10px_10px_-5px_rgba(0,0,0,0.04)] hover:scale-[1.01] duration-300;
   }
 
   .glass-premium {
-    @apply bg-white/70 backdrop-blur-2xl border border-white/30 shadow-2xl;
+    @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-sm ring-1 ring-slate-200/50;
   }
   
   .input-premium {
-    @apply block w-full px-7 py-4.5 bg-slate-50/50 border border-slate-100 placeholder-slate-400 text-slate-900 rounded-[1.25rem] focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500/30 focus:bg-white transition-all font-medium;
+    @apply block w-full px-6 py-4 bg-slate-50/50 border border-slate-200 text-slate-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/40 focus:bg-white transition-all font-medium;
   }
 
   .heading-premium {
