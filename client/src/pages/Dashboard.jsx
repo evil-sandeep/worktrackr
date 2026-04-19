@@ -133,8 +133,8 @@ const Dashboard = () => {
         <div className="flex-1 h-full flex flex-col gap-3 min-h-0">
            {/* Monthly Yield Card */}
            <div className="card-premium !p-5 flex-1 min-h-0 flex flex-col justify-between group">
-              <div className="flex items-center justify-between shrink-0">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Monthly Yield</span>
+               <div className="flex items-center justify-between shrink-0">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Monthly Income</span>
                 <span className="text-[9px] font-bold text-green-500 bg-green-50 px-2 py-0.5 rounded-full">+12%</span>
               </div>
               <div className="py-2">
@@ -147,11 +147,6 @@ const Dashboard = () => {
                    </div>
                    <span className="text-[9px] font-bold text-slate-400">65%</span>
                 </div>
-              </div>
-              <div className="flex-1 flex flex-col justify-end">
-                 <svg className="w-full h-8 text-indigo-500 opacity-20" viewBox="0 0 100 20" preserveAspectRatio="none">
-                    <path d="M0,15 L15,10 L30,18 L50,5 L70,12 L100,2" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                 </svg>
               </div>
            </div>
 
