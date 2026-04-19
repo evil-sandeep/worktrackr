@@ -15,28 +15,30 @@ const CalendarDay = ({ day, isCurrentMonth, isToday, isSelected, record, onClick
   return (
     <div
       onClick={() => !isFuture && onClick(day)}
-      className={`relative h-16 sm:h-20 p-3 rounded-[1.25rem] transition-all duration-300 group
+      className={`relative w-full h-full p-2 sm:p-3 transition-all duration-300 group
+        ${!isFuture ? 'cursor-pointer' : 'cursor-not-allowed'}
+      `}
+    >
+      <div className={`h-full w-full p-2 sm:p-3 rounded-[1.25rem] transition-all duration-500 flex flex-col items-start justify-start
         ${isPresent ? 'bg-emerald-500 shadow-lg shadow-emerald-500/20' : 
           isIncomplete ? 'bg-amber-500 shadow-lg shadow-amber-500/20' :
           isAbsent ? 'bg-red-600 shadow-lg shadow-red-600/20' : 
-          !isCurrentMonth ? 'bg-slate-50/10 text-slate-300 opacity-40' : 'bg-white text-slate-600 shadow-sm border border-slate-100/60'}
-        ${isSelected && !hasStatus ? 'ring-2 ring-blue-500/50 z-10' : ''}
-        ${!isFuture ? 'hover:-translate-y-1.5 hover:scale-[1.02] hover:shadow-2xl cursor-pointer active:scale-95' : 'cursor-not-allowed opacity-20'}
-      `}
-    >
-      <div className="flex h-full items-start justify-start">
-        <span className={`text-[10px] sm:text-[11px] font-black w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg transition-all duration-300
-          ${hasStatus ? 'text-white' : ''}
+          !isCurrentMonth ? 'opacity-20' : 'bg-white group-hover:bg-slate-50'}
+        ${isSelected && !hasStatus ? 'ring-2 ring-blue-500/50 scale-[0.98]' : ''}
+        ${!isFuture ? 'group-hover:-translate-y-1.5 group-hover:shadow-xl group-active:scale-95' : 'opacity-10'}
+      `}>
+        <span className={`text-[10px] sm:text-[11px] font-black w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg transition-all duration-300
+          ${hasStatus ? 'text-white' : 'text-slate-600'}
           ${isToday && !hasStatus ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/40 scale-110' : ''}
           ${isToday && hasStatus ? 'ring-2 ring-white scale-110' : ''}
-          ${isSelected && !isToday && !hasStatus ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/30' : ''}
+          ${isSelected && !isToday && !hasStatus ? 'bg-slate-900 text-white' : ''}
         `}>
           {day.getDate()}
         </span>
       </div>
       
       {isSelected && !hasStatus && (
-        <div className="absolute inset-0 rounded-[1.25rem] ring-2 ring-blue-500/10 pointer-events-none"></div>
+        <div className="absolute inset-2 sm:inset-3 rounded-[1.25rem] ring-2 ring-blue-500/10 pointer-events-none"></div>
       )}
     </div>
   );
