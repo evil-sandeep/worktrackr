@@ -1,4 +1,5 @@
 import React from 'react';
+import { Check, AlertCircle, XCircle } from 'lucide-react';
 
 const CalendarDay = ({ day, isCurrentMonth, isToday, isSelected, record, onClick }) => {
   const now = new Date();
@@ -7,39 +8,41 @@ const CalendarDay = ({ day, isCurrentMonth, isToday, isSelected, record, onClick
   checkDay.setHours(0, 0, 0, 0);
   const isFuture = checkDay > now;
 
-  const isAbsent = !isFuture && record?.status === 'absent';
-  const isIncomplete = !isFuture && record?.status === 'present' && !record?.checkOut?.imageUrl;
-  const isPresent = !isFuture && record?.status === 'present' && record?.checkOut?.imageUrl;
-  const hasStatus = isAbsent || isIncomplete || isPresent;
+  const status = record?.status;
+  
+  const isPresent = status === 'present';
+  const isIncomplete = status === 'incomplete' || (record?.checkIn && !record?.checkCheckout);
+  const isAbsent = status === 'absent';
 
   return (
     <div
       onClick={() => !isFuture && onClick(day)}
-      className={`relative w-full h-full p-2 sm:p-3 transition-all duration-300 group
-        ${!isFuture ? 'cursor-pointer' : 'cursor-not-allowed'}
+      className={`relative h-full flex flex-col items-center justify-center glass-premium-blur rounded-[1.3rem] border border-white/20 transition-all duration-500 group ripple-effect
+        ${!isFuture ? 'cursor-pointer hover:bg-slate-50/50 hover:z-30' : 'cursor-not-allowed opacity-20'}
+        ${isSelected ? 'selected-pop' : 'neu-inset-shadow'}
+        ${!isCurrentMonth ? 'opacity-10 grayscale' : ''}
       `}
     >
-      <div className={`h-full w-full p-2 sm:p-3 rounded-[1.25rem] transition-all duration-500 flex flex-col items-start justify-start
-        ${isPresent ? 'bg-emerald-500 shadow-lg shadow-emerald-500/20' : 
-          isIncomplete ? 'bg-amber-500 shadow-lg shadow-amber-500/20' :
-          isAbsent ? 'bg-red-600 shadow-lg shadow-red-600/20' : 
-          !isCurrentMonth ? 'opacity-20' : 'bg-white group-hover:bg-slate-50'}
-        ${isSelected && !hasStatus ? 'ring-2 ring-blue-500/50 scale-[0.98]' : ''}
-        ${!isFuture ? 'group-hover:-translate-y-1.5 group-hover:shadow-xl group-active:scale-95' : 'opacity-10'}
-      `}>
-        <span className={`text-[10px] sm:text-[11px] font-black w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg transition-all duration-300
-          ${hasStatus ? 'text-white' : 'text-slate-600'}
-          ${isToday && !hasStatus ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/40 scale-110' : ''}
-          ${isToday && hasStatus ? 'ring-2 ring-white scale-110' : ''}
-          ${isSelected && !isToday && !hasStatus ? 'bg-slate-900 text-white' : ''}
-        `}>
-          {day.getDate()}
-        </span>
-      </div>
-      
-      {isSelected && !hasStatus && (
-        <div className="absolute inset-2 sm:inset-3 rounded-[1.25rem] ring-2 ring-blue-500/10 pointer-events-none"></div>
+      {/* Today Neutral Ring Indicator */}
+      {isToday && (
+        <div className="absolute inset-0 ring-2 ring-slate-200/50 -z-10 rounded-[1.3rem]"></div>
       )}
+
+      {/* Centered Date Number Box */}
+      <div className="relative z-10 flex flex-col items-center justify-center">
+        <div className={`aspect-square w-12 h-12 flex items-center justify-center rounded-[1.1rem] transition-all duration-700 font-poppins shadow-premium-layered
+          ${isPresent ? 'bg-emerald-500 text-white shadow-emerald-500/20 scale-110' : 
+            (isIncomplete ? 'bg-yellow-500 text-white shadow-yellow-500/20 scale-110' :
+              (isToday ? 'bg-slate-900 text-white shadow-xl shadow-black/10' : 
+                (isSelected ? 'bg-slate-200 text-slate-900' : 'bg-white/40 text-slate-400 group-hover:text-slate-900 group-hover:bg-white')))}
+        `}>
+          <span className="text-xl font-black tracking-tight">
+            {day.getDate()}
+          </span>
+        </div>
+      </div>
+
+      {/* Top Right Status Status icons removed for ultra-clean look */}
     </div>
   );
 };

@@ -9,7 +9,8 @@ import {
   ShieldCheck,
   Shield,
   X,
-  Users
+  Users,
+  Calendar
 } from 'lucide-react';
 import authService from '../services/authService';
 
@@ -21,6 +22,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     { name: 'Dashboard', icon: LayoutDashboard, path: '/admindashboard', roles: ['admin'] },
     { name: 'Employees', icon: Users, path: '/employee', roles: ['admin'] },
     { name: 'Dashboard', icon: LayoutDashboard, path: '/employeedashboard', roles: ['employee'] },
+    { name: 'Calendar', icon: Calendar, path: '/calendar', roles: ['employee'] },
     { name: 'Store Visit', icon: Store, path: '/storevisit', roles: ['employee'] },
     { name: 'Profile', icon: UserCircle, path: '/profile', roles: ['employee'] },
   ];

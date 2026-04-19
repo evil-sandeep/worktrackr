@@ -55,7 +55,7 @@ const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-950/40 backdrop-blur-md animate-in fade-in duration-500">
-        <div className="bg-white w-full max-w-3xl rounded-[3rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-500 relative">
+        <div className="bg-white w-full max-w-3xl rounded-[3rem] shadow-premium-layered border border-slate-100 overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-500 relative">
           
           {previewImage && <FullscreenPreview url={previewImage} onClose={() => setPreviewImage(null)} />}
 
@@ -66,8 +66,8 @@ const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
                 <Fingerprint className="h-6 w-6 sm:h-7 sm:w-7 text-white" />
               </div>
               <div>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-1">Session Data</p>
-                <h2 className="text-xl font-black text-slate-900 tracking-tight leading-none uppercase">{date}</h2>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-1 font-outfit">Session Data</p>
+                <h2 className="text-xl font-black text-slate-900 tracking-tight leading-none uppercase font-outfit">{date}</h2>
               </div>
             </div>
             <button

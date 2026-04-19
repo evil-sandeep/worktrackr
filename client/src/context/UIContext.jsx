@@ -6,6 +6,7 @@ export const UIProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [toasts, setToasts] = useState([]);
   const [notifications, setNotifications] = useState([]);
+  const [calendarStats, setCalendarStats] = useState(null);
 
   const showLoader = useCallback((state) => setLoading(state), []);
 
@@ -45,7 +46,8 @@ export const UIProvider = ({ children }) => {
     <UIContext.Provider value={{ 
       loading, showLoader, 
       toasts, addToast, removeToast,
-      notifications, addNotification, removeNotification, markAllNotificationsRead, clearNotifications
+      notifications, addNotification, removeNotification, markAllNotificationsRead, clearNotifications,
+      calendarStats, setCalendarStats
     }}>
       {children}
     </UIContext.Provider>

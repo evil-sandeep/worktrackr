@@ -1,6 +1,5 @@
 import React from 'react';
 import CalendarDay from './CalendarDay';
-
 import { formatDateKey } from './useCalendar';
 
 const CalendarGrid = ({ days, currentDate, selectedDate, attendanceData, onDateClick }) => {
@@ -22,17 +21,29 @@ const CalendarGrid = ({ days, currentDate, selectedDate, attendanceData, onDateC
   };
 
   return (
-    <div className="w-full border-t border-l border-slate-100 rounded-[2.5rem] overflow-hidden">
-      <div className="grid grid-cols-7 border-b border-slate-100 bg-slate-50/50">
+    <div 
+      key={`${currentDate.getMonth()}-${currentDate.getFullYear()}`}
+      className="w-full h-full flex flex-col bg-white/40 backdrop-blur-xl rounded-2xl overflow-hidden animate-slide-right"
+    >
+      {/* Week Day Header - Premium Spacing */}
+      <div className="grid grid-cols-7 mb-3 mt-1">
         {weekDays.map(day => (
-          <div key={day} className="py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] opacity-80 border-r border-slate-100">
-            {day}
+          <div key={day} className="text-center">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] font-outfit">
+              {day}
+            </span>
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7">
+
+      {/* Calendar Cells Grid - Forced 100% height with repeat(6, 1fr) */}
+      <div className="grid grid-cols-7 grid-rows-[repeat(6,1fr)] gap-1.5 flex-1 h-full min-h-0 overflow-hidden px-1 pb-1">
         {days.map((date, index) => (
-          <div key={index} className="border-r border-b border-slate-100 relative">
+          <div 
+            key={index} 
+            className="h-full animate-in fade-in zoom-in-95 duration-500 fill-mode-both"
+            style={{ animationDelay: `${index * 8}ms` }}
+          >
             <CalendarDay
               day={date}
               isCurrentMonth={date.getMonth() === currentDate.getMonth()}
