@@ -12,6 +12,7 @@ import {
 import StartVisitButton from './StartVisitButton';
 import CapturePhoto from './CapturePhoto';
 import visitService from '../../services/visitService';
+import authService from '../../services/authService';
 import { useUI } from '../../context/UIContext';
 
 const VisitFlow = ({ onSuccess }) => {
@@ -20,12 +21,32 @@ const VisitFlow = ({ onSuccess }) => {
   const [location, setLocation] = useState(null);
   const [outsidePhoto, setOutsidePhoto] = useState(null);
   const [insidePhoto, setInsidePhoto] = useState(null);
-  const { addToast, showLoader } = useUI();
+  const [address, setAddress] = useState(null);
+  const { addToast, showLoader, addNotification } = useUI();
+  const userData = authService.getCurrentUser();
+
+  const fetchAddress = async (lat, lon) => {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`,
+        { headers: { 'User-Agent': 'WorkTrackr-System/1.0' } }
+      );
+      const data = await response.json();
+      if (data && data.display_name) {
+        const city = data.address.city || data.address.town || data.address.village || '';
+        const state = data.address.state || '';
+        setAddress([city, state].filter(Boolean).join(', ') || data.display_name.split(',').slice(0, 2).join(','));
+      }
+    } catch (err) {
+      console.error('Visit Geocoding Error:', err);
+    }
+  };
 
   const handleStarted = (id, loc) => {
     setVisitId(id);
     setLocation(loc);
     setStep('STARTED');
+    fetchAddress(loc.latitude, loc.longitude);
   };
 
   const handleSubmit = async () => {
@@ -40,6 +61,11 @@ const VisitFlow = ({ onSuccess }) => {
       const response = await visitService.submitVisit(visitId, outsidePhoto, insidePhoto);
       if (response.success) {
         addToast('Store visit proof uploaded successfully', 'success');
+        addNotification(
+          'Store Visit Logged',
+          `${userData?.name || 'User'} successfully visit store at ${address || 'Verified Site'}`,
+          'success'
+        );
         setStep('COMPLETED');
         if (onSuccess) onSuccess(response.data);
       }

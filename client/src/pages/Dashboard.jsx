@@ -7,7 +7,7 @@ import authService from '../services/authService';
 import { 
   Calendar as CalendarIcon, 
   Clock, 
-  CheckCircle2, 
+  CheckCircle, 
   AlertCircle,
   ShieldCheck,
   LayoutGrid,
@@ -88,7 +88,7 @@ const Dashboard = () => {
         <div className="space-y-1">
           <p className="subheading-premium">{greeting}</p>
           <h1 className="text-4xl font-bold text-slate-900 tracking-[-0.04em] pr-2">
-            Welcome, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">{user.name.split(' ')[0]}</span>
+            Welcome, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">{user?.name?.split(' ')[0] || 'User'}</span>
           </h1>
           <p className="text-slate-500 font-medium text-[11px] uppercase tracking-widest opacity-70">
             {isCheckedIn ? 'Status: Active Session' : 'No active session detected'}
@@ -133,7 +133,7 @@ const Dashboard = () => {
                   <div className="p-16 flex flex-col items-center text-center space-y-10 bg-slate-50/20 group/verified">
                     <div className="w-28 h-28 bg-white rounded-full flex items-center justify-center shadow-2xl shadow-slate-200/50 relative transform group-hover/verified:scale-110 transition-transform duration-700">
                        <div className="absolute inset-0 bg-green-500/10 rounded-full blur-2xl animate-pulse"></div>
-                       <CheckCircle2 className="h-14 w-14 text-green-500 relative z-10" />
+                       <CheckCircle className="h-14 w-14 text-green-500 relative z-10" />
                     </div>
                     <div className="space-y-4">
                       <h2 className="heading-premium !text-2xl uppercase tracking-tighter">Session Verified</h2>

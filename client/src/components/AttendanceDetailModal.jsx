@@ -10,9 +10,30 @@ import {
   LogOut,
   ArrowRight,
   Fingerprint,
-  CheckCircle2,
+  CheckCircle,
   Camera
 } from 'lucide-react';
+
+const FullscreenPreview = ({ url, onClose }) => (
+  <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/95 backdrop-blur-2xl animate-in fade-in duration-300">
+    <button 
+      onClick={onClose}
+      className="absolute top-10 right-10 p-4 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all active:scale-95 border border-white/20 z-[110]"
+    >
+      <X className="h-8 w-8" />
+    </button>
+    <div className="relative w-full h-full p-10 sm:p-20 flex items-center justify-center">
+      <img 
+        src={url} 
+        alt="Full size biometric" 
+        className="max-w-full max-h-full object-contain rounded-2xl shadow-[0_0_100px_rgba(0,0,0,0.5)] border border-white/10"
+      />
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 px-8 py-3 bg-white/5 backdrop-blur-md rounded-full border border-white/10 text-white/60 text-[10px] font-black uppercase tracking-[0.3em]">
+         Verified Biometric Signature
+      </div>
+    </div>
+  </div>
+);
 
 const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
   const [previewImage, setPreviewImage] = useState(null);
@@ -30,27 +51,6 @@ const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
     time: record?.checkoutTime,
     location: record?.checkoutLocation
   };
-
-  const FullscreenPreview = ({ url, onClose }) => (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/95 backdrop-blur-2xl animate-in fade-in duration-300">
-      <button 
-        onClick={onClose}
-        className="absolute top-10 right-10 p-4 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all active:scale-95 border border-white/20 z-[110]"
-      >
-        <X className="h-8 w-8" />
-      </button>
-      <div className="relative w-full h-full p-10 sm:p-20 flex items-center justify-center">
-        <img 
-          src={url} 
-          alt="Full size biometric" 
-          className="max-w-full max-h-full object-contain rounded-2xl shadow-[0_0_100px_rgba(0,0,0,0.5)] border border-white/10"
-        />
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 px-8 py-3 bg-white/5 backdrop-blur-md rounded-full border border-white/10 text-white/60 text-[10px] font-black uppercase tracking-[0.3em]">
-           Verified Biometric Signature
-        </div>
-      </div>
-    </div>
-  );
 
   return (
     <>
@@ -195,7 +195,7 @@ const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
                                    </div>
                                 </div>
                                 <div className="flex items-center gap-3 text-green-500 font-black text-[8px] uppercase tracking-widest">
-                                   <CheckCircle2 size={12} /> Log Finalized
+                                   <CheckCircle size={12} /> Log Finalized
                                 </div>
                              </div>
                           </div>

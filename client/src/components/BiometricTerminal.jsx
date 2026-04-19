@@ -13,10 +13,12 @@ import {
   Clock,
   UploadCloud
 } from 'lucide-react';
+import authService from '../services/authService';
 import { formatDateKey } from './Calendar/useCalendar';
 
 const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
-  const { showLoader, addToast } = useUI();
+  const { showLoader, addToast, addNotification } = useUI();
+  const userData = authService.getCurrentUser();
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [stream, setStream] = useState(null);
@@ -165,6 +167,11 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
       }
       
       addToast(`${mode === 'checkin' ? 'Check-In' : 'Check-Out'} logged successfully!`, 'success');
+      addNotification(
+        mode === 'checkin' ? 'Check-in Verified' : 'Check-out Success',
+        `${userData?.name || 'User'} successfully ${mode === 'checkin' ? 'checked in' : 'checked out'} at ${address || 'Verified Location'}`,
+        'success'
+      );
       setCapturedImage(null);
       setCapturedData(null);
       setIsCameraActive(false);
