@@ -89,10 +89,10 @@ const VisitFlow = ({ onSuccess }) => {
   if (step === 'IDLE') {
     return (
       <div className="card-premium h-full flex flex-col justify-center animate-in fade-in duration-1000">
-        <div className="flex flex-col items-center text-center max-w-sm mx-auto space-y-10 py-6">
-          <div className="w-24 h-24 bg-slate-900 text-white rounded-[2.5rem] flex items-center justify-center shadow-2xl relative group rotate-3">
-             <Store className="h-10 w-10 relative z-10 transition-transform group-hover:scale-110" />
-             <div className="absolute inset-0 bg-blue-500/20 blur-3xl rounded-full opacity-50 group-hover:opacity-100 transition-opacity"></div>
+        <div className="flex flex-col items-center text-center max-w-sm mx-auto space-y-6 py-4">
+          <div className="w-16 h-16 bg-slate-900 text-white rounded-[1.5rem] flex items-center justify-center shadow-2xl relative group rotate-3">
+             <Store className="h-8 w-8 relative z-10 transition-transform group-hover:scale-110" />
+             <div className="absolute inset-0 bg-blue-500/20 blur-2xl rounded-full opacity-50 group-hover:opacity-100 transition-opacity"></div>
           </div>
           
           <div className="space-y-4">
@@ -131,10 +131,10 @@ const VisitFlow = ({ onSuccess }) => {
 
   return (
     <div className="card-premium !p-0 h-full overflow-hidden flex flex-col border-slate-200/60 shadow-2xl animate-in slide-in-from-bottom-8 duration-700">
-      <div className="bg-slate-900 p-8 flex items-center justify-between border-b border-white/5">
-        <div className="flex items-center gap-5">
-           <div className="w-12 h-12 bg-white/5 backdrop-blur-md rounded-2xl flex items-center justify-center text-blue-400 border border-white/10">
-              <Store className="h-6 w-6" />
+      <div className="bg-slate-900 p-6 flex items-center justify-between border-b border-white/5">
+        <div className="flex items-center gap-4">
+           <div className="w-10 h-10 bg-white/5 backdrop-blur-md rounded-xl flex items-center justify-center text-blue-400 border border-white/10">
+              <Store className="h-5 w-5" />
            </div>
            <div>
               <p className="subheading-premium !text-white/40 !mb-0.5">Active Session</p>
@@ -146,7 +146,7 @@ const VisitFlow = ({ onSuccess }) => {
         </button>
       </div>
 
-      <div className="p-8 space-y-10 flex-1 overflow-y-auto custom-scrollbar">
+      <div className="p-6 space-y-6 flex-1 overflow-y-auto custom-scrollbar">
         <div className="grid grid-cols-1 gap-8">
           <div className="space-y-5">
             <div className="flex items-center justify-between px-2">
@@ -169,15 +169,15 @@ const VisitFlow = ({ onSuccess }) => {
           </div>
         </div>
 
-        <div className="glass-premium !bg-slate-50/30 p-6 rounded-[2.5rem] border-slate-100">
-           <div className="flex items-start gap-5">
-              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-slate-900 shadow-xl border border-slate-100 shrink-0">
-                 <MapPin className="h-6 w-6" />
+        <div className="glass-premium !bg-slate-50/30 p-4 rounded-[2rem] border-slate-100">
+           <div className="flex items-start gap-4">
+              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-slate-900 shadow-xl border border-slate-100 shrink-0">
+                 <MapPin className="h-5 w-5" />
               </div>
-              <div className="space-y-1">
-                 <p className="subheading-premium !mb-0">Geographic Lock</p>
-                 <p className="text-[11px] font-black text-slate-900 uppercase tracking-tight">Signal: {location?.latitude.toFixed(5)}, {location?.longitude.toFixed(5)}</p>
-                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest opacity-60">Auth-ID: {visitId?.slice(-12).toUpperCase()}</p>
+              <div className="space-y-0.5">
+                 <p className="subheading-premium !mb-0 !text-[8px]">Geographic Lock</p>
+                 <p className="text-[10px] font-black text-slate-900 uppercase tracking-tight">Signal: {location?.latitude.toFixed(4)}, {location?.longitude.toFixed(4)}</p>
+                 <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest opacity-60">ID: {visitId?.slice(-8).toUpperCase()}</p>
               </div>
            </div>
         </div>

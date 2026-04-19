@@ -7,56 +7,55 @@ const StoreVisit = () => {
     const user = authService.getCurrentUser();
 
     return (
-        <div className="space-y-8 pb-12 animate-in fade-in duration-1000">
+        <div className="space-y-6 pb-4 animate-in fade-in duration-1000">
             {/* Header Section */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="space-y-1">
-                    <p className="subheading-premium">Operational Hub</p>
-                    <h1 className="text-4xl font-bold text-slate-900 tracking-[-0.04em]">
+                    <p className="subheading-premium !mb-0.5">Operational Hub</p>
+                    <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
                         Site <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Verification</span>
                     </h1>
-                    <p className="text-slate-500 font-medium text-[11px] uppercase tracking-widest opacity-70">
-                        Protocol System 02: Store Audit and Compliance
+                    <p className="text-slate-500 font-bold text-[9px] uppercase tracking-widest opacity-60">
+                        Protocol 02: Audit and Compliance
                     </p>
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <div className="glass-premium px-6 py-3 rounded-2xl border-white/40 flex flex-col items-end">
-                        <span className="subheading-premium !text-[8px]">Session Auth</span>
-                        <span className="text-sm font-black text-slate-900 tabular-nums">{new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                    <div className="glass-premium px-4 py-2 rounded-xl border-white/40 flex flex-col items-end">
+                        <span className="subheading-premium !text-[7px]">Session Auth</span>
+                        <span className="text-xs font-black text-slate-900 tabular-nums">{new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                     </div>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2">
                     <VisitFlow />
                 </div>
                 
-                <div className="space-y-8">
-                    <div className="card-premium p-10 bg-slate-900 text-white relative overflow-hidden group">
-                        <div className="relative z-10 space-y-6">
-                            <div className="w-12 h-12 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/10">
-                                <ShieldCheck className="h-6 w-6 text-blue-400" />
+                <div className="space-y-4">
+                    <div className="card-premium p-6 bg-slate-900 text-white relative overflow-hidden group">
+                        <div className="relative z-10 space-y-4">
+                            <div className="w-10 h-10 bg-white/10 backdrop-blur-xl rounded-xl flex items-center justify-center border border-white/10 text-blue-400">
+                                <ShieldCheck size={20} />
                             </div>
-                            <div className="space-y-2">
-                                <h3 className="heading-premium !text-white !text-sm uppercase tracking-widest">Compliance Rule</h3>
-                                <p className="text-[11px] text-white/50 leading-relaxed">
-                                    All store visits must be verified with active GPS locking and multi-angle photographic evidence. Failure to sync results in session invalidation.
+                            <div className="space-y-1">
+                                <h3 className="heading-premium !text-white !text-[11px] uppercase tracking-widest">Compliance Rule</h3>
+                                <p className="text-[10px] text-white/40 leading-relaxed">
+                                    All store visits must be verified with active GPS locking and multi-angle photographic evidence.
                                 </p>
                             </div>
                         </div>
-                        <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-600/10 rounded-full blur-[80px]"></div>
                     </div>
 
-                    <div className="card-premium p-10 border-slate-100/60 flex flex-col items-center text-center space-y-6">
-                        <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600">
-                            <Store className="h-8 w-8" />
+                    <div className="card-premium p-6 border-slate-100/60 flex items-center gap-4">
+                        <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 shrink-0">
+                            <Store className="h-6 w-6" />
                         </div>
-                        <div className="space-y-2">
-                            <h3 className="heading-premium !text-sm uppercase">Audit Intelligence</h3>
-                            <p className="text-[10px] text-slate-400 font-medium leading-relaxed uppercase tracking-widest">
-                                Your data is encrypted and synchronized with enterprise cloud nodes in real-time.
+                        <div className="space-y-0.5 text-left">
+                            <h3 className="heading-premium !text-[11px] uppercase">Audit Intelligence</h3>
+                            <p className="text-[9px] text-slate-400 font-bold leading-none uppercase tracking-widest opacity-60">
+                                Real-time encryption active.
                             </p>
                         </div>
                     </div>
