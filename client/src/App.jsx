@@ -8,6 +8,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import EmployeeListPage from './pages/EmployeeListPage';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import StoreVisit from './pages/StoreVisit';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 import Toast from './components/Toast';
@@ -62,6 +63,16 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <Layout>
               <Profile />
+            </Layout>
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/storevisit" 
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <StoreVisit />
             </Layout>
           </ProtectedRoute>
         } 

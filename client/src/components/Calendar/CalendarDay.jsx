@@ -1,52 +1,42 @@
 import React from 'react';
 
-const CalendarDay = ({ day, isCurrentMonth, isToday, isSelected, attendanceStatus, onClick }) => {
+const CalendarDay = ({ day, isCurrentMonth, isToday, isSelected, record, onClick }) => {
   const now = new Date();
   now.setHours(0, 0, 0, 0);
   const checkDay = new Date(day);
   checkDay.setHours(0, 0, 0, 0);
   const isFuture = checkDay > now;
 
+  const isAbsent = !isFuture && record?.status === 'absent';
+  const isIncomplete = !isFuture && record?.status === 'present' && !record?.checkOut?.imageUrl;
+  const isPresent = !isFuture && record?.status === 'present' && record?.checkOut?.imageUrl;
+  const hasStatus = isAbsent || isIncomplete || isPresent;
+
   return (
     <div
       onClick={() => !isFuture && onClick(day)}
-      className={`relative h-24 sm:h-28 p-3 border-r border-b transition-all duration-300 group
-        ${!isCurrentMonth ? 'bg-slate-50/30 text-slate-300' : 'bg-white text-slate-600'}
-        ${isSelected ? 'bg-blue-50/30 z-10' : 'hover:bg-slate-50/50'}
-        ${isFuture ? 'cursor-not-allowed opacity-40 bg-slate-50/10' : 'cursor-pointer'}
+      className={`relative h-16 sm:h-20 p-3 rounded-[1.25rem] transition-all duration-300 group
+        ${isPresent ? 'bg-emerald-500 shadow-lg shadow-emerald-500/20' : 
+          isIncomplete ? 'bg-amber-500 shadow-lg shadow-amber-500/20' :
+          isAbsent ? 'bg-red-600 shadow-lg shadow-red-600/20' : 
+          !isCurrentMonth ? 'bg-slate-50/10 text-slate-300 opacity-40' : 'bg-white text-slate-600 shadow-sm border border-slate-100/60'}
+        ${isSelected && !hasStatus ? 'ring-2 ring-blue-500/50 z-10' : ''}
+        ${!isFuture ? 'hover:-translate-y-1.5 hover:scale-[1.02] hover:shadow-2xl cursor-pointer active:scale-95' : 'cursor-not-allowed opacity-20'}
       `}
     >
-      <div className="flex justify-between items-start">
-        <span className={`text-xs font-black w-7 h-7 flex items-center justify-center rounded-lg transition-all duration-300
-          ${isToday ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 scale-110' : ''}
-          ${isSelected && !isToday ? 'bg-slate-900 text-white shadow-md' : ''}
-          ${!isSelected && !isToday && isCurrentMonth && !isFuture ? 'group-hover:bg-slate-100' : ''}
+      <div className="flex h-full items-start justify-start">
+        <span className={`text-[10px] sm:text-[11px] font-black w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg transition-all duration-300
+          ${hasStatus ? 'text-white' : ''}
+          ${isToday && !hasStatus ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/40 scale-110' : ''}
+          ${isToday && hasStatus ? 'ring-2 ring-white scale-110' : ''}
+          ${isSelected && !isToday && !hasStatus ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/30' : ''}
         `}>
           {day.getDate()}
         </span>
-        
-        {isToday && (
-          <span className="text-[8px] font-black text-blue-600 uppercase tracking-widest hidden sm:block">Today</span>
-        )}
-      </div>
-
-      <div className="absolute inset-x-0 bottom-3 flex flex-col items-center gap-1.5 px-2">
-        {!isFuture && attendanceStatus === 'present' && (
-          <>
-            <div className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
-            <span className="text-[8px] font-black text-green-600 uppercase tracking-tighter opacity-0 group-hover:opacity-100 transition-opacity">Present</span>
-          </>
-        )}
-        {!isFuture && attendanceStatus === 'absent' && (
-          <>
-            <div className="w-1.5 h-1.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]" />
-            <span className="text-[8px] font-black text-rose-600 uppercase tracking-tighter opacity-0 group-hover:opacity-100 transition-opacity">Absent</span>
-          </>
-        )}
       </div>
       
-      {isSelected && !isFuture && (
-        <div className="absolute inset-0 border-2 border-blue-500/20 pointer-events-none"></div>
+      {isSelected && !hasStatus && (
+        <div className="absolute inset-0 rounded-[1.25rem] ring-2 ring-blue-500/10 pointer-events-none"></div>
       )}
     </div>
   );

@@ -22,15 +22,15 @@ const CalendarGrid = ({ days, currentDate, selectedDate, attendanceData, onDateC
   };
 
   return (
-    <div className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm">
-      <div className="grid grid-cols-7 bg-slate-50/50 border-b border-slate-100/60 backdrop-blur-md">
+    <div className="w-full">
+      <div className="grid grid-cols-7 gap-2 sm:gap-3 mb-4">
         {weekDays.map(day => (
-          <div key={day} className="py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+          <div key={day} className="py-2 text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] opacity-60">
             {day}
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7">
+      <div className="grid grid-cols-7 gap-2 sm:gap-3">
         {days.map((date, index) => (
           <CalendarDay
             key={index}
@@ -38,9 +38,7 @@ const CalendarGrid = ({ days, currentDate, selectedDate, attendanceData, onDateC
             isCurrentMonth={date.getMonth() === currentDate.getMonth()}
             isToday={isToday(date)}
             isSelected={isSelected(date)}
-            attendanceStatus={
-              attendanceData[formatDateKey(date)]?.status || attendanceData[formatDateKey(date)]
-            }
+            record={attendanceData[formatDateKey(date)]}
             onClick={onDateClick}
           />
         ))}

@@ -53,24 +53,24 @@ const StartVisitButton = ({ onStarted }) => {
       <button
         onClick={handleStart}
         disabled={loading}
-        className="w-full group relative flex items-center justify-center gap-3 px-8 py-5 bg-gradient-to-br from-indigo-600 to-blue-700 hover:from-indigo-500 hover:to-blue-600 text-white rounded-[2rem] font-black text-sm uppercase tracking-[0.2em] shadow-2xl shadow-indigo-500/20 transition-all active:scale-[0.98] disabled:opacity-70 disabled:grayscale disabled:cursor-not-allowed overflow-hidden"
+        className="w-full group relative flex items-center justify-center gap-3 px-8 py-5 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] shadow-2xl shadow-slate-900/20 transition-all active:scale-[0.98] disabled:opacity-70 disabled:grayscale disabled:cursor-not-allowed overflow-hidden"
       >
-        <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+        <div className="absolute inset-0 bg-blue-600/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
         
         {loading ? (
-          <Loader2 className="h-5 w-5 animate-spin relative z-10" />
+          <Loader2 className="h-5 w-5 animate-spin relative z-10 text-blue-500" />
         ) : (
-          <Play className="h-5 w-5 fill-current relative z-10" />
+          <Play className="h-4 w-4 fill-current relative z-10 text-blue-500" />
         )}
         
         <span className="relative z-10">
-          {loading ? 'Initializing Visit...' : 'Start New Store Visit'}
+          {loading ? 'Initializing Protocol...' : 'Authorized Store Entry'}
         </span>
       </button>
       
-      <p className="mt-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center flex items-center justify-center gap-2">
-        <MapPin className="h-3 w-3" />
-        GPS Verification Required
+      <p className="mt-4 text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] text-center flex items-center justify-center gap-3">
+        <MapPin className="h-3 w-3 text-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)]" />
+        Secure GPS Required
       </p>
     </div>
   );

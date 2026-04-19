@@ -30,205 +30,178 @@ const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-300">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-950/40 backdrop-blur-md animate-in fade-in duration-500">
+      <div className="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-500">
 
         {/* Modal Header */}
-        <div className="p-8 pb-4 flex items-center justify-between bg-white/80 backdrop-blur-md sticky top-0 z-10 border-b border-slate-50">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-200">
+        <div className="px-10 py-8 flex items-center justify-between bg-white/80 backdrop-blur-xl border-b border-slate-50 sticky top-0 z-20">
+          <div className="flex items-center gap-5">
+            <div className="w-14 h-14 bg-slate-900 rounded-2xl flex items-center justify-center shadow-xl shadow-slate-900/20">
               <Fingerprint className="h-7 w-7 text-white" />
             </div>
             <div>
-              <h2 className="text-2xl font-black text-slate-900 tracking-tight leading-none">Attendance Details</h2>
-              <div className="flex items-center gap-2 mt-1.5">
-                <Calendar className="h-3.5 w-3.5 text-slate-400" />
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{date}</span>
-              </div>
+              <p className="subheading-premium !mb-0.5">Session Archive</p>
+              <h2 className="text-xl font-black text-slate-900 tracking-tight leading-none uppercase">Log Details</h2>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-3 bg-slate-50 text-slate-400 hover:text-slate-900 rounded-2xl transition-all hover:bg-slate-100 active:scale-90"
+            className="p-3 bg-slate-50 text-slate-400 hover:text-slate-900 rounded-2xl transition-all hover:bg-slate-100 active:scale-95 border border-slate-100/50"
           >
             <X className="h-6 w-6" />
           </button>
         </div>
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto p-8 space-y-10 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto p-10 space-y-12 custom-scrollbar">
 
           {record?.status === 'absent' ? (
-            <div className="flex flex-col items-center justify-center space-y-8 py-12 text-center animate-in fade-in zoom-in-95 duration-500">
+            <div className="flex flex-col items-center justify-center space-y-8 py-16 text-center animate-in fade-in zoom-in-95 duration-700">
               <div className="relative">
-                <div className="absolute inset-0 bg-rose-500/20 rounded-full blur-3xl animate-pulse"></div>
+                <div className="absolute inset-0 bg-rose-500/10 rounded-full blur-[60px] animate-pulse"></div>
                 <div className="w-32 h-32 bg-rose-50 rounded-[2.5rem] flex items-center justify-center border border-rose-100 shadow-xl relative z-10">
                   <AlertCircle className="h-16 w-16 text-rose-500" />
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <h3 className="text-3xl font-black text-slate-900 tracking-tight">You'r Absent </h3>
-                <p className="text-slate-500 font-medium max-w-[320px] mx-auto text-sm leading-relaxed uppercase tracking-widest">
-                  No attendance logs were found for this session date.
+              <div className="space-y-4">
+                <h3 className="text-2xl font-black text-slate-900 tracking-tight uppercase">No Activity Logged</h3>
+                <p className="text-slate-400 font-bold max-w-[320px] mx-auto text-[10px] leading-relaxed uppercase tracking-[0.2em]">
+                  Attendance protocols were not initialized for {date}.
                 </p>
               </div>
 
               <div className="flex flex-wrap items-center justify-center gap-4">
-                <div className="px-5 py-2.5 bg-slate-50 rounded-2xl border border-slate-100 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-rose-500"></span>
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Status: Absent</span>
-                </div>
-                <div className="px-5 py-2.5 bg-slate-50 rounded-2xl border border-slate-100 flex items-center gap-2">
-                  <Clock className="h-3.5 w-3.5 text-slate-400" />
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">0h 0m Logged</span>
+                <div className="px-6 py-3 bg-slate-50 rounded-2xl border border-slate-100 flex items-center gap-3">
+                  <span className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]"></span>
+                  <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Status: Standby</span>
                 </div>
               </div>
             </div>
           ) : (
             <>
-              {/* Shift Summary / Working Hours */}
-              <div className="px-5 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl shadow-xl shadow-blue-100 flex items-center justify-between text-white">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/10">
-                    <Clock className="h-5 w-5 text-white" />
+              {/* Shift Summary */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-slate-900 p-8 rounded-[2.5rem] text-white overflow-hidden relative group">
+                  <div className="relative z-10 space-y-8">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 bg-white/10 backdrop-blur-xl rounded-xl flex items-center justify-center border border-white/10">
+                        <Clock className="h-5 w-5 text-blue-400" />
+                      </div>
+                      <p className="subheading-premium !text-slate-400 !mb-0">Session Duration</p>
+                    </div>
+                    <p className="text-4xl font-black tracking-tighter">{record?.totalHours || record?.workingHours || 'In Progress'}</p>
+                    <div className="flex items-center gap-2">
+                       <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(59,130,246,0.6)]"></span>
+                       <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">{isCheckOutComplete ? 'Synchronized' : 'Active Log'}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-[10px] font-black uppercase tracking-widest opacity-80">Shift Duration</p>
-                    <p className="text-xl font-black">{record?.totalHours || record?.workingHours || 'In Progress'}</p>
-                  </div>
+                  <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-600/10 rounded-full blur-[80px]"></div>
                 </div>
-                <div className="h-10 w-px bg-white/20 mx-2"></div>
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest opacity-80">Shift Earning</p>
-                  <p className="text-xl font-black">₹{record?.earning || 0}</p>
-                </div>
-                <div className="h-10 w-px bg-white/20 mx-2"></div>
-                <div className="text-right">
-                  <p className="text-[10px] font-black uppercase tracking-widest opacity-80">Cycle Status</p>
-                  <p className="text-xs font-black">{isCheckOutComplete ? 'SHIFT COMPLETE' : 'ACTIVE SESSION'}</p>
+
+                <div className="bg-slate-50 p-8 rounded-[2.5rem] border border-slate-100 flex flex-col justify-between group overflow-hidden relative">
+                   <div className="space-y-8 relative z-10">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center border border-slate-200 shadow-sm text-lg font-black text-blue-600">₹</div>
+                        <p className="subheading-premium !mb-0">Yield Accrued</p>
+                      </div>
+                      <p className="text-4xl font-black text-slate-900 tracking-tighter">₹{record?.earning || 0}</p>
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="h-3 w-3 text-green-500" />
+                        <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Payroll Verified</p>
+                      </div>
+                   </div>
+                   <div className="absolute -right-8 -top-8 w-32 h-32 bg-white rounded-full blur-[60px] group-hover:bg-blue-100/50 transition-all duration-700"></div>
                 </div>
               </div>
 
 
-              {/* Section 1: Check-In */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center">
-                      <ShieldCheck className="h-4 w-4" />
-                    </div>
-                    <span className="text-sm font-black text-slate-900 uppercase tracking-tighter">Check-In Details</span>
-                  </div>
-                  <span className="px-3 py-1 bg-green-100 text-green-700 text-[9px] font-black uppercase tracking-widest rounded-full">Completed</span>
+              {/* Detailed Logs */}
+              <div className="space-y-8 pt-4">
+                <div className="flex items-center gap-4">
+                  <div className="h-px bg-slate-100 flex-1"></div>
+                  <span className="subheading-premium !text-slate-300 !mb-0">Biometric Verification Nodes</span>
+                  <div className="h-px bg-slate-100 flex-1"></div>
                 </div>
 
-                <div className="bg-white rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/40 p-1 group hover:border-blue-100 transition-all duration-500 overflow-hidden">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-1 h-full">
-                    <div className="relative aspect-video md:aspect-auto rounded-2xl overflow-hidden bg-slate-950">
+                {/* Entry Log */}
+                <div className="card-premium !bg-slate-50/20 group hover:!bg-white hover:border-blue-100 shadow-sm transition-all duration-700">
+                  <div className="flex flex-col md:flex-row gap-8">
+                    <div className="w-full md:w-48 aspect-square rounded-[2rem] overflow-hidden bg-slate-950 border border-slate-200/50 shadow-inner shrink-0 relative">
                       <img
                         src={checkInData.imageUrl}
                         alt="Check-in biometric"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
                       />
-                      <div className="absolute top-3 left-3 px-2 py-1 bg-black/40 backdrop-blur-md rounded-lg flex items-center gap-1.5 border border-white/10">
-                        <Camera className="h-3 w-3 text-white" />
-                        <span className="text-[9px] font-black text-white uppercase">Entry Photo</span>
+                      <div className="absolute inset-0 bg-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+                    
+                    <div className="flex-1 py-2 space-y-6">
+                      <div className="flex items-center justify-between">
+                         <div className="flex items-center gap-3">
+                            <span className="w-2 h-2 bg-blue-600 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.6)]"></span>
+                            <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Entry Verification</span>
+                         </div>
+                         <span className="px-3 py-1 bg-green-50 text-green-600 text-[8px] font-black uppercase tracking-widest rounded-lg border border-green-100">Authenticated</span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                         <div className="space-y-1.5">
+                            <p className="subheading-premium !text-[9px] !mb-0">Clock-In</p>
+                            <p className="text-xl font-black text-slate-900 tracking-tight">{checkInData.time}</p>
+                         </div>
+                         <div className="space-y-1.5">
+                            <p className="subheading-premium !text-[9px] !mb-0">Lock Signal</p>
+                            <p className="text-[10px] font-bold text-slate-500 line-clamp-2 uppercase tracking-tight">{checkInData.location}</p>
+                         </div>
                       </div>
                     </div>
-
-                    <div className="p-6 flex flex-col justify-between space-y-6">
-                      <div className="space-y-4">
-                        <div className="p-4 bg-slate-50/50 rounded-2xl border border-slate-100/50 transition-colors group-hover:bg-blue-50/30 group-hover:border-blue-100/50">
-                          <div className="flex items-center gap-2 mb-1.5 text-blue-500">
-                            <Clock className="h-3.5 w-3.5" />
-                            <span className="text-[10px] font-black uppercase tracking-widest">Check-In Time</span>
-                          </div>
-                          <p className="text-2xl font-black text-slate-900 tracking-tight">{checkInData.time}</p>
-                        </div>
-
-                        <div className="p-4 bg-slate-50/50 rounded-2xl border border-slate-100/50 transition-colors group-hover:bg-blue-50/30 group-hover:border-blue-100/50">
-                          <div className="flex items-center gap-2 mb-1.5 text-blue-500">
-                            <MapPin className="h-3.5 w-3.5" />
-                            <span className="text-[10px] font-black uppercase tracking-widest">Location</span>
-                          </div>
-                          <p className="text-xs font-bold text-slate-600 leading-relaxed truncate">{checkInData.location}</p>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="flex justify-center relative">
-                <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-slate-100"></div>
-                <div className="relative bg-white px-6">
-                  <div className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center border border-slate-100 shadow-sm">
-                    <ArrowRight className="h-4 w-4 text-slate-300" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 2: Check-Out */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-rose-50 text-rose-600 rounded-lg flex items-center justify-center">
-                      <LogOut className="h-4 w-4" />
-                    </div>
-                    <span className="text-sm font-black text-slate-900 uppercase tracking-tighter">Check-Out Details</span>
-                  </div>
-                  {isCheckOutComplete ? (
-                    <span className="px-3 py-1 bg-green-100 text-green-700 text-[9px] font-black uppercase tracking-widest rounded-full">Completed</span>
-                  ) : (
-                    <span className="px-3 py-1 bg-amber-100 text-amber-700 text-[9px] font-black uppercase tracking-widest rounded-full">Pending</span>
-                  )}
-                </div>
-
+                {/* Exit Log */}
                 {isCheckOutComplete ? (
-                  <div className="bg-white rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/40 p-1 group hover:border-rose-100 transition-all duration-500 overflow-hidden">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-1 h-full">
-                      <div className="relative aspect-video md:aspect-auto rounded-2xl overflow-hidden bg-slate-950">
-                        <img
-                          src={checkOutData.imageUrl}
-                          alt="Check-out biometric"
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                        />
-                        <div className="absolute top-3 left-3 px-2 py-1 bg-black/40 backdrop-blur-md rounded-lg flex items-center gap-1.5 border border-white/10">
-                          <Camera className="h-3 w-3 text-white" />
-                          <span className="text-[9px] font-black text-white uppercase">Exit Photo</span>
+                   <div className="card-premium !bg-slate-50/20 group hover:!bg-white hover:border-rose-100 shadow-sm transition-all duration-700">
+                      <div className="flex flex-col md:flex-row gap-8">
+                        <div className="w-full md:w-48 aspect-square rounded-[2rem] overflow-hidden bg-slate-950 border border-slate-200/50 shadow-inner shrink-0 relative">
+                          <img
+                            src={checkOutData.imageUrl}
+                            alt="Check-out biometric"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
+                          />
+                          <div className="absolute inset-0 bg-rose-600/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         </div>
-                      </div>
-
-                      <div className="p-6 flex flex-col justify-between space-y-6">
-                        <div className="space-y-4">
-                          <div className="p-4 bg-slate-50/50 rounded-2xl border border-slate-100/50 transition-colors group-hover:bg-rose-50/30 group-hover:border-rose-100/50">
-                            <div className="flex items-center gap-2 mb-1.5 text-rose-500">
-                              <Clock className="h-3.5 w-3.5" />
-                              <span className="text-[10px] font-black uppercase tracking-widest">Check-Out Time</span>
+                        
+                        <div className="flex-1 py-2 space-y-6">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <span className="w-2 h-2 bg-rose-500 rounded-full shadow-[0_0_8px_rgba(244,63,94,0.6)]"></span>
+                                <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Exit termination</span>
                             </div>
-                            <p className="text-2xl font-black text-slate-900 tracking-tight">{checkOutData.time}</p>
+                            <span className="px-3 py-1 bg-green-50 text-green-600 text-[8px] font-black uppercase tracking-widest rounded-lg border border-green-100">Authenticated</span>
                           </div>
 
-                          <div className="p-4 bg-slate-50/50 rounded-2xl border border-slate-100/50 transition-colors group-hover:bg-rose-50/30 group-hover:border-rose-100/50">
-                            <div className="flex items-center gap-2 mb-1.5 text-rose-500">
-                              <MapPin className="h-3.5 w-3.5" />
-                              <span className="text-[10px] font-black uppercase tracking-widest">Location</span>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div className="space-y-1.5">
+                                <p className="subheading-premium !text-[9px] !mb-0">Clock-Out</p>
+                                <p className="text-xl font-black text-slate-900 tracking-tight">{checkOutData.time}</p>
                             </div>
-                            <p className="text-xs font-bold text-slate-600 leading-relaxed truncate">{checkOutData.location}</p>
+                            <div className="space-y-1.5">
+                                <p className="subheading-premium !text-[9px] !mb-0">Lock Signal</p>
+                                <p className="text-[10px] font-bold text-slate-500 line-clamp-2 uppercase tracking-tight">{checkOutData.location}</p>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
                 ) : (
-                  <div className="bg-slate-50/50 rounded-[2rem] border-2 border-dashed border-slate-200 p-12 flex flex-col items-center text-center space-y-4 group transition-all hover:bg-white hover:border-rose-200">
-                    <div className="w-20 h-20 bg-amber-50 rounded-[1.5rem] flex items-center justify-center border border-amber-100 shadow-sm group-hover:scale-110 transition-transform">
-                      <AlertCircle className="h-10 w-10 text-amber-500" />
+                  <div className="bg-slate-50/50 rounded-[2.5rem] border-2 border-dashed border-slate-200 p-12 flex flex-col items-center text-center space-y-5 group transition-all hover:bg-white hover:border-amber-200">
+                    <div className="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center border border-amber-100 shadow-sm group-hover:scale-110 transition-transform">
+                      <AlertCircle className="h-8 w-8 text-amber-500" />
                     </div>
                     <div className="space-y-2">
-                      <h3 className="text-lg font-black text-slate-900 tracking-tight">Check-Out Incomplete</h3>
-                      <p className="text-slate-400 text-xs font-medium max-w-[200px]">The user has not logged their biometric exit for this session yet.</p>
+                      <h3 className="text-sm font-black text-slate-900 tracking-tight uppercase">Termination Pending</h3>
+                      <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest max-w-[240px]">Biometric exit protocol not initialized for this cycle.</p>
                     </div>
                   </div>
                 )}
@@ -238,15 +211,16 @@ const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
         </div>
 
         {/* Modal Footer */}
-        <div className="p-8 pt-4 bg-white/80 backdrop-blur-md border-t border-slate-50 flex justify-end">
+        <div className="px-10 py-8 bg-white/80 backdrop-blur-xl border-t border-slate-50 flex justify-end">
           <button
             onClick={onClose}
-            className="px-10 py-4 bg-slate-900 text-white rounded-2xl font-black text-xs tracking-widest uppercase hover:bg-slate-800 transition-all hover:-translate-y-1 active:scale-95 shadow-xl shadow-slate-200"
+            className="px-10 py-4 bg-slate-900 text-white rounded-2xl font-black text-[10px] tracking-[0.2em] uppercase hover:bg-slate-800 transition-all active:scale-95 shadow-2xl shadow-slate-900/20"
           >
-            Close Records
+            Close Database
           </button>
         </div>
       </div>
+
 
       <style dangerouslySetInnerHTML={{
         __html: `

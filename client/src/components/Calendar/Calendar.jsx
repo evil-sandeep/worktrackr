@@ -49,21 +49,25 @@ const Calendar = ({ attendanceData = {}, onDateSelect, onViewDateChange }) => {
         onDateClick={handleDateClick}
       />
       
-      <div className="mt-10 flex flex-wrap items-center justify-between gap-6 px-2">
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.4)]"></span>
-            <span className="font-black text-[10px] text-slate-400 uppercase tracking-widest">Present</span>
+      <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-6 px-4 border-t border-slate-100/60 pt-8">
+        <div className="flex flex-wrap items-center gap-6 sm:gap-10">
+          <div className="flex items-center gap-3 group px-3 py-1.5 rounded-xl hover:bg-slate-50 transition-colors">
+            <span className="w-3.5 h-3.5 rounded-md bg-emerald-500 shadow-lg shadow-emerald-500/20"></span>
+            <span className="font-bold text-[9px] text-slate-400 uppercase tracking-[0.2em] group-hover:text-slate-600 transition-colors">Present</span>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.4)]"></span>
-            <span className="font-black text-[10px] text-slate-400 uppercase tracking-widest">Absent</span>
+          <div className="flex items-center gap-3 group px-3 py-1.5 rounded-xl hover:bg-slate-50 transition-colors">
+            <span className="w-3.5 h-3.5 rounded-md bg-amber-500 shadow-lg shadow-amber-500/20"></span>
+            <span className="font-bold text-[9px] text-slate-400 uppercase tracking-[0.2em] group-hover:text-slate-600 transition-colors">Incomplete</span>
+          </div>
+          <div className="flex items-center gap-3 group px-3 py-1.5 rounded-xl hover:bg-slate-50 transition-colors">
+            <span className="w-3.5 h-3.5 rounded-md bg-red-600 shadow-lg shadow-red-600/20"></span>
+            <span className="font-bold text-[9px] text-slate-400 uppercase tracking-[0.2em] group-hover:text-slate-600 transition-colors">Absent</span>
           </div>
         </div>
         
-        <div className="flex items-center gap-3 bg-slate-50 px-5 py-2.5 rounded-2xl border border-slate-100">
-           <CalendarIcon className="h-4 w-4 text-slate-400" />
-           <p className="text-xs font-black text-slate-900 uppercase tracking-tight">
+        <div className="flex items-center gap-3 bg-slate-900 px-6 py-2.5 rounded-[1.25rem] shadow-xl shadow-slate-900/10 border border-white/5 group active:scale-95 transition-all">
+           <CalendarIcon className="h-4 w-4 text-white/40 group-hover:text-white transition-colors" />
+           <p className="text-[10px] font-black text-white uppercase tracking-widest">
               {selectedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
            </p>
         </div>

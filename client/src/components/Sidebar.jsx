@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   UserCircle, 
-  CalendarCheck,
+  Store,
   LogOut, 
   ChevronRight,
   ShieldCheck,
@@ -21,7 +21,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     { name: 'Dashboard', icon: LayoutDashboard, path: '/admindashboard', roles: ['admin'] },
     { name: 'Employees', icon: Users, path: '/employee', roles: ['admin'] },
     { name: 'Dashboard', icon: LayoutDashboard, path: '/employeedashboard', roles: ['employee'] },
-    { name: 'Attendance', icon: CalendarCheck, path: '#', roles: ['employee'] },
+    { name: 'Store Visit', icon: Store, path: '/storevisit', roles: ['employee'] },
     { name: 'Profile', icon: UserCircle, path: '/profile', roles: ['employee'] },
   ];
 
@@ -51,8 +51,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                   <ShieldCheck className="text-white h-6 w-6" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-xl font-black text-slate-900 tracking-tighter">WorkTrackr</span>
-                  <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest leading-none">Enterprise</span>
+                  <span className="text-xl font-bold text-slate-900 tracking-[-0.04em]">WorkTrackr</span>
+                  <span className="text-[9px] font-bold text-blue-600 uppercase tracking-[0.3em] leading-none opacity-80">Enterprise</span>
                 </div>
               </div>
               <button onClick={toggleSidebar} className="lg:hidden p-2 text-slate-400 hover:bg-slate-50 rounded-xl transition-colors">
@@ -63,7 +63,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
           {/* Navigation Section */}
           <nav className="flex-1 px-4 space-y-1.5 overflow-y-auto custom-scrollbar">
-            <p className="px-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 opacity-50">Operations</p>
+            <p className="px-4 text-[9px] font-bold text-slate-400 uppercase tracking-[0.3em] mb-5 opacity-40">Operations</p>
             {menuItems.map((item) => {
               const isActive = location.pathname === item.path;
               return (
@@ -74,8 +74,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xl shadow-blue-500/20 translate-x-1' 
                     : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900 hover:translate-x-1'}`}
                 >
-                  <item.icon className={`h-5 w-5 mr-3 transition-all duration-300 ${isActive ? 'text-white' : 'group-hover:text-blue-600 group-hover:scale-110'}`} />
-                  <span className="font-bold text-sm flex-1 tracking-tight">{item.name}</span>
+                  <item.icon className={`h-5 w-5 mr-3 transition-all duration-300 ${isActive ? 'text-white' : 'group-hover:text-blue-600 group-hover:scale-105'}`} />
+                  <span className="font-semibold text-sm flex-1 tracking-tight">{item.name}</span>
                   {isActive ? (
                     <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
                   ) : (
@@ -93,8 +93,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     {user.name.charAt(0)}
                 </div>
                 <div className="flex flex-col ml-3 overflow-hidden">
-                    <span className="text-sm font-black text-slate-900 truncate tracking-tight leading-tight">{user.name}</span>
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{user.role}</span>
+                    <span className="text-sm font-bold text-slate-900 truncate tracking-tight leading-tight">{user.name}</span>
+                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest opacity-80">{user.role}</span>
                 </div>
             </div>
             
@@ -103,7 +103,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                 authService.logout();
                 window.location.reload();
               }}
-              className="w-full flex items-center justify-center gap-2 px-4 py-4 bg-white border border-red-100 text-red-500 hover:bg-red-500 hover:text-white rounded-2xl font-black text-sm transition-all shadow-sm hover:shadow-lg hover:shadow-red-200 group active:scale-95"
+              className="w-full flex items-center justify-center gap-2 px-4 py-4 bg-white border border-red-100 text-red-500 hover:bg-red-500 hover:text-white rounded-2xl font-bold text-sm transition-all shadow-sm hover:shadow-lg hover:shadow-red-200 group active:scale-95"
             >
               <LogOut className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
               <span>Sign Out</span>
