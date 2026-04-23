@@ -9,6 +9,7 @@ import {
   AlertCircle, 
   ArrowRight,
   LogOut,
+  LogIn,
   ShieldCheck,
   Clock,
   UploadCloud
@@ -200,22 +201,28 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
           <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center space-y-10 bg-slate-950">
              <div className="relative group/btn cursor-pointer" onClick={startCamera}>
                 {/* Massive Glow Effect */}
-                <div className="absolute inset-0 bg-rose-600/40 rounded-full blur-[60px] animate-pulse group-hover/btn:bg-rose-600/60 transition-all duration-700"></div>
+                <div className={`absolute inset-0 ${mode === 'checkin' ? 'bg-blue-600/40 group-hover/btn:bg-blue-600/60' : 'bg-rose-600/40 group-hover/btn:bg-rose-600/60'} rounded-full blur-[60px] animate-pulse transition-all duration-700`}></div>
                 
                 <button 
-                  className="relative w-28 h-28 sm:w-32 sm:h-32 bg-rose-600 text-white rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(225,29,72,0.4)] transform group-hover/btn:scale-110 active:scale-95 transition-all duration-500 border-4 border-white/10"
+                  className={`relative w-28 h-28 sm:w-32 sm:h-32 ${mode === 'checkin' ? 'bg-blue-600 shadow-[0_0_50px_rgba(37,99,235,0.4)]' : 'bg-rose-600 shadow-[0_0_50px_rgba(225,29,72,0.4)]'} text-white rounded-full flex items-center justify-center transform group-hover/btn:scale-110 active:scale-95 transition-all duration-500 border-4 border-white/10`}
                 >
-                   <ShieldCheck className="h-10 w-10 sm:h-12 sm:w-12 filter drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]" />
+                   {mode === 'checkin' ? (
+                     <LogIn className="h-10 w-10 sm:h-12 sm:w-12 filter drop-shadow-[0_0_10px_rgba(255,255,255,0.4)] ml-1" />
+                   ) : (
+                     <LogOut className="h-10 w-10 sm:h-12 sm:w-12 filter drop-shadow-[0_0_10px_rgba(255,255,255,0.4)] mr-1" />
+                   )}
                 </button>
                 
                 {/* Orbital Ring */}
                 <div className="absolute -inset-4 border-2 border-slate-800 rounded-full animate-[spin_10s_linear_infinite] pointer-events-none">
-                   <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 bg-rose-500 rounded-full shadow-[0_0_10px_rgba(225,29,72,1)]"></div>
+                   <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 ${mode === 'checkin' ? 'bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,1)]' : 'bg-rose-500 shadow-[0_0_10px_rgba(225,29,72,1)]'} rounded-full`}></div>
                 </div>
              </div>
 
              <div className="space-y-3">
-               <h3 className="text-white text-xl font-black uppercase tracking-tighter">System Initialization</h3>
+               <h3 className={`text-xl font-black uppercase tracking-tighter ${mode === 'checkin' ? 'text-blue-400' : 'text-rose-400'}`}>
+                 {mode === 'checkin' ? 'Initialize Entry' : 'Initialize Exit'}
+               </h3>
                <p className="text-white/40 text-[10px] font-bold uppercase tracking-[0.4em] leading-relaxed">
                  Identity scan required for terminal {mode === 'checkin' ? 'access' : 'exit'}
                </p>

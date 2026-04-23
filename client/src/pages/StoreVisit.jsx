@@ -7,9 +7,9 @@ const StoreVisit = () => {
     const user = authService.getCurrentUser();
 
     return (
-        <div className="space-y-6 pb-4 animate-in fade-in duration-1000">
+        <div className="space-y-6 pb-4 animate-in fade-in duration-1000 h-full flex flex-col">
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 shrink-0">
                 <div className="space-y-1">
                     <p className="subheading-premium !mb-0.5">Operational Hub</p>
                     <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
@@ -28,12 +28,12 @@ const StoreVisit = () => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0">
+                <div className="lg:col-span-2 h-full min-h-0">
                     <VisitFlow />
                 </div>
                 
-                <div className="space-y-4">
+                <div className="space-y-4 overflow-y-auto custom-scrollbar pr-2 h-full">
                     <div className="card-premium p-6 bg-slate-900 text-white relative overflow-hidden group">
                         <div className="relative z-10 space-y-4">
                             <div className="w-10 h-10 bg-white/10 backdrop-blur-xl rounded-xl flex items-center justify-center border border-white/10 text-blue-400">

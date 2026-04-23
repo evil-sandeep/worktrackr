@@ -33,9 +33,8 @@ const VisitFlow = ({ onSuccess }) => {
       );
       const data = await response.json();
       if (data && data.display_name) {
-        const city = data.address.city || data.address.town || data.address.village || '';
-        const state = data.address.state || '';
-        setAddress([city, state].filter(Boolean).join(', ') || data.display_name.split(',').slice(0, 2).join(','));
+        // Set the full exact address string which includes area, village, and specific location details
+        setAddress(data.display_name);
       }
     } catch (err) {
       console.error('Visit Geocoding Error:', err);
@@ -174,9 +173,14 @@ const VisitFlow = ({ onSuccess }) => {
               <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-slate-900 shadow-xl border border-slate-100 shrink-0">
                  <MapPin className="h-5 w-5" />
               </div>
-              <div className="space-y-0.5">
+              <div className="space-y-1 w-full overflow-hidden">
                  <p className="subheading-premium !mb-0 !text-[8px]">Geographic Lock</p>
                  <p className="text-[10px] font-black text-slate-900 uppercase tracking-tight">Signal: {location?.latitude.toFixed(4)}, {location?.longitude.toFixed(4)}</p>
+                 {address && (
+                    <p className="text-[10px] font-semibold text-slate-600 line-clamp-2" title={address}>
+                       {address}
+                    </p>
+                 )}
                  <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest opacity-60">ID: {visitId?.slice(-8).toUpperCase()}</p>
               </div>
            </div>

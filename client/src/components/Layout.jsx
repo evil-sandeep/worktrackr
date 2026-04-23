@@ -17,9 +17,9 @@ const Layout = ({ children }) => {
         {/* Top Navbar */}
         <Navbar toggleSidebar={toggleSidebar} />
 
-        {/* Content - Zero Scroll Main */}
-        <main className="p-4 md:p-6 flex-1 overflow-hidden">
-          <div className="max-w-[1600px] mx-auto h-full overflow-hidden flex flex-col">
+        {/* Content - Scrollable Main */}
+        <main className="p-4 md:p-6 flex-1 overflow-y-auto">
+          <div className="max-w-[1600px] mx-auto h-full flex flex-col">
             {children}
           </div>
         </main>
