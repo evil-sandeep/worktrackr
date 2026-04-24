@@ -28,7 +28,11 @@ const Register = () => {
     try {
       await authService.register(formData);
       addToast('Registration successful! Welcome to WorkTrackr.', 'success');
-      navigate('/employeedashboard');
+      if (formData.role === 'orgadmin') {
+        navigate('/admindashboard');
+      } else {
+        navigate('/employeedashboard');
+      }
     } catch (err) {
       addToast(err.response?.data?.message || 'Registration failed.', 'error');
     } finally {
@@ -152,6 +156,23 @@ const Register = () => {
                 >
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
+              </div>
+            </div>
+
+            {/* Role Selection */}
+            <div className="space-y-3">
+              <label className="text-sm font-bold text-slate-300 ml-1">Account Type</label>
+              <div className="grid grid-cols-2 gap-4">
+                <label className={`flex items-center justify-center gap-2 p-3 rounded-xl border cursor-pointer transition-all ${formData.role === 'employee' ? 'bg-indigo-500/20 border-indigo-500 text-white' : 'bg-slate-900/50 border-slate-800 text-slate-400 hover:bg-slate-800'}`}>
+                  <input type="radio" name="role" value="employee" className="hidden" checked={formData.role === 'employee'} onChange={handleChange} />
+                  <User className="h-4 w-4" />
+                  <span className="font-bold text-sm tracking-wide">Employee</span>
+                </label>
+                <label className={`flex items-center justify-center gap-2 p-3 rounded-xl border cursor-pointer transition-all ${formData.role === 'orgadmin' ? 'bg-indigo-500/20 border-indigo-500 text-white' : 'bg-slate-900/50 border-slate-800 text-slate-400 hover:bg-slate-800'}`}>
+                  <input type="radio" name="role" value="orgadmin" className="hidden" checked={formData.role === 'orgadmin'} onChange={handleChange} />
+                  <Briefcase className="h-4 w-4" />
+                  <span className="font-bold text-sm tracking-wide">Org Admin</span>
+                </label>
               </div>
             </div>
 
