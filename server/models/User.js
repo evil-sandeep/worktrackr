@@ -55,6 +55,10 @@ const userSchema = new mongoose.Schema({
     enum: ['ONLINE', 'GPS OFF', 'OFFLINE'],
     default: 'OFFLINE',
   },
+  isPaid: {
+    type: Boolean,
+    default: false,
+  },
   lastSeen: {
     type: Date,
     default: Date.now,

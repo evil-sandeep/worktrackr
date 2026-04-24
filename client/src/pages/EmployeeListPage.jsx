@@ -189,9 +189,12 @@ const EmployeeListPage = () => {
                         {getStatus(emp).label}
                       </span>
                    </div>
-                   <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight">
+                   <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mb-1">
                       {emp.lastSeen ? `${Math.floor((new Date() - new Date(emp.lastSeen)) / 60000)}m ago` : 'No signals'}
                    </p>
+                   <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest ${emp.isPaid ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-slate-100 text-slate-500 border border-slate-200'}`}>
+                     {emp.isPaid ? 'Paid' : 'Unpaid'}
+                   </span>
                 </div>
                 <div className="col-span-3 flex justify-end">
                   <button className="flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all">

@@ -6,8 +6,21 @@ const {
   getEmployeeDailyTracking,
   createEmployee
 } = require('../controllers/adminController');
-const { protect, admin } = require('../middleware/authMiddleware');
+const {
+  getSuperAdminStats,
+  getOrganizations,
+  updateOrganization,
+  deleteOrganization
+} = require('../controllers/superAdminController');
+const { protect, admin, superAdmin } = require('../middleware/authMiddleware');
 
+// --- SUPER ADMIN ROUTES ---
+router.get('/super/stats', protect, superAdmin, getSuperAdminStats);
+router.get('/super/organizations', protect, superAdmin, getOrganizations);
+router.put('/super/organizations/:id', protect, superAdmin, updateOrganization);
+router.delete('/super/organizations/:id', protect, superAdmin, deleteOrganization);
+
+// --- ADMIN ROUTES ---
 // @route   GET /api/admin/employees
 // @desc    Fetch all registered employees from database
 router.get('/employees', protect, admin, getAllEmployees);

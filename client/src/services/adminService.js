@@ -35,6 +35,28 @@ const getDailyTracking = async (id, date) => {
   return response.data;
 };
 
+// --- SUPER ADMIN ENDPOINTS ---
+
+const getSuperAdminStats = async () => {
+  const response = await api.get('/admin/super/stats');
+  return response.data;
+};
+
+const getOrganizations = async () => {
+  const response = await api.get('/admin/super/organizations');
+  return response.data;
+};
+
+const updateOrganization = async (id, orgData) => {
+  const response = await api.put(`/admin/super/organizations/${id}`, orgData);
+  return response.data;
+};
+
+const deleteOrganization = async (id) => {
+  const response = await api.delete(`/admin/super/organizations/${id}`);
+  return response.data;
+};
+
 const adminService = {
   getEmployees,
   getEmployeeById,
@@ -42,7 +64,11 @@ const adminService = {
   deleteEmployee,
   getEmployeeAttendance,
   getDashboardStats,
-  getDailyTracking
+  getDailyTracking,
+  getSuperAdminStats,
+  getOrganizations,
+  updateOrganization,
+  deleteOrganization
 };
 
 export default adminService;

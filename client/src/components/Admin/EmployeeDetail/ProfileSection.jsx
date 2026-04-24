@@ -93,6 +93,23 @@ const ProfileSection = ({ employee, formData, onFormChange, onUpdate, onDelete }
             </div>
           </div>
 
+          <div className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-xl shadow-sm">
+            <div className="space-y-0.5">
+               <label className="text-xs font-black text-slate-900 tracking-tight block">Payment Status</label>
+               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Is this employee paid?</span>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input 
+                type="checkbox" 
+                name="isPaid" 
+                checked={formData.isPaid} 
+                onChange={(e) => onFormChange({ target: { name: 'isPaid', value: e.target.checked } })} 
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+            </label>
+          </div>
+
           <div className="space-y-1.5">
             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Contact</label>
             <input 

@@ -5,14 +5,23 @@ import {
   ShieldCheck, 
   Activity,
   Plus,
-  ArrowUpRight
+  IndianRupee
 } from 'lucide-react';
 import adminService from '../services/adminService';
 import { useUI } from '../context/UIContext';
 import axios from 'axios';
+import OrganizationDetailModal from '../components/Admin/OrganizationDetailModal';
 
 const SuperAdminDashboard = () => {
-  const [employees, setEmployees] = useState([]);
+  const [stats, setStats] = useState({
+    totalOrganizations: 0,
+    totalEmployees: 0,
+    paidEmployees: 0,
+    unpaidEmployees: 0,
+    totalRevenue: 0
+  });
+  const [organizations, setOrganizations] = useState([]);
+  const [selectedOrg, setSelectedOrg] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const { showLoader, addToast } = useUI();
   
@@ -22,48 +31,48 @@ const SuperAdminDashboard = () => {
     phone: '',
     empId: '',
     password: '',
-    isOrgAdmin: false
+    isOrgAdmin: true // Default to true since they mostly add orgs here
   });
 
-  const fetchEmployees = async () => {
+  const fetchData = async () => {
     showLoader(true);
     try {
-      const data = await adminService.getEmployees();
-      setEmployees(data);
+      const [statsData, orgsData] = await Promise.all([
+        adminService.getSuperAdminStats(),
+        adminService.getOrganizations()
+      ]);
+      setStats(statsData);
+      setOrganizations(orgsData);
     } catch (error) {
-      addToast(error.response?.data?.message || 'Failed to fetch users', 'error');
+      addToast(error.response?.data?.message || 'Failed to fetch dashboard data', 'error');
     } finally {
       showLoader(false);
     }
   };
 
   useEffect(() => {
-    fetchEmployees();
+    fetchData();
   }, []);
 
   const handleCreateUser = async (e) => {
     e.preventDefault();
     showLoader(true);
     try {
-      // Use axios directly with auth header, since adminService might not have createEmployee
       const token = JSON.parse(localStorage.getItem('user'))?.token;
       const config = { headers: { Authorization: `Bearer ${token}` } };
       await axios.post('http://localhost:5000/api/admin/employees', formData, config);
       addToast('User created successfully', 'success');
       setShowAddModal(false);
       setFormData({
-        name: '', email: '', phone: '', empId: '', password: '', isOrgAdmin: false
+        name: '', email: '', phone: '', empId: '', password: '', isOrgAdmin: true
       });
-      fetchEmployees();
+      fetchData();
     } catch (error) {
       addToast(error.response?.data?.message || 'Failed to create user', 'error');
     } finally {
       showLoader(false);
     }
   };
-
-  const orgAdminsCount = employees.filter(e => e.role === 'orgadmin').length;
-  const regularEmployeesCount = employees.filter(e => e.role === 'employee').length;
 
   return (
     <div className="h-full overflow-y-auto space-y-10 animate-in fade-in duration-700 custom-scrollbar pr-4">
@@ -73,7 +82,7 @@ const SuperAdminDashboard = () => {
           <h1 className="text-2xl font-black text-slate-900 tracking-tighter font-poppins">
             Platform <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Control</span>
           </h1>
-          <p className="text-slate-500 font-bold text-[11px] uppercase tracking-wide opacity-60">Global organization management</p>
+          <p className="text-slate-500 font-bold text-[11px] uppercase tracking-wide opacity-60">Global organization & revenue management</p>
         </div>
         <button 
           onClick={() => setShowAddModal(true)}
@@ -84,62 +93,110 @@ const SuperAdminDashboard = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="bg-white p-5 rounded-[1.5rem] border border-slate-100 shadow-xl shadow-slate-200/40">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white p-5 rounded-[1.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 relative overflow-hidden">
           <div className="flex justify-between items-start mb-4">
              <div className="w-11 h-11 bg-indigo-100 rounded-xl flex items-center justify-center">
                <Building2 className="h-5 w-5 text-indigo-600" />
              </div>
           </div>
-          <h3 className="text-slate-400 font-black text-[9px] uppercase tracking-[0.2em] font-poppins">Organizations</h3>
-          <p className="text-3xl font-black text-slate-900 tracking-tighter font-poppins">{orgAdminsCount}</p>
+          <h3 className="text-slate-400 font-black text-[9px] uppercase tracking-[0.2em] font-poppins">Total Organizations</h3>
+          <p className="text-3xl font-black text-slate-900 tracking-tighter font-poppins">{stats.totalOrganizations}</p>
         </div>
 
-        <div className="bg-white p-5 rounded-[1.5rem] border border-slate-100 shadow-xl shadow-slate-200/40">
+        <div className="bg-white p-5 rounded-[1.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 relative overflow-hidden">
           <div className="flex justify-between items-start mb-4">
              <div className="w-11 h-11 bg-blue-100 rounded-xl flex items-center justify-center">
                <Users className="h-5 w-5 text-blue-600" />
              </div>
           </div>
           <h3 className="text-slate-400 font-black text-[9px] uppercase tracking-[0.2em] font-poppins">Global Workforce</h3>
-          <p className="text-3xl font-black text-slate-900 tracking-tighter font-poppins">{regularEmployeesCount}</p>
+          <p className="text-3xl font-black text-slate-900 tracking-tighter font-poppins">{stats.totalEmployees}</p>
         </div>
 
-        <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-[1.5rem] p-6 text-white shadow-xl shadow-indigo-500/20">
-            <ShieldCheck className="h-8 w-8 text-indigo-200 mb-4" />
-            <h3 className="font-bold text-indigo-100 text-[9px] uppercase tracking-widest mb-2 font-poppins">Platform Status</h3>
-            <p className="text-lg font-black leading-tight mb-2 font-poppins">All Systems Secure</p>
-            <p className="text-[10px] font-medium text-indigo-200 opacity-80">Data isolation protocol active</p>
+        <div className="bg-white p-5 rounded-[1.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 relative overflow-hidden">
+          <div className="flex justify-between items-start mb-4">
+             <div className="w-11 h-11 bg-green-100 rounded-xl flex items-center justify-center">
+               <ShieldCheck className="h-5 w-5 text-green-600" />
+             </div>
+             <span className="text-[10px] font-bold text-orange-500 bg-orange-50 px-2 py-1 rounded">
+               {stats.unpaidEmployees} Unpaid
+             </span>
+          </div>
+          <h3 className="text-slate-400 font-black text-[9px] uppercase tracking-[0.2em] font-poppins">Paid Employees</h3>
+          <p className="text-3xl font-black text-slate-900 tracking-tighter font-poppins">{stats.paidEmployees}</p>
+        </div>
+
+        <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-[1.5rem] p-5 text-white shadow-xl shadow-indigo-500/20 relative overflow-hidden">
+            <div className="w-11 h-11 bg-white/20 rounded-xl flex items-center justify-center mb-4">
+              <IndianRupee className="h-5 w-5 text-white" />
+            </div>
+            <h3 className="font-bold text-indigo-100 text-[9px] uppercase tracking-widest mb-1 font-poppins">Total Revenue</h3>
+            <p className="text-3xl font-black leading-tight font-poppins">₹{stats.totalRevenue}</p>
         </div>
       </div>
 
-      {/* Global Directory */}
-      <div className="bg-white rounded-[1.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 p-5">
+      {/* Organizations Table */}
+      <div className="bg-white rounded-[1.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 p-5 overflow-hidden">
          <h3 className="text-lg font-black text-slate-900 tracking-tight flex items-center gap-3 font-poppins mb-6">
             <span className="w-1 h-5 bg-indigo-600 rounded-full"></span>
-            Global User Directory
+            Registered Organizations
          </h3>
-         <div className="divide-y divide-slate-100">
-           {employees.map(emp => (
-             <div key={emp._id} className="py-3 flex justify-between items-center hover:bg-slate-50 px-2 rounded-lg transition-colors">
-                <div className="flex items-center gap-3">
-                   <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-500">
-                     {emp.name.charAt(0)}
-                   </div>
-                   <div>
-                      <p className="text-sm font-bold text-slate-900">{emp.name}</p>
-                      <p className="text-[10px] font-bold text-slate-500">{emp.email}</p>
-                   </div>
-                </div>
-                <div className="text-right">
-                   <span className={`px-2 py-1 rounded text-[9px] font-black uppercase ${emp.role === 'orgadmin' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600'}`}>
-                     {emp.role}
-                   </span>
-                </div>
-             </div>
-           ))}
+         <div className="overflow-x-auto">
+           <table className="w-full text-left border-collapse">
+             <thead>
+               <tr className="border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                 <th className="py-3 px-4">Organization Name</th>
+                 <th className="py-3 px-4">Admin Email</th>
+                 <th className="py-3 px-4 text-center">Total Staff</th>
+                 <th className="py-3 px-4 text-center">Paid Staff</th>
+                 <th className="py-3 px-4 text-center">Unpaid Staff</th>
+                 <th className="py-3 px-4 text-right">Revenue</th>
+               </tr>
+             </thead>
+             <tbody className="divide-y divide-slate-50">
+               {organizations.length === 0 ? (
+                 <tr>
+                   <td colSpan="6" className="py-8 text-center text-slate-400 font-bold italic text-sm">
+                     No organizations registered yet.
+                   </td>
+                 </tr>
+               ) : (
+                 organizations.map(org => (
+                   <tr 
+                     key={org._id} 
+                     onClick={() => setSelectedOrg(org)}
+                     className="hover:bg-indigo-50/50 cursor-pointer transition-colors group"
+                   >
+                     <td className="py-4 px-4">
+                       <div className="flex items-center gap-3">
+                         <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-xs font-black text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                           {org.name.charAt(0)}
+                         </div>
+                         <span className="font-bold text-sm text-slate-900">{org.name}</span>
+                       </div>
+                     </td>
+                     <td className="py-4 px-4 text-xs font-bold text-slate-500">{org.email}</td>
+                     <td className="py-4 px-4 text-center text-xs font-black text-slate-900">{org.stats?.totalStaff || 0}</td>
+                     <td className="py-4 px-4 text-center text-xs font-black text-green-600 bg-green-50/50">{org.stats?.paidStaff || 0}</td>
+                     <td className="py-4 px-4 text-center text-xs font-black text-orange-500 bg-orange-50/50">{org.stats?.unpaidStaff || 0}</td>
+                     <td className="py-4 px-4 text-right text-sm font-black text-slate-900 font-poppins">₹{org.stats?.revenue || 0}</td>
+                   </tr>
+                 ))
+               )}
+             </tbody>
+           </table>
          </div>
       </div>
+
+      {/* Detail Modal */}
+      {selectedOrg && (
+        <OrganizationDetailModal 
+          organization={selectedOrg} 
+          onClose={() => setSelectedOrg(null)} 
+          onUpdate={fetchData}
+        />
+      )}
 
       {/* Add User Modal */}
       {showAddModal && (
