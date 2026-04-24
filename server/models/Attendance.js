@@ -5,6 +5,10 @@ const attendanceSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  organizationId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
   date: {
     type: String, // YYYY-MM-DD
     required: true,

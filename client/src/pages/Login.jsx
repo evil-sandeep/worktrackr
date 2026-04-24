@@ -20,7 +20,9 @@ const Login = () => {
       addToast('Login successful! Welcome back.', 'success');
       
       // Role-based navigation
-      if (user.role === 'admin') {
+      if (user.role === 'superadmin') {
+        navigate('/superadmindashboard');
+      } else if (user.role === 'orgadmin' || user.role === 'admin') {
         navigate('/admindashboard');
       } else {
         navigate('/employeedashboard');

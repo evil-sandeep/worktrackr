@@ -3,13 +3,18 @@ const router = express.Router();
 const { 
   getAllEmployees, 
   getEmployeeById, 
-  getEmployeeDailyTracking 
+  getEmployeeDailyTracking,
+  createEmployee
 } = require('../controllers/adminController');
 const { protect, admin } = require('../middleware/authMiddleware');
 
 // @route   GET /api/admin/employees
 // @desc    Fetch all registered employees from database
 router.get('/employees', protect, admin, getAllEmployees);
+
+// @route   POST /api/admin/employees
+// @desc    Create a new employee/orgadmin
+router.post('/employees', protect, admin, createEmployee);
 
 // @route   GET /api/admin/employees/:id/daily?date=YYYY-MM-DD
 // @desc    Fetch complete tracking log for an employee on a specific date

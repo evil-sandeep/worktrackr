@@ -5,6 +5,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import AdminDashboard from './pages/AdminDashboard';
+import SuperAdminDashboard from './pages/SuperAdminDashboard';
 import EmployeeListPage from './pages/EmployeeListPage';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
@@ -21,9 +22,12 @@ import authService from './services/authService';
 const HomeRedirect = () => {
   const user = authService.getCurrentUser();
   if (!user) return <Navigate to="/login" replace />;
-  return user.role === 'admin' 
-    ? <Navigate to="/admindashboard" replace /> 
-    : <Navigate to="/employeedashboard" replace />;
+  if (user.role === 'superadmin') {
+    return <Navigate to="/superadmindashboard" replace />;
+  } else if (user.role === 'orgadmin' || user.role === 'admin') {
+    return <Navigate to="/admindashboard" replace />;
+  }
+  return <Navigate to="/employeedashboard" replace />;
 };
 
 const GlobalUI = () => {
@@ -94,6 +98,16 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <Layout>
               <AdminDashboard />
+            </Layout>
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/superadmindashboard" 
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <SuperAdminDashboard />
             </Layout>
           </ProtectedRoute>
         } 

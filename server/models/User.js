@@ -26,8 +26,13 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['employee', 'admin'],
+    enum: ['employee', 'admin', 'superadmin', 'orgadmin'],
     default: 'employee',
+  },
+  organizationId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: null,
   },
   profileImg: {
     type: String,

@@ -6,6 +6,10 @@ const CheckInSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  organizationId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
   locationName: {
     type: String,
     optional: true, // Defined as optional by user

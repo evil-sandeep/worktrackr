@@ -9,14 +9,71 @@ const Visit = require('../models/Visit');
 // @access  Private/Admin
 const getAllEmployees = async (req, res) => {
   try {
-    // Fetch all users from the database, excluding their passwords
-    const employees = await User.find({}).select('-password').sort({ createdAt: -1 });
+    let query = {};
+    if (req.user.role === 'orgadmin') {
+      query = { organizationId: req.user._id };
+    } else if (req.user.role === 'superadmin') {
+      // Super admin sees all orgadmins and employees
+      query = {};
+    }
+
+    const employees = await User.find(query).select('-password').sort({ createdAt: -1 });
     
-    // Return the response in JSON format
     return res.status(200).json(employees);
   } catch (error) {
     console.error('Error fetching employees:', error);
     return res.status(500).json({ message: 'Server Error: Unable to fetch employees' });
+  }
+};
+
+// @desc    Create a new employee/orgadmin (Admin Only)
+// @route   POST /api/admin/employees
+// @access  Private/Admin
+const createEmployee = async (req, res) => {
+  try {
+    const { name, email, phone, empId, password, isOrgAdmin, organizationId } = req.body;
+
+    const userExists = await User.findOne({ $or: [{ email }, { empId }] });
+    if (userExists) {
+      return res.status(400).json({ message: 'User with this email or Employee ID already exists' });
+    }
+
+    let assignedRole = 'employee';
+    let assignedOrgId = req.user._id; // Default for orgadmin creating an employee
+
+    if (req.user.role === 'superadmin') {
+      if (isOrgAdmin) {
+        assignedRole = 'orgadmin';
+        assignedOrgId = null; // OrgAdmins are their own organization
+      } else {
+        assignedOrgId = organizationId || null;
+      }
+    }
+
+    const user = await User.create({
+      name,
+      email,
+      phone,
+      empId,
+      password,
+      role: assignedRole,
+      organizationId: assignedRole === 'orgadmin' ? null : assignedOrgId
+    });
+
+    if (assignedRole === 'orgadmin') {
+      // OrgAdmins use their own _id as organizationId
+      user.organizationId = user._id;
+      await user.save();
+    }
+
+    res.status(201).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -95,4 +152,5 @@ module.exports = {
   getAllEmployees,
   getEmployeeById,
   getEmployeeDailyTracking,
+  createEmployee,
 };

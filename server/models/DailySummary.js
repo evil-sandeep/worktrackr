@@ -6,6 +6,10 @@ const DailySummarySchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  organizationId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
   date: {
     type: String, // Format: YYYY-MM-DD
     required: true,

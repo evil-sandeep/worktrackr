@@ -19,8 +19,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   const user = authService.getCurrentUser();
 
   const allMenuItems = [
-    { name: 'Dashboard', icon: LayoutDashboard, path: '/admindashboard', roles: ['admin'] },
-    { name: 'Employees', icon: Users, path: '/employee', roles: ['admin'] },
+    { name: 'Super Console', icon: ShieldCheck, path: '/superadmindashboard', roles: ['superadmin'] },
+    { name: 'Global Directory', icon: Users, path: '/employee', roles: ['superadmin'] },
+    { name: 'Profile', icon: UserCircle, path: '/profile', roles: ['superadmin'] },
+    { name: 'Dashboard', icon: LayoutDashboard, path: '/admindashboard', roles: ['admin', 'orgadmin'] },
+    { name: 'Employees', icon: Users, path: '/employee', roles: ['admin', 'orgadmin'] },
+    { name: 'Profile', icon: UserCircle, path: '/profile', roles: ['admin', 'orgadmin'] },
     { name: 'Dashboard', icon: LayoutDashboard, path: '/employeedashboard', roles: ['employee'] },
     { name: 'Calendar', icon: Calendar, path: '/calendar', roles: ['employee'] },
     { name: 'Store Visit', icon: Store, path: '/storevisit', roles: ['employee'] },

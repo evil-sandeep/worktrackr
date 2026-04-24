@@ -26,13 +26,21 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: 'User with this email or Employee ID already exists' });
     }
 
+    // Automatically set superadmin role for admin@worktrackr.com
+    let assignedRole = 'employee';
+    if (email.toLowerCase() === 'admin@worktrackr.com') {
+      assignedRole = 'superadmin';
+    } else if (role === 'orgadmin') {
+      assignedRole = 'orgadmin';
+    }
+
     const user = await User.create({
       name,
       email,
       phone,
       empId,
       password,
-      role: 'employee' // Always default to employee on public registration
+      role: assignedRole,
     });
 
     if (user) {
@@ -71,6 +79,7 @@ const loginUser = async (req, res) => {
         email: user.email,
         empId: user.empId,
         role: user.role,
+        organizationId: user.organizationId,
         token: generateToken(user._id),
       });
     } else {
@@ -183,7 +192,11 @@ const deleteEmployee = async (req, res) => {
 const getEmployees = async (req, res) => {
   try {
     console.log('Fetching all database users...');
-    const employees = await User.find({}).sort({ createdAt: -1 }).select('-password');
+    let query = {};
+    if (req.user && req.user.role === 'orgadmin') {
+      query = { organizationId: req.user._id };
+    }
+    const employees = await User.find(query).sort({ createdAt: -1 }).select('-password');
     console.log(`Found ${employees.length} users in the database.`);
     res.json(employees);
   } catch (error) {
@@ -193,15 +206,28 @@ const getEmployees = async (req, res) => {
 
 const getAdminDashboardStats = async (req, res) => {
   try {
-    const totalEmployees = await User.countDocuments({ role: 'employee' });
-    
     const now = new Date();
     const today = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+
+    let userQuery = { role: 'employee' };
+    let attendanceQuery = { date: today };
+
+    if (req.user && req.user.role === 'orgadmin') {
+      userQuery.organizationId = req.user._id;
+      // We need to fetch user IDs to filter attendance
+      const orgUsers = await User.find(userQuery).select('_id');
+      const orgUserIds = orgUsers.map(u => u._id.toString());
+      attendanceQuery.userId = { $in: orgUserIds };
+    }
+
+    const totalEmployees = await User.countDocuments(userQuery);
     
-    const presentToday = await Attendance.countDocuments({ date: today, status: 'present' });
+    attendanceQuery.status = 'present';
+    const presentToday = await Attendance.countDocuments(attendanceQuery);
     
     // Recent activity (latest 8 check-ins)
-    const recentActivity = await Attendance.find({ date: today })
+    delete attendanceQuery.status;
+    const recentActivity = await Attendance.find(attendanceQuery)
       .sort({ updatedAt: -1 })
       .limit(8);
 
