@@ -17,7 +17,9 @@ class CheckInService {
       insidePhoto, 
       latitude, 
       longitude, 
+      accuracy,
       locationName,
+      addressComponents,
       timestamp 
     } = data;
 
@@ -45,6 +47,8 @@ class CheckInService {
       insidePhoto: insidePhotoUrl,
       latitude,
       longitude,
+      accuracy,
+      address: addressComponents,
       timestamp: timestamp || new Date(),
       date: checkInDate
     });

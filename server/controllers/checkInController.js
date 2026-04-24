@@ -11,7 +11,9 @@ const createCheckIn = async (req, res) => {
       insidePhoto, 
       latitude, 
       longitude, 
+      accuracy,
       locationName,
+      addressComponents,
       timestamp 
     } = req.body;
 
@@ -31,6 +33,10 @@ const createCheckIn = async (req, res) => {
       return res.status(400).json({ message: 'Employee ID is required' });
     }
 
+    if (accuracy && accuracy > 100) {
+      return res.status(400).json({ message: `GPS accuracy is too low (${Math.round(accuracy)}m). Please move to an open area.` });
+    }
+
     // 2. Delegate business logic to Service
     const checkIn = await checkInService.processCheckIn({
       employeeId,
@@ -38,7 +44,9 @@ const createCheckIn = async (req, res) => {
       insidePhoto,
       latitude,
       longitude,
+      accuracy,
       locationName,
+      addressComponents,
       timestamp
     });
 

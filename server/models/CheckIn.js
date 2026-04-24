@@ -26,6 +26,16 @@ const CheckInSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  accuracy: {
+    type: Number,
+  },
+  address: {
+    village: String,
+    area: String,
+    district: String,
+    state: String,
+    fullAddress: String,
+  },
   timestamp: {
     type: Date,
     default: Date.now,

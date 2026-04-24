@@ -20,12 +20,14 @@ const CheckInTerminal = ({ onSuccess }) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   
-  const [step, setStep] = useState(1); // 1: Outside, 2: Inside, 3: Review
+  const [step, setStep] = useState(1); // 1: Outside, 2: Inside, 3: Review, 4: Success
   const [stream, setStream] = useState(null);
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [photos, setPhotos] = useState({ outside: null, inside: null });
   const [location, setLocation] = useState(null);
+  const [accuracy, setAccuracy] = useState(null);
+  const [addressComponents, setAddressComponents] = useState(null);
   const [address, setAddress] = useState(null);
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -36,12 +38,47 @@ const CheckInTerminal = ({ onSuccess }) => {
 
   const fetchAddress = async (lat, lon) => {
     try {
+      const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=${apiKey}`
       );
       const data = await response.json();
-      if (data && data.display_name) {
-        setAddress(data.display_name.split(',').slice(0, 3).join(','));
+      
+      if (data.status === 'OK' && data.results.length > 0) {
+        const result = data.results[0];
+        const formattedAddress = result.formatted_address;
+        
+        let village = '';
+        let area = '';
+        let district = '';
+        let state = '';
+        
+        result.address_components.forEach(component => {
+          const types = component.types;
+          if (types.includes('locality') || types.includes('administrative_area_level_3')) {
+            village = village || component.long_name;
+          }
+          if (types.includes('sublocality')) {
+            area = area || component.long_name;
+          }
+          if (types.includes('administrative_area_level_2')) {
+            district = district || component.long_name;
+          }
+          if (types.includes('administrative_area_level_1')) {
+            state = component.long_name;
+          }
+        });
+        
+        setAddress(formattedAddress.split(',').slice(0, 3).join(','));
+        setAddressComponents({
+          village,
+          area,
+          district,
+          state,
+          formattedAddress
+        });
+      } else {
+        setAddress('Address not found');
       }
     } catch (err) {
       console.error('Geocoding Error:', err);
@@ -60,11 +97,18 @@ const CheckInTerminal = ({ onSuccess }) => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
-            const { latitude, longitude } = position.coords;
+            const { latitude, longitude, accuracy } = position.coords;
+            if (accuracy > 100) {
+              addToast(`GPS accuracy too low (${Math.round(accuracy)}m). Please move to an open area.`, 'warning');
+              stopCamera();
+              return;
+            }
             setLocation({ latitude, longitude });
+            setAccuracy(accuracy);
             fetchAddress(latitude, longitude);
           },
-          () => addToast('GPS access denied. Required for check-in.', 'error')
+          (error) => addToast(`GPS Error: ${error.message}`, 'error'),
+          { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
         );
       }
     } catch (err) {
@@ -134,11 +178,13 @@ const CheckInTerminal = ({ onSuccess }) => {
         insidePhoto: photos.inside,
         latitude: location.latitude,
         longitude: location.longitude,
+        accuracy,
         locationName: address,
+        addressComponents,
         timestamp: new Date()
       });
       addToast('Check-in successful!', 'success');
-      if (onSuccess) onSuccess();
+      setStep(4);
     } catch (err) {
       addToast('Submission failed.', 'error');
     } finally {
@@ -159,7 +205,7 @@ const CheckInTerminal = ({ onSuccess }) => {
           <h2 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
             Check-In Wizard 
             <span className="text-sm font-black text-blue-600 bg-blue-50 px-3 py-1 rounded-full uppercase tracking-widest">
-              Step {step}/3
+              {step === 4 ? 'Complete' : `Step ${step}/3`}
             </span>
           </h2>
           <p className="text-slate-500 font-medium font-inter">Complete all visuals to log your shop entry.</p>
@@ -174,7 +220,31 @@ const CheckInTerminal = ({ onSuccess }) => {
 
       {/* Main UI */}
       <div className="relative">
-        {step < 3 ? (
+        {step === 4 ? (
+          <div className="animate-in zoom-in-95 duration-500 flex flex-col items-center justify-center p-8 text-center bg-slate-50 rounded-[2rem] border-2 border-green-100">
+             <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mb-6 shadow-xl shadow-green-200">
+                <CheckCircle className="h-10 w-10 text-white" />
+             </div>
+             <h3 className="text-2xl font-black text-slate-900 mb-2">Verification Complete</h3>
+             <p className="text-slate-500 font-medium mb-6">Your location and audit photos have been securely logged.</p>
+             
+             <div className="bg-white w-full rounded-2xl p-4 border border-slate-100 text-left mb-8 shadow-sm">
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Detected Location</p>
+                <div className="flex items-start gap-3">
+                   <MapPin className="h-5 w-5 text-blue-500 shrink-0 mt-0.5" />
+                   <div>
+                      <p className="text-sm font-bold text-slate-800">{addressComponents?.village || addressComponents?.area || 'Location Logged'}</p>
+                      <p className="text-xs text-slate-500 mt-1">{addressComponents?.formattedAddress || address}</p>
+                      <p className="text-[10px] font-black text-green-500 uppercase tracking-widest mt-2">Accuracy: {Math.round(accuracy)}m</p>
+                   </div>
+                </div>
+             </div>
+
+             <button onClick={onSuccess} className="w-full py-4 bg-slate-900 hover:bg-black text-white rounded-2xl font-black text-xs tracking-[0.2em] uppercase transition-all shadow-xl active:scale-95">
+                Return to Dashboard
+             </button>
+          </div>
+        ) : step < 3 ? (
           <div className="space-y-8">
             <div className="relative aspect-video bg-slate-900 rounded-[2rem] overflow-hidden shadow-2xl ring-4 ring-slate-50">
               {!isCameraActive ? (

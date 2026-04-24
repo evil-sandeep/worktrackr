@@ -14,7 +14,7 @@ import {
   Camera
 } from 'lucide-react';
 
-const FullscreenPreview = ({ url, onClose }) => (
+const FullscreenPreview = ({ url, locationText, onClose }) => (
   <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/95 backdrop-blur-2xl animate-in fade-in duration-300">
     <button 
       onClick={onClose}
@@ -22,14 +22,21 @@ const FullscreenPreview = ({ url, onClose }) => (
     >
       <X className="h-8 w-8" />
     </button>
-    <div className="relative w-full h-full p-10 sm:p-20 flex items-center justify-center">
+    <div className="relative w-full h-full p-10 sm:p-20 flex flex-col items-center justify-center gap-8">
       <img 
         src={url} 
         alt="Full size biometric" 
-        className="max-w-full max-h-full object-contain rounded-2xl shadow-[0_0_100px_rgba(0,0,0,0.5)] border border-white/10"
+        className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-[0_0_100px_rgba(0,0,0,0.5)] border border-white/10"
       />
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 px-8 py-3 bg-white/5 backdrop-blur-md rounded-full border border-white/10 text-white/60 text-[10px] font-black uppercase tracking-[0.3em]">
-         Verified Biometric Signature
+      <div className="flex flex-col items-center gap-2">
+         <div className="px-8 py-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 text-white text-center shadow-2xl min-w-[300px]">
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/60 mb-2">Verified Coordinates</p>
+            {locationText?.split('\n').map((line, i) => (
+              <p key={i} className={`font-bold ${i === 0 ? 'text-sm mb-1' : 'text-xs text-blue-300 tracking-widest font-mono'}`}>
+                {line}
+              </p>
+            ))}
+         </div>
       </div>
     </div>
   </div>
@@ -37,6 +44,7 @@ const FullscreenPreview = ({ url, onClose }) => (
 
 const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
   const [previewImage, setPreviewImage] = useState(null);
+  const [previewLocation, setPreviewLocation] = useState(null);
 
   if (!isOpen) return null;
 
@@ -52,12 +60,17 @@ const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
     location: record?.checkoutLocation
   };
 
+  const closePreview = () => {
+    setPreviewImage(null);
+    setPreviewLocation(null);
+  };
+
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-950/40 backdrop-blur-md animate-in fade-in duration-500">
         <div className="bg-white w-full max-w-3xl rounded-[3rem] shadow-premium-layered border border-slate-100 overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-500 relative">
           
-          {previewImage && <FullscreenPreview url={previewImage} onClose={() => setPreviewImage(null)} />}
+          {previewImage && <FullscreenPreview url={previewImage} locationText={previewLocation} onClose={closePreview} />}
 
           {/* Modal Header */}
           <div className="px-10 py-8 flex items-center justify-between bg-white relative z-20">
@@ -127,15 +140,15 @@ const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
                              <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Node 01: Initialized</span>
                              <span className="px-3 py-1 bg-blue-50 text-blue-600 text-[8px] font-black uppercase tracking-widest rounded-full">{checkInData.time}</span>
                           </div>
-                          <button 
-                            onClick={() => setPreviewImage(checkInData.imageUrl)}
+                           <button 
+                            onClick={() => { setPreviewImage(checkInData.imageUrl); setPreviewLocation(checkInData.location); }}
                             className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-black text-[9px] uppercase tracking-widest transition-all hover:translate-x-1"
                           >
                             View Signature <ArrowRight size={14} />
                           </button>
                        </div>
                        <div className="bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-sm flex flex-col md:flex-row gap-8 hover:shadow-xl transition-all duration-700">
-                          <div className="w-full md:w-32 aspect-square rounded-2xl overflow-hidden bg-slate-950 shrink-0 ring-4 ring-slate-50 cursor-pointer" onClick={() => setPreviewImage(checkInData.imageUrl)}>
+                          <div className="w-full md:w-32 aspect-square rounded-2xl overflow-hidden bg-slate-950 shrink-0 ring-4 ring-slate-50 cursor-pointer" onClick={() => { setPreviewImage(checkInData.imageUrl); setPreviewLocation(checkInData.location); }}>
                              <img src={checkInData.imageUrl} className="w-full h-full object-cover" alt="entry" />
                           </div>
                           <div className="space-y-6 flex-1">
@@ -171,7 +184,7 @@ const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
                           </div>
                           {isCheckOutComplete && (
                             <button 
-                              onClick={() => setPreviewImage(checkOutData.imageUrl)}
+                              onClick={() => { setPreviewImage(checkOutData.imageUrl); setPreviewLocation(checkOutData.location); }}
                               className="flex items-center gap-2 text-amber-600 hover:text-amber-700 font-black text-[9px] uppercase tracking-widest transition-all hover:translate-x-1"
                             >
                               View Signature <ArrowRight size={14} />
@@ -180,7 +193,7 @@ const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
                        </div>
                        {isCheckOutComplete ? (
                           <div className="bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-sm flex flex-col md:flex-row gap-8 hover:shadow-xl transition-all duration-700">
-                             <div className="w-full md:w-32 aspect-square rounded-2xl overflow-hidden bg-slate-950 shrink-0 ring-4 ring-slate-50 cursor-pointer" onClick={() => setPreviewImage(checkOutData.imageUrl)}>
+                             <div className="w-full md:w-32 aspect-square rounded-2xl overflow-hidden bg-slate-950 shrink-0 ring-4 ring-slate-50 cursor-pointer" onClick={() => { setPreviewImage(checkOutData.imageUrl); setPreviewLocation(checkOutData.location); }}>
                                 <img src={checkOutData.imageUrl} className="w-full h-full object-cover" alt="exit" />
                              </div>
                              <div className="space-y-6 flex-1">

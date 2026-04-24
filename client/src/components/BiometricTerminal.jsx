@@ -28,6 +28,7 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
   const [capturedImage, setCapturedImage] = useState(null);
   const [capturedData, setCapturedData] = useState(null);
   const [address, setAddress] = useState(null);
+  const [fullAddress, setFullAddress] = useState(null);
   const [location, setLocation] = useState(null);
   const [status, setStatus] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
@@ -41,20 +42,26 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
 
   const fetchAddress = async (lat, lon) => {
     try {
+      const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`,
-        {
-          headers: {
-            'User-Agent': 'WorkTrackr-Attendance-System/1.0'
-          }
-        }
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=${apiKey}`
       );
       const data = await response.json();
-      if (data && data.display_name) {
-        const city = data.address.city || data.address.town || data.address.village || data.address.suburb || '';
-        const state = data.address.state || data.address.region || '';
-        const shortAddress = [city, state].filter(Boolean).join(', ') || data.display_name.split(',').slice(0, 2).join(',');
+      if (data.status === 'OK' && data.results.length > 0) {
+        const result = data.results[0];
+        const formattedAddress = result.formatted_address;
+        
+        let city = '';
+        let state = '';
+        result.address_components.forEach(component => {
+          if (component.types.includes('locality')) city = component.long_name;
+          if (component.types.includes('administrative_area_level_1')) state = component.short_name || component.long_name;
+        });
+        
+        const shortAddress = [city, state].filter(Boolean).join(', ') || formattedAddress.split(',').slice(0, 2).join(',');
+        
         setAddress(shortAddress);
+        setFullAddress(formattedAddress);
       }
     } catch (err) {
       console.error('Reverse Geocoding Error:', err);
@@ -152,7 +159,7 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
       image: imageData,
       date: dateISO,
       time: timeStr,
-      location: address || `${location.latitude},${location.longitude}`
+      location: fullAddress ? `${fullAddress}\n${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}` : `${location.latitude},${location.longitude}`
     });
   };
 

@@ -81,9 +81,21 @@ const TimelineItem = ({ item, isFirst, isLast }) => {
         {/* Location Text */}
         <div className="flex items-start gap-2 text-slate-500">
            <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
-           <p className="text-xs font-bold leading-relaxed">
-             {item.locationName || `${item.latitude?.toFixed(6) || 'N/A'}, ${item.longitude?.toFixed(6) || 'N/A'}`}
-           </p>
+           <div className="flex flex-col">
+             <p className="text-xs font-bold leading-relaxed text-slate-700">
+               {item.address?.fullAddress || item.locationName || `${item.latitude?.toFixed(6) || 'N/A'}, ${item.longitude?.toFixed(6) || 'N/A'}`}
+             </p>
+             {item.accuracy && (
+               <p className="text-[10px] font-bold text-blue-500 mt-1">
+                 GPS Accuracy: {Math.round(item.accuracy)}m
+               </p>
+             )}
+             {item.address?.village && (
+               <p className="text-[10px] font-semibold text-slate-400 mt-0.5">
+                 {item.address.village}, {item.address.district}
+               </p>
+             )}
+           </div>
         </div>
 
         {/* Media Preview (Photos) */}
