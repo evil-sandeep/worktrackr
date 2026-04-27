@@ -80,6 +80,8 @@ const loginUser = async (req, res) => {
         empId: user.empId,
         role: user.role,
         organizationId: user.organizationId,
+        isPaid: user.isPaid,
+        status: user.status,
         token: generateToken(user._id),
       });
     } else {
@@ -192,13 +194,13 @@ const deleteEmployee = async (req, res) => {
 
 const getEmployees = async (req, res) => {
   try {
-    console.log('Fetching all database users...');
+    const { User } = req.tenantModels;
+    console.log('Fetching all database users for tenant...');
     let query = {};
     if (req.user && req.user.role === 'orgadmin') {
       query = { organizationId: req.user._id };
     }
     const employees = await User.find(query).sort({ createdAt: -1 }).select('-password');
-    console.log(`Found ${employees.length} users in the database.`);
     res.json(employees);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -207,6 +209,7 @@ const getEmployees = async (req, res) => {
 
 const getAdminDashboardStats = async (req, res) => {
   try {
+    const { User, Attendance } = req.tenantModels;
     const now = new Date();
     const today = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
 
@@ -215,7 +218,6 @@ const getAdminDashboardStats = async (req, res) => {
 
     if (req.user && req.user.role === 'orgadmin') {
       userQuery.organizationId = req.user._id;
-      // We need to fetch user IDs to filter attendance
       const orgUsers = await User.find(userQuery).select('_id');
       const orgUserIds = orgUsers.map(u => u._id.toString());
       attendanceQuery.userId = { $in: orgUserIds };
@@ -226,7 +228,6 @@ const getAdminDashboardStats = async (req, res) => {
     attendanceQuery.status = 'present';
     const presentToday = await Attendance.countDocuments(attendanceQuery);
     
-    // Recent activity (latest 8 check-ins)
     delete attendanceQuery.status;
     const recentActivity = await Attendance.find(attendanceQuery)
       .sort({ updatedAt: -1 })

@@ -123,7 +123,7 @@ const Profile = () => {
                   </label>
                 )}
               </div>
-              {currentUser.role === 'admin' && (
+              {(currentUser.role === 'admin' || currentUser.role === 'orgadmin') && (
                 <div className="absolute bottom-2 right-2 bg-amber-400 text-white p-2 rounded-xl shadow-lg border-2 border-white z-20">
                   <ShieldCheck className="h-4 w-4" />
                 </div>
@@ -131,8 +131,21 @@ const Profile = () => {
             </div>
 
             <h2 className="text-2xl font-black text-slate-900 mb-1">{currentUser.name}</h2>
-            <p className="text-sm font-bold text-blue-600 uppercase tracking-widest mb-4">{currentUser.designation || 'Staff Member'}</p>
+            <p className="text-sm font-bold text-blue-600 uppercase tracking-widest mb-3">{currentUser.designation || 'Staff Member'}</p>
             
+            {/* Role Badge */}
+            <div className={`flex items-center gap-2 px-4 py-1.5 rounded-full mb-3 ${
+              currentUser.role === 'admin' ? 'bg-green-50 text-green-600 border border-green-200' :
+              currentUser.role === 'orgadmin' ? 'bg-amber-50 text-amber-600 border border-amber-200' :
+              currentUser.role === 'superadmin' ? 'bg-purple-50 text-purple-600 border border-purple-200' :
+              'bg-blue-50 text-blue-600 border border-blue-200'
+            }`}>
+              <ShieldCheck className="h-3.5 w-3.5" />
+              <span className="text-[10px] font-black uppercase tracking-widest">
+                {currentUser.role === 'admin' ? 'Admin' : currentUser.role === 'orgadmin' ? 'Org Admin' : currentUser.role === 'superadmin' ? 'Super Admin' : 'Employee'}
+              </span>
+            </div>
+
             <div className="flex items-center gap-2 px-3 py-1 bg-green-50 text-green-600 rounded-full">
               <CheckCircle2 className="h-3.5 w-3.5" />
               <span className="text-[10px] font-black uppercase tracking-tighter">Active Account</span>

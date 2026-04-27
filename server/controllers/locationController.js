@@ -16,6 +16,7 @@ const saveLocation = async (req, res) => {
     const gpsStatus = isGpsEnabled !== undefined ? isGpsEnabled : true;
 
     const log = await locationService.saveLocationLog(
+      req.tenantModels.LocationLog,
       employeeId,
       latitude,
       longitude,
@@ -42,7 +43,7 @@ const getLocationLogs = async (req, res) => {
       return res.status(400).json({ message: 'Employee ID is required' });
     }
 
-    const logs = await locationService.getLocationLogsByDate(employeeId, date);
+    const logs = await locationService.getLocationLogsByDate(req.tenantModels.LocationLog, employeeId, date);
 
     res.status(200).json({
       success: true,

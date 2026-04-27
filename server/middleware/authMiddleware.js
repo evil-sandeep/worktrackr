@@ -28,7 +28,32 @@ const protect = async (req, res, next) => {
         return res.status(401).json({ message: 'User not found' });
       }
 
-      console.log(`Debug - Authorized: ${req.user.email}`);
+      // --- MULTI-TENANCY LOGIC ---
+      let targetDbName = req.user.dbName;
+      
+      // If employee, get dbName from their organization (admin)
+      if (!targetDbName && req.user.organizationId) {
+        const org = await User.findById(req.user.organizationId).select('dbName');
+        targetDbName = org?.dbName;
+      }
+
+      // If Super Admin is viewing a specific org via query param
+      if (req.user.role === 'superadmin' && req.query.orgId) {
+        const targetOrg = await User.findById(req.query.orgId).select('dbName');
+        if (targetOrg?.dbName) {
+           targetDbName = targetOrg.dbName;
+        }
+      }
+
+      // Get tenant connection and models
+      const { getTenantDb } = require('../config/tenantConnection');
+      const { getTenantModels } = require('../models/tenantModels');
+      
+      const connection = await getTenantDb(targetDbName);
+      req.tenantModels = getTenantModels(connection);
+      // --- END MULTI-TENANCY LOGIC ---
+
+      console.log(`Debug - Authorized: ${req.user.email} (Tenant DB: ${targetDbName || 'Main'})`);
       return next();
     } catch (error) {
       console.error('Auth Error:', error.message);

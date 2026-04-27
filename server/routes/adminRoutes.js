@@ -10,15 +10,19 @@ const {
   getSuperAdminStats,
   getOrganizations,
   updateOrganization,
-  deleteOrganization
+  deleteOrganization,
+  grantAdminPermission,
+  revokeAdminPermission,
 } = require('../controllers/superAdminController');
 const { protect, admin, superAdmin } = require('../middleware/authMiddleware');
 
 // --- SUPER ADMIN ROUTES ---
 router.get('/super/stats', protect, superAdmin, getSuperAdminStats);
-router.get('/super/organizations', protect, superAdmin, getOrganizations);
+router.get('/super/organizations', protect, admin, getOrganizations);
 router.put('/super/organizations/:id', protect, superAdmin, updateOrganization);
 router.delete('/super/organizations/:id', protect, superAdmin, deleteOrganization);
+router.put('/super/organizations/:id/grant-admin', protect, superAdmin, grantAdminPermission);
+router.put('/super/organizations/:id/revoke-admin', protect, superAdmin, revokeAdminPermission);
 
 // --- ADMIN ROUTES ---
 // @route   GET /api/admin/employees

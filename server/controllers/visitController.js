@@ -9,7 +9,7 @@ const startVisit = async (req, res) => {
       return res.status(400).json({ message: 'Latitude and longitude are required to start a visit.' });
     }
 
-    const visit = await visitService.startVisit(employeeId, latitude, longitude);
+    const visit = await visitService.startVisit(req.tenantModels.Visit, employeeId, latitude, longitude);
 
     res.status(201).json({
       success: true,
@@ -31,7 +31,7 @@ const submitVisit = async (req, res) => {
       return res.status(400).json({ message: 'Missing required visit data (visitId, outsidePhoto, insidePhoto).' });
     }
 
-    const visit = await visitService.submitVisit(visitId, employeeId, outsidePhoto, insidePhoto);
+    const visit = await visitService.submitVisit(req.tenantModels.Visit, visitId, employeeId, outsidePhoto, insidePhoto);
 
     res.status(200).json({
       success: true,
@@ -49,7 +49,7 @@ const getEmployeeVisits = async (req, res) => {
     const { employeeId } = req.params;
     const { date } = req.query;
 
-    const visits = await visitService.getVisits(employeeId, date);
+    const visits = await visitService.getVisits(req.tenantModels.Visit, employeeId, date);
 
     res.status(200).json({
       success: true,

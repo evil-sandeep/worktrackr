@@ -1,16 +1,8 @@
-const CheckIn = require('../models/CheckIn');
-const DailySummary = require('../models/DailySummary');
 const { uploadImage } = require('../utils/cloudinary');
 
-/**
- * Service to handle check-in business logic
- */
 class CheckInService {
-  /**
-   * Process a multi-photo check-in session
-   * @param {Object} data - { employeeId, outsidePhoto, insidePhoto, latitude, longitude, locationName, timestamp }
-   */
-  async processCheckIn(data) {
+  async processCheckIn(models, data) {
+    const { CheckIn, DailySummary } = models;
     const { 
       employeeId, 
       outsidePhoto, 

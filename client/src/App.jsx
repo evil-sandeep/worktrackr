@@ -6,11 +6,13 @@ import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import AdminDashboard from './pages/AdminDashboard';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
+import OrganizationListPage from './pages/OrganizationListPage';
 import EmployeeListPage from './pages/EmployeeListPage';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import StoreVisit from './pages/StoreVisit';
 import AttendanceCalendar from './pages/AttendanceCalendar';
+import PaymentPage from './pages/PaymentPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 import Toast from './components/Toast';
@@ -25,6 +27,7 @@ const HomeRedirect = () => {
   if (user.role === 'superadmin') {
     return <Navigate to="/superadmindashboard" replace />;
   } else if (user.role === 'orgadmin' || user.role === 'admin') {
+    // Both orgadmin (promoted) and admin see the admin dashboard
     return <Navigate to="/admindashboard" replace />;
   }
   return <Navigate to="/employeedashboard" replace />;
@@ -50,6 +53,7 @@ const AppRoutes = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/forgot" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/payment" element={<PaymentPage />} />
       
       {/* Protected Routes - With Global Layout */}
       <Route 
@@ -113,7 +117,17 @@ const AppRoutes = () => {
         } 
       />
       <Route 
-        path="/employee" 
+        path="/organizations" 
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <OrganizationListPage />
+            </Layout>
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/admin/employee" 
         element={
           <ProtectedRoute>
             <Layout>

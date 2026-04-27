@@ -9,16 +9,23 @@ const Visit = require('../models/Visit');
 // @access  Private/Admin
 const getAllEmployees = async (req, res) => {
   try {
+    const { User } = req.tenantModels;
+    const { organizationId } = req.query;
     let query = {};
+
     if (req.user.role === 'orgadmin') {
-      query = { organizationId: req.user._id };
+      query = { organizationId: req.user._id, role: 'employee' };
     } else if (req.user.role === 'superadmin') {
-      // Super admin sees all orgadmins and employees
-      query = {};
+      if (organizationId) {
+        query = { organizationId };
+      } else {
+        query = { organizationId: null, role: 'employee' };
+      }
+    } else {
+      query = { organizationId: req.user.organizationId, role: 'employee' };
     }
 
     const employees = await User.find(query).select('-password').sort({ createdAt: -1 });
-    
     return res.status(200).json(employees);
   } catch (error) {
     console.error('Error fetching employees:', error);
@@ -26,25 +33,24 @@ const getAllEmployees = async (req, res) => {
   }
 };
 
-// @desc    Create a new employee/orgadmin (Admin Only)
-// @route   POST /api/admin/employees
-// @access  Private/Admin
 const createEmployee = async (req, res) => {
   try {
+    const { User } = req.tenantModels;
     const { name, email, phone, empId, password, isOrgAdmin, organizationId } = req.body;
 
+    // Check in tenant DB
     const userExists = await User.findOne({ $or: [{ email }, { empId }] });
     if (userExists) {
-      return res.status(400).json({ message: 'User with this email or Employee ID already exists' });
+      return res.status(400).json({ message: 'User with this email or Employee ID already exists in this organization' });
     }
 
     let assignedRole = 'employee';
-    let assignedOrgId = req.user._id; // Default for orgadmin creating an employee
+    let assignedOrgId = req.user._id;
 
     if (req.user.role === 'superadmin') {
       if (isOrgAdmin) {
         assignedRole = 'orgadmin';
-        assignedOrgId = null; // OrgAdmins are their own organization
+        assignedOrgId = null;
       } else {
         assignedOrgId = organizationId || null;
       }
@@ -57,12 +63,17 @@ const createEmployee = async (req, res) => {
       empId,
       password,
       role: assignedRole,
-      organizationId: assignedRole === 'orgadmin' ? null : assignedOrgId
+      organizationId: assignedRole === 'orgadmin' ? null : assignedOrgId,
+      isPaid: false,
+      status: 'inactive'
     });
 
     if (assignedRole === 'orgadmin') {
-      // OrgAdmins use their own _id as organizationId
       user.organizationId = user._id;
+      // Generate unique DB name: worktrackr_org_<sanitized_name>_<short_id>
+      const sanitizedName = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+      const shortId = user._id.toString().slice(-4);
+      user.dbName = `worktrackr_org_${sanitizedName}_${shortId}`;
       await user.save();
     }
 
@@ -77,11 +88,9 @@ const createEmployee = async (req, res) => {
   }
 };
 
-// @desc    Get employee by ID
-// @route   GET /api/admin/employees/:id
-// @access  Private/Admin
 const getEmployeeById = async (req, res) => {
   try {
+    const { User } = req.tenantModels;
     const employee = await User.findById(req.params.id).select('-password');
     if (!employee) {
       return res.status(404).json({ message: 'Employee not found' });
@@ -93,22 +102,16 @@ const getEmployeeById = async (req, res) => {
   }
 };
 
-/**
- * @desc    Get complete daily tracking data for an employee
- * @route   GET /api/admin/employees/:id/daily?date=YYYY-MM-DD
- * @access  Private/Admin
- */
 const getEmployeeDailyTracking = async (req, res) => {
   try {
+    const { LocationLog, CheckIn, Visit, DailySummary } = req.tenantModels;
     const { id } = req.params;
-    const { date } = req.query; // Format: YYYY-MM-DD
+    const { date } = req.query;
 
     if (!id || !date) {
       return res.status(400).json({ message: 'Employee ID and date are required' });
     }
 
-    // Construct date range that is inclusive of the client's local day
-    // We treat the 'YYYY-MM-DD' as the start of the day in local time
     const startOfDay = new Date(`${date}T00:00:00`);
     const endOfDay = new Date(`${date}T23:59:59.999`);
 
@@ -117,16 +120,14 @@ const getEmployeeDailyTracking = async (req, res) => {
       timestamp: { $gte: startOfDay, $lte: endOfDay }
     };
 
-    // Note: Visit model uses 'createdAt' instead of 'timestamp'
     const visitRangeQuery = {
       employeeId: id,
       createdAt: { $gte: startOfDay, $lte: endOfDay }
     };
 
-    // Fetch all data in parallel
     const [locations, checkIns, visits, summary] = await Promise.all([
       LocationLog.find(rangeQuery).sort({ timestamp: 1 }),
-      CheckIn.find({ employeeId: id, date }).sort({ timestamp: 1 }), // Uses 'date' string
+      CheckIn.find({ employeeId: id, date }).sort({ timestamp: 1 }),
       Visit.find(visitRangeQuery).sort({ createdAt: 1 }),
       DailySummary.findOne({ employeeId: id, date })
     ]);

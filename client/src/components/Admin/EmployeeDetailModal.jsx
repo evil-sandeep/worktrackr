@@ -89,6 +89,7 @@ const EmployeeDetailModal = ({ employee: initialEmployee, onClose, onUpdate, onD
           onFormChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
           onUpdate={() => updateProfile(onUpdate)}
           onDelete={() => deleteProfile(onDelete)}
+          onRefresh={onUpdate}
         />
 
         {/* Main Content Area */}

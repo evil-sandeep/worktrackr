@@ -16,13 +16,18 @@ const Login = () => {
     showLoader(true);
 
     try {
-      const user = await authService.login(email, password);
-      addToast('Login successful! Welcome back.', 'success');
+      const data = await authService.login(email, password);
+      // Store user in localStorage
+      localStorage.setItem('user', JSON.stringify(data));
       
-      // Role-based navigation
-      if (user.role === 'superadmin') {
+      addToast(`Welcome back, ${data.name}!`, 'success');
+      
+      // Redirect based on role and payment status
+      if (data.role === 'employee' && !data.isPaid) {
+        navigate('/payment');
+      } else if (data.role === 'superadmin') {
         navigate('/superadmindashboard');
-      } else if (user.role === 'orgadmin' || user.role === 'admin') {
+      } else if (data.role === 'orgadmin' || data.role === 'admin') {
         navigate('/admindashboard');
       } else {
         navigate('/employeedashboard');

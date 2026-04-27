@@ -38,7 +38,7 @@ const createCheckIn = async (req, res) => {
     }
 
     // 2. Delegate business logic to Service
-    const checkIn = await checkInService.processCheckIn({
+    const checkIn = await checkInService.processCheckIn(req.tenantModels, {
       employeeId,
       outsidePhoto,
       insidePhoto,

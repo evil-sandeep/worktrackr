@@ -5,7 +5,7 @@ const User = require('../models/User');
 // @access  Private/SuperAdmin
 const getSuperAdminStats = async (req, res) => {
   try {
-    const totalOrganizations = await User.countDocuments({ role: 'orgadmin' });
+    const totalOrganizations = await User.countDocuments({ role: { $in: ['orgadmin', 'admin'] } });
     
     const employees = await User.find({ role: 'employee' });
     const totalEmployees = employees.length;
@@ -32,28 +32,43 @@ const getSuperAdminStats = async (req, res) => {
 // @access  Private/SuperAdmin
 const getOrganizations = async (req, res) => {
   try {
-    const organizations = await User.find({ role: 'orgadmin' }).select('-password');
+    // Fetch all users to include orgadmins, admins, and potentially other superadmins
+    const users = await User.find({}).select('-password');
     
-    // Attach employee stats to each organization
-    const orgsWithStats = await Promise.all(organizations.map(async (org) => {
-      const orgEmployees = await User.find({ organizationId: org._id, role: 'employee' });
-      const totalStaff = orgEmployees.length;
-      const paidStaff = orgEmployees.filter(emp => emp.isPaid).length;
-      const unpaidStaff = totalStaff - paidStaff;
-      const revenue = paidStaff * 100;
+    // Attach employee stats if they are an admin or orgadmin, or just return user data
+    const usersWithContext = await Promise.all(users.map(async (user) => {
+      // If user is a tenant/admin, get their org stats
+      if (user.role === 'admin' || user.role === 'orgadmin') {
+        const orgEmployees = await User.find({ organizationId: user._id, role: 'employee' });
+        const totalStaff = orgEmployees.length;
+        const paidStaff = orgEmployees.filter(emp => emp.isPaid).length;
+        const unpaidStaff = totalStaff - paidStaff;
+        const revenue = paidStaff * 100;
 
+        return {
+          ...user._doc,
+          stats: {
+            totalStaff,
+            paidStaff,
+            unpaidStaff,
+            revenue
+          }
+        };
+      }
+      
+      // If user is just an employee, return as is
       return {
-        ...org._doc,
+        ...user._doc,
         stats: {
-          totalStaff,
-          paidStaff,
-          unpaidStaff,
-          revenue
+          totalStaff: 0,
+          paidStaff: 0,
+          unpaidStaff: 0,
+          revenue: 0
         }
       };
     }));
 
-    res.json(orgsWithStats);
+    res.json(usersWithContext);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -113,9 +128,55 @@ const deleteOrganization = async (req, res) => {
   }
 };
 
+// @desc    Grant admin dashboard permission to a user
+// @route   PUT /api/admin/super/organizations/:id/grant-admin
+// @access  Private/SuperAdmin
+const grantAdminPermission = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Role 'orgadmin' now indicates an approved admin who can see the admin dashboard
+    user.role = 'orgadmin';
+    user.organizationId = user._id;
+    const sanitizedName = user.name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+    const shortId = user._id.toString().slice(-4);
+    user.dbName = `worktrackr_org_${sanitizedName}_${shortId}`;
+    await user.save();
+
+    res.json({ message: `${user.name} has been promoted to Organization Admin.`, user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Revoke admin dashboard permission (demote back to employee)
+// @route   PUT /api/admin/super/organizations/:id/revoke-admin
+// @access  Private/SuperAdmin
+const revokeAdminPermission = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Demote back to regular employee
+    user.role = 'employee';
+    await user.save();
+
+    res.json({ message: `${user.name} has been demoted back to employee.`, user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getSuperAdminStats,
   getOrganizations,
   updateOrganization,
-  deleteOrganization
+  deleteOrganization,
+  grantAdminPermission,
+  revokeAdminPermission,
 };

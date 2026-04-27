@@ -8,17 +8,27 @@ import {
   ArrowUpDown
 } from 'lucide-react';
 import adminService from '../services/adminService';
+import authService from '../services/authService';
 import { useUI } from '../context/UIContext';
 import EmployeeDetailModal from '../components/Admin/EmployeeDetailModal';
+import AddEmployeeModal from '../components/Admin/AddEmployeeModal';
+import { useLocation } from 'react-router-dom';
 
 const EmployeeListPage = () => {
   const [employees, setEmployees] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState('all');
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [organizations, setOrganizations] = useState([]);
   const [sortField, setSortField] = useState('name');
   const [sortDirection, setSortDirection] = useState('asc');
   const { showLoader, addToast } = useUI();
+  
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const orgId = queryParams.get('orgId');
+  const currentUser = authService.getCurrentUser();
 
   // 70 min threshold for OFFLINE check
   const getStatus = (emp) => {
@@ -42,7 +52,9 @@ const EmployeeListPage = () => {
   const fetchEmployees = async () => {
     showLoader(true);
     try {
-      const data = await adminService.getEmployees();
+      const params = {};
+      if (orgId) params.organizationId = orgId;
+      const data = await adminService.getEmployees(params);
       setEmployees(data);
     } catch (error) {
       addToast(error.response?.data?.message || 'Failed to fetch employees', 'error');
@@ -51,9 +63,20 @@ const EmployeeListPage = () => {
     }
   };
 
+  const fetchOrganizations = async () => {
+    if (currentUser.role !== 'superadmin') return;
+    try {
+      const data = await adminService.getOrganizations();
+      setOrganizations(data.filter(u => u.role === 'orgadmin' || u.role === 'admin'));
+    } catch (error) {
+      console.error('Failed to fetch organizations', error);
+    }
+  };
+
   useEffect(() => {
     fetchEmployees();
-  }, []);
+    fetchOrganizations();
+  }, [orgId]);
 
   const handleSort = (field) => {
     if (sortField === field) {
@@ -133,8 +156,22 @@ const EmployeeListPage = () => {
         >
           <option value="all">All Roles</option>
           <option value="employee">Staff</option>
+          <option value="orgadmin">Org Admin</option>
           <option value="admin">Admins</option>
         </select>
+      </div>
+
+      {/* Add Employee Button Section */}
+      <div className="flex justify-start px-2">
+        <button
+          onClick={() => setIsAddModalOpen(true)}
+          className="group flex items-center gap-3 px-6 py-3.5 bg-blue-600 text-white rounded-2xl font-black text-[11px] uppercase tracking-[0.15em] hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 active:scale-95"
+        >
+          <div className="w-5 h-5 bg-white/20 rounded-lg flex items-center justify-center transition-transform group-hover:rotate-12">
+            <Users className="h-3 w-3" />
+          </div>
+          Add Employee
+        </button>
       </div>
 
       {/* Employee List Table */}
@@ -175,6 +212,14 @@ const EmployeeListPage = () => {
                     <p className="text-[9px] font-bold text-slate-400 truncate uppercase tracking-widest opacity-60">
                       {emp.designation || 'Staff'}
                     </p>
+                    <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[7px] font-black uppercase tracking-widest mt-0.5 ${
+                      emp.role === 'admin' ? 'bg-green-100 text-green-700 border border-green-200' :
+                      emp.role === 'orgadmin' ? 'bg-amber-100 text-amber-700 border border-amber-200' :
+                      emp.role === 'superadmin' ? 'bg-purple-100 text-purple-700 border border-purple-200' :
+                      'bg-blue-50 text-blue-600 border border-blue-100'
+                    }`}>
+                      {emp.role === 'admin' ? 'Admin' : emp.role === 'orgadmin' ? 'Org Admin' : emp.role === 'superadmin' ? 'Super Admin' : 'Employee'}
+                    </span>
                   </div>
                 </div>
                 <div className="col-span-2">
@@ -222,6 +267,14 @@ const EmployeeListPage = () => {
           onDelete={fetchEmployees}
         />
       )}
+
+      {/* Add Employee Modal */}
+      <AddEmployeeModal 
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSuccess={fetchEmployees}
+        organizations={organizations}
+      />
     </div>
   );
 };

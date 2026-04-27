@@ -1,7 +1,12 @@
 import api from './api';
 
-const getEmployees = async () => {
-  const response = await api.get('/admin/employees');
+const getEmployees = async (params = {}) => {
+  const response = await api.get('/admin/employees', { params });
+  return response.data;
+};
+
+const createEmployee = async (employeeData) => {
+  const response = await api.post('/admin/employees', employeeData);
   return response.data;
 };
 
@@ -57,8 +62,19 @@ const deleteOrganization = async (id) => {
   return response.data;
 };
 
+const grantAdmin = async (id) => {
+  const response = await api.put(`/admin/super/organizations/${id}/grant-admin`);
+  return response.data;
+};
+
+const revokeAdmin = async (id) => {
+  const response = await api.put(`/admin/super/organizations/${id}/revoke-admin`);
+  return response.data;
+};
+
 const adminService = {
   getEmployees,
+  createEmployee,
   getEmployeeById,
   updateEmployee,
   deleteEmployee,
@@ -68,7 +84,9 @@ const adminService = {
   getSuperAdminStats,
   getOrganizations,
   updateOrganization,
-  deleteOrganization
+  deleteOrganization,
+  grantAdmin,
+  revokeAdmin,
 };
 
 export default adminService;

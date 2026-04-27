@@ -5,7 +5,9 @@ import {
   ShieldCheck, 
   Activity,
   Plus,
-  IndianRupee
+  IndianRupee,
+  ShieldAlert,
+  ShieldOff
 } from 'lucide-react';
 import adminService from '../services/adminService';
 import { useUI } from '../context/UIContext';
@@ -53,6 +55,32 @@ const SuperAdminDashboard = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const handleGrantAdmin = async (orgId, orgName, currentRole) => {
+    const isCurrentlyAdmin = currentRole === 'admin';
+    const action = isCurrentlyAdmin ? 'revoke-admin' : 'grant-admin';
+    const confirmMsg = isCurrentlyAdmin
+      ? `Revoke admin dashboard access from "${orgName}"?`
+      : `Grant admin dashboard access to "${orgName}"?`;
+    if (!window.confirm(confirmMsg)) return;
+
+    showLoader(true);
+    try {
+      const token = JSON.parse(localStorage.getItem('user'))?.token;
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+      const { data } = await axios.put(
+        `http://localhost:5000/api/admin/super/organizations/${orgId}/${action}`,
+        {},
+        config
+      );
+      addToast(data.message, 'success');
+      fetchData();
+    } catch (error) {
+      addToast(error.response?.data?.message || 'Permission update failed', 'error');
+    } finally {
+      showLoader(false);
+    }
+  };
 
   const handleCreateUser = async (e) => {
     e.preventDefault();
@@ -136,51 +164,91 @@ const SuperAdminDashboard = () => {
         </div>
       </div>
 
-      {/* Organizations Table */}
+      {/* Platform Identities Table */}
       <div className="bg-white rounded-[1.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 p-5 overflow-hidden">
          <h3 className="text-lg font-black text-slate-900 tracking-tight flex items-center gap-3 font-poppins mb-6">
             <span className="w-1 h-5 bg-indigo-600 rounded-full"></span>
-            Registered Organizations
+            Platform Identities (Employees & Admins)
          </h3>
          <div className="overflow-x-auto">
            <table className="w-full text-left border-collapse">
              <thead>
                <tr className="border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                 <th className="py-3 px-4">Organization Name</th>
-                 <th className="py-3 px-4">Admin Email</th>
-                 <th className="py-3 px-4 text-center">Total Staff</th>
-                 <th className="py-3 px-4 text-center">Paid Staff</th>
-                 <th className="py-3 px-4 text-center">Unpaid Staff</th>
+                 <th className="py-3 px-4">Name</th>
+                 <th className="py-3 px-4">Role</th>
+                 <th className="py-3 px-4">Email / ID</th>
+                 <th className="py-3 px-4 text-center">Org Stats</th>
                  <th className="py-3 px-4 text-right">Revenue</th>
+                 <th className="py-3 px-4 text-center">Admin Access</th>
                </tr>
              </thead>
              <tbody className="divide-y divide-slate-50">
                {organizations.length === 0 ? (
                  <tr>
                    <td colSpan="6" className="py-8 text-center text-slate-400 font-bold italic text-sm">
-                     No organizations registered yet.
+                     No users registered yet.
                    </td>
                  </tr>
                ) : (
-                 organizations.map(org => (
+                 organizations.map(user => (
                    <tr 
-                     key={org._id} 
-                     onClick={() => setSelectedOrg(org)}
+                     key={user._id} 
+                     onClick={() => setSelectedOrg(user)}
                      className="hover:bg-indigo-50/50 cursor-pointer transition-colors group"
                    >
                      <td className="py-4 px-4">
                        <div className="flex items-center gap-3">
                          <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-xs font-black text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                           {org.name.charAt(0)}
+                           {user.name.charAt(0)}
                          </div>
-                         <span className="font-bold text-sm text-slate-900">{org.name}</span>
+                         <div className="flex flex-col">
+                           <span className="font-bold text-sm text-slate-900">{user.name}</span>
+                           <span className="text-[10px] text-slate-400 font-medium">{user.empId}</span>
+                         </div>
                        </div>
                      </td>
-                     <td className="py-4 px-4 text-xs font-bold text-slate-500">{org.email}</td>
-                     <td className="py-4 px-4 text-center text-xs font-black text-slate-900">{org.stats?.totalStaff || 0}</td>
-                     <td className="py-4 px-4 text-center text-xs font-black text-green-600 bg-green-50/50">{org.stats?.paidStaff || 0}</td>
-                     <td className="py-4 px-4 text-center text-xs font-black text-orange-500 bg-orange-50/50">{org.stats?.unpaidStaff || 0}</td>
-                     <td className="py-4 px-4 text-right text-sm font-black text-slate-900 font-poppins">₹{org.stats?.revenue || 0}</td>
+                     <td className="py-4 px-4">
+                        <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider ${
+                          user.role === 'admin' ? 'bg-green-100 text-green-700' :
+                          user.role === 'orgadmin' ? 'bg-orange-100 text-orange-700' :
+                          'bg-blue-100 text-blue-700'
+                        }`}>
+                          {user.role === 'admin' && <ShieldCheck className="h-3 w-3" />}
+                          {user.role === 'orgadmin' && <ShieldAlert className="h-3 w-3" />}
+                          {user.role === 'employee' && <Users className="h-3 w-3" />}
+                          {user.role}
+                        </span>
+                     </td>
+                     <td className="py-4 px-4 text-xs font-bold text-slate-500">{user.email}</td>
+                     <td className="py-4 px-4 text-center">
+                        {user.role === 'admin' || user.role === 'orgadmin' ? (
+                          <div className="flex flex-col items-center">
+                            <span className="text-[10px] font-black text-slate-900">{user.stats?.totalStaff || 0} Staff</span>
+                            <span className="text-[8px] font-bold text-slate-400 uppercase">{user.stats?.paidStaff || 0} Paid</span>
+                          </div>
+                        ) : (
+                          <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">Employee</span>
+                        )}
+                     </td>
+                     <td className="py-4 px-4 text-right text-sm font-black text-slate-900 font-poppins">
+                       ₹{user.stats?.revenue || 0}
+                     </td>
+                     <td className="py-4 px-4 text-center" onClick={e => e.stopPropagation()}>
+                       <div className="flex items-center justify-center gap-3">
+                         <label className="relative inline-flex items-center cursor-pointer group/toggle">
+                            <input 
+                              type="checkbox" 
+                              className="sr-only peer"
+                              checked={user.role === 'orgadmin' || user.role === 'admin'}
+                              onChange={() => handleGrantAdmin(user._id, user.name, user.role)}
+                            />
+                            <div className="w-10 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+                            <span className="ml-2 text-[10px] font-black text-slate-500 uppercase tracking-tighter group-hover/toggle:text-indigo-600 transition-colors">
+                              {user.role === 'orgadmin' || user.role === 'admin' ? 'Org Admin' : 'Make Org Admin'}
+                            </span>
+                         </label>
+                       </div>
+                     </td>
                    </tr>
                  ))
                )}

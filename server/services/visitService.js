@@ -1,11 +1,7 @@
-const Visit = require('../models/Visit');
 const { uploadImage } = require('../utils/cloudinary');
 const { reverseGeocode } = require('../utils/geocoder');
 
-/**
- * Start a new visit with location only, returning the Visit ID
- */
-const startVisit = async (employeeId, latitude, longitude) => {
+const startVisit = async (Visit, employeeId, latitude, longitude) => {
   // Resolve address in background or await if needed for consistency
   // Awaiting here to ensure the record is complete upon return
   const address = await reverseGeocode(latitude, longitude);
@@ -23,7 +19,7 @@ const startVisit = async (employeeId, latitude, longitude) => {
 /**
  * Submit complete visit proof to an existing visit
  */
-const submitVisit = async (visitId, employeeId, outsidePhotoData, insidePhotoData) => {
+const submitVisit = async (Visit, visitId, employeeId, outsidePhotoData, insidePhotoData) => {
   const visit = await Visit.findOne({ _id: visitId, employeeId });
   if (!visit) {
     throw new Error('Visit record not found or does not belong to this employee');
@@ -45,7 +41,7 @@ const submitVisit = async (visitId, employeeId, outsidePhotoData, insidePhotoDat
 /**
  * Get visits for an employee on a specific date string (YYYY-MM-DD)
  */
-const getVisits = async (employeeId, dateStr) => {
+const getVisits = async (Visit, employeeId, dateStr) => {
   let query = { employeeId };
 
   if (dateStr) {

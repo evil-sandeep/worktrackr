@@ -7,12 +7,11 @@ const { calculateWorkingHours, calculateEarnings } = require('../utils/timeCalcu
 // @desc    Mark daily attendance
 const markAttendance = async (req, res) => {
   try {
+    const { Attendance } = req.tenantModels;
     const { image, location, date, time, status = 'present' } = req.body;
 
-    // Use userId from authenticated user or fallback to body
     const userId = req.user ? req.user._id.toString() : req.body.userId;
 
-    // 0. Security/Business Logic Validations
     const now = new Date();
     const serverToday = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
 
@@ -20,7 +19,6 @@ const markAttendance = async (req, res) => {
       return res.status(400).json({ message: 'Backdated attendance is not allowed. Capture today only.' });
     }
 
-    // Check for existing record today
     const existingRecord = await Attendance.findOne({ userId, date });
     if (existingRecord) {
       return res.status(400).json({ message: 'Attendance already marked for today.' });
@@ -30,7 +28,6 @@ const markAttendance = async (req, res) => {
       return res.status(400).json({ message: 'Missing required attendance data' });
     }
 
-    // 1. Upload base64 image to Cloudinary
     let imageUrl;
     try {
       imageUrl = await uploadImage(image);
@@ -38,12 +35,10 @@ const markAttendance = async (req, res) => {
       console.error('Cloudinary Upload Error:', uploadError.message);
       return res.status(500).json({ 
         message: 'Attendance capture failed (Cloudinary error). Please verify server setup.',
-        details: uploadError.message,
-        help: 'Ensure CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET are set in production.'
+        details: uploadError.message
       });
     }
 
-    // 2. Save record in MongoDB with nested structure
     const attendance = await Attendance.create({
       userId,
       date,
@@ -65,11 +60,11 @@ const markAttendance = async (req, res) => {
   }
 };
 
-// @desc    Fetch attendance logs for a specific user with optional filtering
 const getAttendanceByUserId = async (req, res) => {
   try {
+    const { Attendance } = req.tenantModels;
     const { userId } = req.params;
-    const { month, year } = req.query; // Optional filters: YYYY-MM
+    const { month, year } = req.query;
 
     if (!userId) {
       return res.status(400).json({ message: 'User ID is required' });
@@ -77,7 +72,6 @@ const getAttendanceByUserId = async (req, res) => {
 
     let query = { userId };
 
-    // If filtering by specific month (YYYY-MM style regex)
     if (year && month) {
       const monthStr = `${year}-${month.padStart(2, '0')}`;
       query.date = { $regex: `^${monthStr}` };
@@ -85,18 +79,15 @@ const getAttendanceByUserId = async (req, res) => {
 
     const attendance = await Attendance.find(query).sort({ date: -1 });
 
-    // Auto-heal records that were created before the calculation logic was added
     for (const record of attendance) {
       const needsHealing = !record.totalHours || record.totalHours === 'In Progress' || record.earning === 0;
       const canHeal = record.checkIn?.time && record.checkOut?.time;
 
       if (needsHealing && canHeal) {
-        console.log(`Auto-healing record for date: ${record.date}`);
         const duration = calculateWorkingHours(record.checkIn.time, record.checkOut.time);
         record.totalHours = duration;
         record.earning = calculateEarnings(duration);
         await record.save();
-        console.log(`Healed: ${duration}, ₹${record.earning}`);
       }
     }
 
@@ -111,77 +102,56 @@ const getAttendanceByUserId = async (req, res) => {
   }
 };
 
-/**
- * Mark checkout for today
- */
 const markCheckout = async (req, res) => {
   try {
+    const { Attendance } = req.tenantModels;
     const { image, location, date, time } = req.body;
     const userId = req.user ? req.user._id.toString() : req.body.userId;
-    console.log(`[DIAGNOSTIC] Starting Checkout for user: ${userId}, date: ${date}`);
 
     if (!image || !location || !date || !time || !userId) {
-      console.warn('[DIAGNOSTIC] Missing fields in checkout request');
       return res.status(400).json({ message: 'Missing required checkout data' });
     }
 
-    // 0. Security: Today Only
     const now = new Date();
     const serverToday = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
-    console.log(`[DIAGNOSTIC] Server Today: ${serverToday}, Request Date: ${date}`);
 
     if (date !== serverToday) {
       return res.status(400).json({ message: 'Backdated checkout is not allowed.' });
     }
 
-    // 1. Find existing check-in for today
-    console.log('[DIAGNOSTIC] Querying database for attendance record...');
     const attendance = await Attendance.findOne({ userId, date });
     if (!attendance) {
-      console.warn('[DIAGNOSTIC] No check-in record found for today');
       return res.status(404).json({ message: 'Please check-in first' });
     }
 
     if (attendance.checkOut && attendance.checkOut.time) {
-      console.warn('[DIAGNOSTIC] Checkout already completed for this record');
       return res.status(400).json({ message: 'Check-out already completed' });
     }
 
-    console.log('[DIAGNOSTIC] Valid check-in found. Proceeding to Cloudinary...');
-
-    // 2. Upload to Cloudinary
     let uploadedImage;
     try {
       uploadedImage = await uploadImage(image);
     } catch (uploadError) {
       console.error('Checkout Cloudinary Error:', uploadError.message);
       return res.status(500).json({ 
-        message: 'Checkout capture failed (Cloudinary error). Please verify server setup.',
-        details: uploadError.message,
-        help: 'Ensure Cloudinary environment variables are correctly set in your host dashboard.'
+        message: 'Checkout capture failed (Cloudinary error).',
+        details: uploadError.message
       });
     }
 
-    // 3. Update record with checkout data and calculate working hours
     attendance.checkOut = {
       imageUrl: uploadedImage,
       location,
       time
     };
 
-    // Calculate duration and earnings
     if (attendance.checkIn && attendance.checkIn.time) {
-      console.log(`[DIAGNOSTIC] Calculating working hours. CheckIn: ${attendance.checkIn.time}, CheckOut: ${time}`);
       const duration = calculateWorkingHours(attendance.checkIn.time, time);
-      console.log(`[DIAGNOSTIC] Duration calculated: ${duration}`);
       attendance.totalHours = duration;
       attendance.earning = calculateEarnings(duration);
-      console.log(`[DIAGNOSTIC] Earnings calculated: ${attendance.earning}`);
     }
 
-    console.log('[DIAGNOSTIC] Saving attendance record...');
     await attendance.save();
-    console.log('[DIAGNOSTIC] Record saved successfully');
 
     res.status(200).json({
       message: 'Checkout logged successfully!',

@@ -1,9 +1,4 @@
-const LocationLog = require('../models/LocationLog');
-
-/**
- * Save an hourly location ping
- */
-const saveLocationLog = async (employeeId, latitude, longitude, isGpsEnabled) => {
+const saveLocationLog = async (LocationLog, employeeId, latitude, longitude, isGpsEnabled) => {
   const log = await LocationLog.create({
     employeeId,
     latitude,
@@ -16,7 +11,7 @@ const saveLocationLog = async (employeeId, latitude, longitude, isGpsEnabled) =>
 /**
  * Get location logs for a specific day
  */
-const getLocationLogsByDate = async (employeeId, dateStr) => {
+const getLocationLogsByDate = async (LocationLog, employeeId, dateStr) => {
   let query = { employeeId };
 
   if (dateStr) {
