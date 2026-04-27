@@ -11,36 +11,43 @@ const getAllEmployees = async (req, res) => {
   try {
     const { organizationId } = req.query;
     
-    // CASE 1: Super Admin Global Directory (No specific orgId provided)
+    // CASE 1: Platform Identities (Global Directory - No specific orgId provided)
     if (req.user.role === 'superadmin' && !organizationId) {
       const MainUser = require('../models/User');
       const { getTenantDb } = require('../config/tenantConnection');
       const { getTenantModels } = require('../models/tenantModels');
 
-      // Get all organization admins to find their dbNames
+      // 1. Get all Super Admins and Org Admins from Main DB
+      const mainIdentities = await MainUser.find({ 
+        role: { $in: ['superadmin', 'orgadmin', 'admin'] } 
+      }).select('-password');
+      
+      let allIdentities = [...mainIdentities.map(u => ({ ...u._doc, organizationName: u.role === 'superadmin' ? 'Platform' : u.name }))];
+
+      // 2. Get all Organization Admins to find their dbNames for fetching Employees
       const orgs = await MainUser.find({ role: 'orgadmin' }).select('_id dbName name');
-      let allEmployees = [];
 
       for (const org of orgs) {
         if (!org.dbName) continue;
         try {
           const connection = await getTenantDb(org.dbName);
           const { User: TenantUser } = getTenantModels(connection);
+          
+          // Fetch employees from this tenant
           const orgEmployees = await TenantUser.find({ role: 'employee' }).select('-password');
           
-          // Attach org name for context in the global list
           const employeesWithOrg = orgEmployees.map(emp => ({
             ...emp._doc,
             organizationName: org.name
           }));
           
-          allEmployees = [...allEmployees, ...employeesWithOrg];
+          allIdentities = [...allIdentities, ...employeesWithOrg];
         } catch (err) {
-          console.error(`Error fetching employees for org ${org.name}:`, err);
+          console.error(`Error fetching identities for org ${org.name}:`, err);
         }
       }
       
-      return res.status(200).json(allEmployees);
+      return res.status(200).json(allIdentities);
     }
 
     // CASE 2: Specific Tenant Directory

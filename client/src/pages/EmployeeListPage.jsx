@@ -174,92 +174,86 @@ const EmployeeListPage = () => {
         </button>
       </div>
 
-      {/* Employee List Table */}
-      <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 overflow-hidden">
-        <div className="grid grid-cols-12 gap-4 px-6 py-4 bg-slate-50/80 border-b border-slate-100">
-          <div className="col-span-1 text-[9px] font-black text-slate-400 uppercase tracking-widest">#</div>
-          <div className="col-span-3"><SortHeader field="name">Team Member</SortHeader></div>
-          <div className="col-span-2"><SortHeader field="empId">ID</SortHeader></div>
-          <div className="col-span-3 text-[9px] font-black text-slate-400 uppercase tracking-widest text-center">Status</div>
-          <div className="col-span-3 text-right text-[9px] font-black text-slate-400 uppercase tracking-widest">Action</div>
+      {/* Platform Identities Header */}
+      <div className="flex items-center gap-3 border-l-4 border-[#0078d4] pl-4 py-1">
+        <h1 className="text-xl font-bold text-[#323130] tracking-tight font-poppins">
+          Platform Identities (Employees & Admins)
+        </h1>
+      </div>
+
+      {/* Identity Table */}
+      <div className="bg-white rounded-sm border border-[#edebe9] shadow-sm overflow-hidden">
+        <div className="grid grid-cols-12 gap-4 px-8 py-4 bg-[#faf9f8] border-b border-[#edebe9]">
+          <div className="col-span-3 text-[11px] font-semibold text-[#605e5c] uppercase tracking-wider">NAME</div>
+          <div className="col-span-2 text-[11px] font-semibold text-[#605e5c] uppercase tracking-wider text-center">ROLE</div>
+          <div className="col-span-3 text-[11px] font-semibold text-[#605e5c] uppercase tracking-wider">EMAIL / ID</div>
+          <div className="col-span-2 text-[11px] font-semibold text-[#605e5c] uppercase tracking-wider text-center">ORG STATS</div>
+          <div className="col-span-2 text-[11px] font-semibold text-[#605e5c] uppercase tracking-wider text-right">REVENUE</div>
         </div>
 
-        <div className="divide-y divide-slate-50">
+        <div className="divide-y divide-[#edebe9]">
           {filteredAndSortedEmployees.length > 0 ? (
             filteredAndSortedEmployees.map((emp, index) => (
               <div 
-                key={emp._id} 
-                className="grid grid-cols-12 gap-4 px-6 py-3.5 items-center hover:bg-blue-50/30 transition-all duration-300 group cursor-pointer"
+                key={emp._id || index} 
+                className="grid grid-cols-12 gap-4 px-8 py-5 items-center hover:bg-[#f3f2f1]/50 transition-all cursor-pointer group"
                 onClick={() => setSelectedEmployee(emp)}
               >
-                <div className="col-span-1 text-[10px] font-bold text-slate-300 group-hover:text-blue-400">
-                  {String(index + 1).padStart(2, '0')}
-                </div>
-                <div className="col-span-3 flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 flex-shrink-0 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center font-black text-slate-400 overflow-hidden ring-2 ring-white shadow-sm group-hover:ring-blue-100 transition-all relative">
+                {/* NAME COLUMN */}
+                <div className="col-span-3 flex items-center gap-4">
+                  <div className="w-10 h-10 bg-[#eff6fc] text-[#0078d4] rounded-full flex items-center justify-center font-bold text-sm shadow-sm border border-[#deecf9]">
                     {emp.profileImg ? (
-                      <img src={emp.profileImg} className="w-full h-full object-cover" />
+                      <img src={emp.profileImg} className="w-full h-full rounded-full object-cover" />
                     ) : (
                       emp.name?.charAt(0).toUpperCase() || 'U'
                     )}
-                    {/* Tiny Indicator */}
-                    <div className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white shadow-sm ${getStatus(emp).color}`}></div>
                   </div>
                   <div className="min-w-0">
-                    <p className="font-bold text-[13px] text-slate-900 truncate group-hover:text-blue-600 transition-colors font-poppins tracking-tight uppercase">
+                    <p className="font-semibold text-[14px] text-[#323130] truncate group-hover:text-[#0078d4] transition-colors">
                       {emp.name}
                     </p>
-                    <p className="text-[9px] font-bold text-slate-400 truncate uppercase tracking-widest opacity-60">
-                      {emp.designation || 'Staff'}
+                    <p className="text-[11px] font-medium text-[#605e5c] truncate uppercase tracking-tight">
+                      {emp.empId || 'N/A'}
                     </p>
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[7px] font-black uppercase tracking-widest ${
-                        emp.role === 'admin' ? 'bg-green-100 text-green-700 border border-green-200' :
-                        emp.role === 'orgadmin' ? 'bg-amber-100 text-amber-700 border border-amber-200' :
-                        emp.role === 'superadmin' ? 'bg-purple-100 text-purple-700 border border-purple-200' :
-                        'bg-blue-50 text-blue-600 border border-blue-100'
-                      }`}>
-                        {emp.role === 'admin' ? 'Admin' : emp.role === 'orgadmin' ? 'Org Admin' : emp.role === 'superadmin' ? 'Super Admin' : 'Employee'}
-                      </span>
-                      {emp.organizationName && (
-                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[7px] font-black uppercase tracking-widest bg-slate-900 text-white shadow-sm ring-1 ring-white/20">
-                          {emp.organizationName}
-                        </span>
-                      )}
-                    </div>
                   </div>
                 </div>
-                <div className="col-span-2">
-                  <span className="inline-flex items-center px-2.5 py-1 bg-slate-100 border border-slate-200/50 rounded-lg text-[9px] font-black text-slate-600 tracking-widest group-hover:bg-blue-50 group-hover:text-blue-700 transition-all">
-                    {emp.empId}
+
+                {/* ROLE COLUMN */}
+                <div className="col-span-2 flex justify-center">
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
+                    emp.role === 'superadmin' ? 'bg-[#f4f4fc] text-[#5c2d91] border-[#d8d8f7]' :
+                    emp.role === 'orgadmin' ? 'bg-[#fff4ce] text-[#8a662e] border-[#fde7a6]' :
+                    'bg-[#eff6fc] text-[#0078d4] border-[#deecf9]'
+                  }`}>
+                    {emp.role === 'superadmin' ? 'SuperAdmin' : 
+                     emp.role === 'orgadmin' || emp.role === 'admin' ? 'Admin' : 'Employee'}
                   </span>
                 </div>
-                <div className="col-span-3 flex flex-col items-center justify-center gap-1">
-                   <div className="flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full ${getStatus(emp).color} ${getStatus(emp).label === 'ONLINE' ? 'animate-pulse' : ''}`}></div>
-                      <span className={`text-[10px] font-black uppercase tracking-widest ${getStatus(emp).font}`}>
-                        {getStatus(emp).label}
-                      </span>
-                   </div>
-                   <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mb-1">
-                      {emp.lastSeen ? `${Math.floor((new Date() - new Date(emp.lastSeen)) / 60000)}m ago` : 'No signals'}
-                   </p>
-                   <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest ${emp.isPaid ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-slate-100 text-slate-500 border border-slate-200'}`}>
-                     {emp.isPaid ? 'Paid' : 'Unpaid'}
-                   </span>
+
+                {/* EMAIL / ID COLUMN */}
+                <div className="col-span-3">
+                  <p className="text-[13px] font-medium text-[#323130] truncate">{emp.email}</p>
                 </div>
-                <div className="col-span-3 flex justify-end">
-                  <button className="flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all">
-                    <Eye className="h-4 w-4" />
-                    <span>View Detail</span>
-                  </button>
+
+                {/* ORG STATS COLUMN */}
+                <div className="col-span-2 flex justify-center">
+                  <span className="text-[11px] font-semibold text-[#a19f9d] uppercase tracking-wider">
+                    {emp.organizationName || 'EMPLOYEE'}
+                  </span>
+                </div>
+
+                {/* REVENUE COLUMN */}
+                <div className="col-span-2 text-right">
+                  <span className="text-[15px] font-black text-[#323130]">
+                    ₹0
+                  </span>
                 </div>
               </div>
             ))
           ) : (
             <div className="py-20 text-center">
-               <Users className="h-12 w-12 text-slate-200 mx-auto mb-4" />
-               <p className="text-slate-400 font-bold italic">No records found matching your query.</p>
+               <Users className="h-12 w-12 text-[#edebe9] mx-auto mb-4" />
+               <p className="text-[#605e5c] font-medium">No identities found in the global directory.</p>
             </div>
           )}
         </div>
