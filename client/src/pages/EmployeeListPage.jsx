@@ -212,14 +212,21 @@ const EmployeeListPage = () => {
                     <p className="text-[9px] font-bold text-slate-400 truncate uppercase tracking-widest opacity-60">
                       {emp.designation || 'Staff'}
                     </p>
-                    <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[7px] font-black uppercase tracking-widest mt-0.5 ${
-                      emp.role === 'admin' ? 'bg-green-100 text-green-700 border border-green-200' :
-                      emp.role === 'orgadmin' ? 'bg-amber-100 text-amber-700 border border-amber-200' :
-                      emp.role === 'superadmin' ? 'bg-purple-100 text-purple-700 border border-purple-200' :
-                      'bg-blue-50 text-blue-600 border border-blue-100'
-                    }`}>
-                      {emp.role === 'admin' ? 'Admin' : emp.role === 'orgadmin' ? 'Org Admin' : emp.role === 'superadmin' ? 'Super Admin' : 'Employee'}
-                    </span>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[7px] font-black uppercase tracking-widest ${
+                        emp.role === 'admin' ? 'bg-green-100 text-green-700 border border-green-200' :
+                        emp.role === 'orgadmin' ? 'bg-amber-100 text-amber-700 border border-amber-200' :
+                        emp.role === 'superadmin' ? 'bg-purple-100 text-purple-700 border border-purple-200' :
+                        'bg-blue-50 text-blue-600 border border-blue-100'
+                      }`}>
+                        {emp.role === 'admin' ? 'Admin' : emp.role === 'orgadmin' ? 'Org Admin' : emp.role === 'superadmin' ? 'Super Admin' : 'Employee'}
+                      </span>
+                      {emp.organizationName && (
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[7px] font-black uppercase tracking-widest bg-slate-900 text-white shadow-sm ring-1 ring-white/20">
+                          {emp.organizationName}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <div className="col-span-2">

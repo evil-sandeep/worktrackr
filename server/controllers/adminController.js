@@ -9,18 +9,48 @@ const Visit = require('../models/Visit');
 // @access  Private/Admin
 const getAllEmployees = async (req, res) => {
   try {
-    const { User } = req.tenantModels;
     const { organizationId } = req.query;
+    
+    // CASE 1: Super Admin Global Directory (No specific orgId provided)
+    if (req.user.role === 'superadmin' && !organizationId) {
+      const MainUser = require('../models/User');
+      const { getTenantDb } = require('../config/tenantConnection');
+      const { getTenantModels } = require('../models/tenantModels');
+
+      // Get all organization admins to find their dbNames
+      const orgs = await MainUser.find({ role: 'orgadmin' }).select('_id dbName name');
+      let allEmployees = [];
+
+      for (const org of orgs) {
+        if (!org.dbName) continue;
+        try {
+          const connection = await getTenantDb(org.dbName);
+          const { User: TenantUser } = getTenantModels(connection);
+          const orgEmployees = await TenantUser.find({ role: 'employee' }).select('-password');
+          
+          // Attach org name for context in the global list
+          const employeesWithOrg = orgEmployees.map(emp => ({
+            ...emp._doc,
+            organizationName: org.name
+          }));
+          
+          allEmployees = [...allEmployees, ...employeesWithOrg];
+        } catch (err) {
+          console.error(`Error fetching employees for org ${org.name}:`, err);
+        }
+      }
+      
+      return res.status(200).json(allEmployees);
+    }
+
+    // CASE 2: Specific Tenant Directory
+    const { User } = req.tenantModels;
     let query = {};
 
     if (req.user.role === 'orgadmin') {
       query = { organizationId: req.user._id, role: 'employee' };
-    } else if (req.user.role === 'superadmin') {
-      if (organizationId) {
-        query = { organizationId };
-      } else {
-        query = { organizationId: null, role: 'employee' };
-      }
+    } else if (req.user.role === 'superadmin' && organizationId) {
+      query = { organizationId, role: 'employee' };
     } else {
       query = { organizationId: req.user.organizationId, role: 'employee' };
     }
