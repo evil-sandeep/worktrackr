@@ -15,6 +15,7 @@ const attendanceRoutes = require('./routes/attendanceRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const locationRoutes = require('./routes/locationRoutes');
 const checkInRoutes = require('./routes/checkInRoutes');
+const userRoutes = require('./routes/user.routes');
 
 // Middleware
 app.use(cors());
@@ -36,6 +37,7 @@ app.use('/api/attendance', attendanceRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/location', locationRoutes);
 app.use('/api/checkin', checkInRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/visit', require('./routes/visitRoutes'));
 
 // Global Error Handler

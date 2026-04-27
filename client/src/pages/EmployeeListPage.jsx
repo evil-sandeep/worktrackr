@@ -120,57 +120,43 @@ const EmployeeListPage = () => {
     </button>
   );
 
+  const handleToggleAdmin = async (empId, empName, currentRole) => {
+    const isCurrentlyAdmin = currentRole === 'admin' || currentRole === 'orgadmin';
+    const confirmMsg = isCurrentlyAdmin
+      ? `Revoke admin dashboard access from "${empName}"?`
+      : `Grant admin dashboard access to "${empName}"? (This will allow them to manage their own organization)`;
+    
+    if (!window.confirm(confirmMsg)) return;
+
+    showLoader(true);
+    try {
+      if (isCurrentlyAdmin) {
+        await adminService.revokeAdmin(empId);
+      } else {
+        await adminService.grantAdmin(empId);
+      }
+      addToast(`Permissions updated for ${empName}`, 'success');
+      fetchEmployees();
+    } catch (error) {
+      addToast(error.response?.data?.message || 'Permission update failed', 'error');
+    } finally {
+      showLoader(false);
+    }
+  };
+
   return (
     <div className="h-full overflow-y-auto space-y-8 animate-in fade-in duration-700 custom-scrollbar pr-4">
       {/* Clean Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div className="space-y-0.5">
-          <h1 className="text-2xl font-black text-slate-900 tracking-tighter font-poppins">Employees</h1>
-          <p className="text-slate-500 font-bold uppercase tracking-widest text-[9px] opacity-60">Directory Management & Control</p>
+          <h1 className="text-2xl font-black text-[#323130] tracking-tighter font-poppins">Employees</h1>
+          <p className="text-[#605e5c] font-bold uppercase tracking-widest text-[9px] opacity-60">Directory Management & Control</p>
         </div>
         <button 
           onClick={fetchEmployees}
-          className="flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 text-slate-600 rounded-lg font-black text-[9px] uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm active:scale-95"
+          className="flex items-center gap-2 px-5 py-2.5 bg-white border border-[#edebe9] text-[#323130] rounded-sm font-semibold text-[11px] uppercase tracking-widest hover:bg-[#f3f2f1] transition-all shadow-sm active:scale-95"
         >
           Refresh List
-        </button>
-      </div>
-
-      {/* Directory Filter Panel */}
-      <div className="bg-white p-4 rounded-[1.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 flex flex-col lg:flex-row gap-3 items-center">
-        <div className="relative flex-1 w-full group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
-          <input
-            type="text"
-            placeholder="Search by name or ID..."
-            className="w-full pl-11 pr-5 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:bg-white transition-all font-bold text-sm text-slate-900 placeholder:text-slate-400"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        
-        <select 
-          className="w-full lg:w-40 pl-5 pr-9 py-3 bg-slate-50 border-none rounded-xl font-black text-[9px] uppercase tracking-widest text-slate-600 focus:ring-2 focus:ring-blue-500/20 appearance-none cursor-pointer"
-          value={filterRole}
-          onChange={(e) => setFilterRole(e.target.value)}
-        >
-          <option value="all">All Roles</option>
-          <option value="employee">Staff</option>
-          <option value="orgadmin">Org Admin</option>
-          <option value="admin">Admins</option>
-        </select>
-      </div>
-
-      {/* Add Employee Button Section */}
-      <div className="flex justify-start px-2">
-        <button
-          onClick={() => setIsAddModalOpen(true)}
-          className="group flex items-center gap-3 px-6 py-3.5 bg-blue-600 text-white rounded-2xl font-black text-[11px] uppercase tracking-[0.15em] hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 active:scale-95"
-        >
-          <div className="w-5 h-5 bg-white/20 rounded-lg flex items-center justify-center transition-transform group-hover:rotate-12">
-            <Users className="h-3 w-3" />
-          </div>
-          Add Employee
         </button>
       </div>
 
@@ -185,10 +171,11 @@ const EmployeeListPage = () => {
       <div className="bg-white rounded-sm border border-[#edebe9] shadow-sm overflow-hidden">
         <div className="grid grid-cols-12 gap-4 px-8 py-4 bg-[#faf9f8] border-b border-[#edebe9]">
           <div className="col-span-3 text-[11px] font-semibold text-[#605e5c] uppercase tracking-wider">NAME</div>
-          <div className="col-span-2 text-[11px] font-semibold text-[#605e5c] uppercase tracking-wider text-center">ROLE</div>
-          <div className="col-span-3 text-[11px] font-semibold text-[#605e5c] uppercase tracking-wider">EMAIL / ID</div>
+          <div className="col-span-1 text-[11px] font-semibold text-[#605e5c] uppercase tracking-wider text-center">ROLE</div>
+          <div className="col-span-2 text-[11px] font-semibold text-[#605e5c] uppercase tracking-wider">EMAIL / ID</div>
           <div className="col-span-2 text-[11px] font-semibold text-[#605e5c] uppercase tracking-wider text-center">ORG STATS</div>
           <div className="col-span-2 text-[11px] font-semibold text-[#605e5c] uppercase tracking-wider text-right">REVENUE</div>
+          <div className="col-span-2 text-[11px] font-semibold text-[#605e5c] uppercase tracking-wider text-right">ADMIN ACCESS</div>
         </div>
 
         <div className="divide-y divide-[#edebe9]">
@@ -219,7 +206,7 @@ const EmployeeListPage = () => {
                 </div>
 
                 {/* ROLE COLUMN */}
-                <div className="col-span-2 flex justify-center">
+                <div className="col-span-1 flex justify-center">
                   <span className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
                     emp.role === 'superadmin' ? 'bg-[#f4f4fc] text-[#5c2d91] border-[#d8d8f7]' :
                     emp.role === 'orgadmin' ? 'bg-[#fff4ce] text-[#8a662e] border-[#fde7a6]' :
@@ -231,7 +218,7 @@ const EmployeeListPage = () => {
                 </div>
 
                 {/* EMAIL / ID COLUMN */}
-                <div className="col-span-3">
+                <div className="col-span-2">
                   <p className="text-[13px] font-medium text-[#323130] truncate">{emp.email}</p>
                 </div>
 
@@ -247,6 +234,30 @@ const EmployeeListPage = () => {
                   <span className="text-[15px] font-black text-[#323130]">
                     ₹0
                   </span>
+                </div>
+
+                {/* ADMIN ACCESS COLUMN */}
+                <div className="col-span-2 flex justify-end items-center gap-3">
+                   <div 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (emp.role !== 'superadmin') {
+                        handleToggleAdmin(emp._id, emp.name, emp.role);
+                      }
+                    }}
+                    className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${
+                      (emp.role === 'admin' || emp.role === 'orgadmin') ? 'bg-[#0078d4]' : 'bg-[#c8c6c4]'
+                    } ${emp.role === 'superadmin' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                   >
+                    <span
+                      className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform duration-200 ${
+                        (emp.role === 'admin' || emp.role === 'orgadmin') ? 'translate-x-6' : 'translate-x-1'
+                      }`}
+                    />
+                   </div>
+                   <span className="text-[9px] font-bold text-[#605e5c] uppercase tracking-tight whitespace-nowrap">
+                      MAKE ORG ADMIN
+                   </span>
                 </div>
               </div>
             ))

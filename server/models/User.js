@@ -31,8 +31,11 @@ const userSchema = new mongoose.Schema({
   },
   organizationId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    default: null,
+    ref: 'Organization',
+    required: function() {
+      return this.role !== 'superadmin' && this.role !== 'orgadmin';
+    },
+    index: true,
   },
   profileImg: {
     type: String,

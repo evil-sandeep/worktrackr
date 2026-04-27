@@ -149,7 +149,17 @@ const grantAdminPermission = async (req, res) => {
 
     // Role 'orgadmin' now indicates an approved admin who can see the admin dashboard
     user.role = 'orgadmin';
-    user.organizationId = user._id;
+    
+    // Create actual Organization record
+    const Organization = require('../models/Organization');
+    const org = await Organization.create({
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      status: 'active'
+    });
+
+    user.organizationId = org._id;
     const sanitizedName = user.name.toLowerCase().replace(/[^a-z0-9]/g, '_');
     const shortId = user._id.toString().slice(-4);
     user.dbName = `worktrackr_org_${sanitizedName}_${shortId}`;

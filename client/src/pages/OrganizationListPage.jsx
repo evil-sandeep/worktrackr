@@ -159,7 +159,7 @@ const OrganizationListPage = () => {
               <div 
                 key={org?._id || index} 
                 className="grid grid-cols-12 gap-4 px-8 py-4 items-center hover:bg-indigo-50/30 transition-all duration-300 group cursor-pointer"
-                onClick={() => org?._id && navigate(`/admin/employee?orgId=${org._id}`)}
+                onClick={() => org?._id && navigate(`/org/${org._id}`)}
               >
                 <div className="col-span-1 text-[10px] font-bold text-slate-300 group-hover:text-indigo-400">
                   {String(index + 1).padStart(2, '0')}
@@ -236,7 +236,7 @@ const OrganizationListPage = () => {
                     className="w-9 h-9 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center hover:bg-indigo-600 hover:text-white transition-all shadow-sm"
                     onClick={(e) => {
                       e.stopPropagation();
-                      navigate(`/admin/employee?orgId=${org._id}`);
+                      navigate(`/org/${org._id}`);
                     }}
                   >
                     <ArrowRight className="h-4 w-4" />

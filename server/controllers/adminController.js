@@ -106,7 +106,16 @@ const createEmployee = async (req, res) => {
     });
 
     if (assignedRole === 'orgadmin') {
-      user.organizationId = user._id;
+      // Create actual Organization record
+      const Organization = require('../models/Organization');
+      const org = await Organization.create({
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        status: 'active'
+      });
+
+      user.organizationId = org._id;
       // Generate unique DB name: worktrackr_org_<sanitized_name>_<short_id>
       const sanitizedName = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
       const shortId = user._id.toString().slice(-4);

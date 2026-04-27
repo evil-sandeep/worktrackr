@@ -38,7 +38,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   }, [user?.email]);
 
   const allMenuItems = [
-    { name: 'Super Console', icon: ShieldCheck, path: '/superadmindashboard', roles: ['superadmin'] },
+    { name: 'Dashboard', icon: ShieldCheck, path: '/superadmindashboard', roles: ['superadmin'] },
     { name: 'Organizations', icon: Building2, path: '/organizations', roles: ['superadmin'] },
     { name: 'Global Directory', icon: Users, path: '/admin/employee', roles: ['superadmin'] },
     { name: 'Profile', icon: UserCircle, path: '/profile', roles: ['superadmin'] },
@@ -93,7 +93,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             {user.role === 'superadmin' && (
               <div className="mb-6">
                  <p className="px-6 text-[11px] font-semibold text-[#605e5c] uppercase tracking-wider mb-2">Global Resources</p>
-                 {menuItems.filter(item => ['Super Console', 'Organizations', 'Global Directory'].includes(item.name)).map((item) => {
+                 {menuItems.filter(item => ['Dashboard', 'Organizations', 'Global Directory'].includes(item.name)).map((item) => {
                    const isActive = location.pathname === item.path;
                    return (
                      <Link

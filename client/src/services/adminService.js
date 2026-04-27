@@ -72,6 +72,17 @@ const revokeAdmin = async (id) => {
   return response.data;
 };
 
+// --- NEW MODULAR USER ENDPOINTS ---
+const getEmployeesByOrg = async (orgId) => {
+  const response = await api.get(`/users/org/${orgId}/employees`);
+  return response.data;
+};
+
+const createOrgEmployee = async (orgId, employeeData) => {
+  const response = await api.post(`/users/org/${orgId}/employees`, employeeData);
+  return response.data;
+};
+
 const adminService = {
   getEmployees,
   createEmployee,
@@ -87,6 +98,8 @@ const adminService = {
   deleteOrganization,
   grantAdmin,
   revokeAdmin,
+  getEmployeesByOrg,
+  createOrgEmployee,
 };
 
 export default adminService;

@@ -13,6 +13,7 @@ import ResetPassword from './pages/ResetPassword';
 import StoreVisit from './pages/StoreVisit';
 import AttendanceCalendar from './pages/AttendanceCalendar';
 import PaymentPage from './pages/PaymentPage';
+import OrgDetailsPage from './pages/OrgDetailsPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 import Toast from './components/Toast';
@@ -122,6 +123,16 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <Layout>
               <OrganizationListPage />
+            </Layout>
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/org/:orgId" 
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <OrgDetailsPage />
             </Layout>
           </ProtectedRoute>
         } 

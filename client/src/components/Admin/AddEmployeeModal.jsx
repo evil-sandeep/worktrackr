@@ -3,7 +3,7 @@ import { X, User, Mail, Lock, Phone, Hash, Shield, Building2 } from 'lucide-reac
 import adminService from '../../services/adminService';
 import { useUI } from '../../context/UIContext';
 
-const AddEmployeeModal = ({ isOpen, onClose, onSuccess, organizations = [] }) => {
+const AddEmployeeModal = ({ isOpen, onClose, onSuccess, organizations = [], orgId = null }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -11,7 +11,7 @@ const AddEmployeeModal = ({ isOpen, onClose, onSuccess, organizations = [] }) =>
     empId: '',
     password: '',
     role: 'employee',
-    organizationId: ''
+    organizationId: orgId || ''
   });
   const [loading, setLoading] = useState(false);
   const { addToast } = useUI();
@@ -25,11 +25,15 @@ const AddEmployeeModal = ({ isOpen, onClose, onSuccess, organizations = [] }) =>
     e.preventDefault();
     setLoading(true);
     try {
-      const payload = { 
-        ...formData, 
-        isOrgAdmin: formData.role === 'orgadmin' 
-      };
-      await adminService.createEmployee(payload);
+      if (orgId) {
+        await adminService.createOrgEmployee(orgId, formData);
+      } else {
+        const payload = { 
+          ...formData, 
+          isOrgAdmin: formData.role === 'orgadmin' 
+        };
+        await adminService.createEmployee(payload);
+      }
       addToast(formData.role === 'orgadmin' ? 'Organization added successfully' : 'Employee added successfully', 'success');
       onSuccess();
       onClose();

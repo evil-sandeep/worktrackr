@@ -11,7 +11,7 @@ const Layout = ({ children, user = { role: 'employee' } }) => {
   const getNavLinks = () => {
     if (user.role === 'superadmin') {
       return [
-        { name: 'Super Console', icon: ShieldAlert, path: '/superadmindashboard' },
+        { name: 'Dashboard', icon: ShieldAlert, path: '/superadmindashboard' },
         { name: 'Global Directory', icon: Users, path: '/employee' },
         { name: 'Profile Settings', icon: UserCircle, path: '/profile' }
       ];

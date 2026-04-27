@@ -106,7 +106,7 @@ const SuperAdminDashboard = () => {
     <div className="h-full overflow-y-auto space-y-10 animate-in fade-in duration-700 custom-scrollbar pr-4">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div className="space-y-0.5">
-          <h2 className="text-[9px] font-black text-indigo-600 uppercase tracking-[0.3em] mb-1 font-poppins">Super Admin Console</h2>
+          <h2 className="text-[9px] font-black text-indigo-600 uppercase tracking-[0.3em] mb-1 font-poppins">Dashboard</h2>
           <h1 className="text-2xl font-black text-slate-900 tracking-tighter font-poppins">
             Platform <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Control</span>
           </h1>
