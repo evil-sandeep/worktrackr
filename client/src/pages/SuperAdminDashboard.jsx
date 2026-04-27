@@ -33,7 +33,7 @@ const SuperAdminDashboard = () => {
     phone: '',
     empId: '',
     password: '',
-    isOrgAdmin: true // Default to true since they mostly add orgs here
+    isOrgAdmin: true
   });
 
   const fetchData = async () => {
@@ -103,202 +103,216 @@ const SuperAdminDashboard = () => {
   };
 
   return (
-    <div className="h-full overflow-y-auto space-y-10 animate-in fade-in duration-700 custom-scrollbar pr-4">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div className="space-y-0.5">
-          <h2 className="text-[9px] font-black text-indigo-600 uppercase tracking-[0.3em] mb-1 font-poppins">Dashboard</h2>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tighter font-poppins">
-            Platform <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Control</span>
-          </h1>
-          <p className="text-slate-500 font-bold text-[11px] uppercase tracking-wide opacity-60">Global organization & revenue management</p>
+    <div className="h-full overflow-y-auto bg-[#F3F2F1] animate-in fade-in duration-300">
+      {/* Azure Style Breadcrumb/Header */}
+      <div className="bg-white border-b border-[#EDEBE9] px-6 py-3 flex items-center justify-between sticky top-0 z-10">
+        <div className="flex items-center gap-2 text-sm">
+          <span className="text-[#0078D4] hover:underline cursor-pointer font-medium">Home</span>
+          <span className="text-[#605E5C]">/</span>
+          <span className="text-[#323130] font-semibold">Super Admin Dashboard</span>
         </div>
-        <button 
-          onClick={() => setShowAddModal(true)}
-          className="group flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white rounded-lg font-black text-[9px] uppercase tracking-[0.2em] hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-600/20 active:scale-95"
-        >
-          <Plus className="h-4 w-4" />
-          Add Organization / User
-        </button>
+        <div className="flex items-center gap-2">
+          <button 
+            onClick={fetchData}
+            className="flex items-center gap-2 px-3 py-1.5 hover:bg-[#F3F2F1] rounded-sm text-sm text-[#323130] transition-colors border border-transparent hover:border-[#EDEBE9]"
+          >
+            <Activity className="h-4 w-4 text-[#0078D4]" />
+            Refresh
+          </button>
+          <button 
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-2 px-4 py-1.5 bg-[#0078D4] text-white rounded-sm text-sm font-semibold hover:bg-[#005A9E] transition-colors shadow-sm"
+          >
+            <Plus className="h-4 w-4" />
+            New Organization
+          </button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white p-5 rounded-[1.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 relative overflow-hidden">
-          <div className="flex justify-between items-start mb-4">
-             <div className="w-11 h-11 bg-indigo-100 rounded-xl flex items-center justify-center">
-               <Building2 className="h-5 w-5 text-indigo-600" />
-             </div>
-          </div>
-          <h3 className="text-slate-400 font-black text-[9px] uppercase tracking-[0.2em] font-poppins">Total Organizations</h3>
-          <p className="text-3xl font-black text-slate-900 tracking-tighter font-poppins">{stats.totalOrganizations}</p>
-        </div>
-
-        <div className="bg-white p-5 rounded-[1.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 relative overflow-hidden">
-          <div className="flex justify-between items-start mb-4">
-             <div className="w-11 h-11 bg-blue-100 rounded-xl flex items-center justify-center">
-               <Users className="h-5 w-5 text-blue-600" />
-             </div>
-          </div>
-          <h3 className="text-slate-400 font-black text-[9px] uppercase tracking-[0.2em] font-poppins">Global Workforce</h3>
-          <p className="text-3xl font-black text-slate-900 tracking-tighter font-poppins">{stats.totalEmployees}</p>
-        </div>
-
-        <div className="bg-white p-5 rounded-[1.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 relative overflow-hidden">
-          <div className="flex justify-between items-start mb-4">
-             <div className="w-11 h-11 bg-green-100 rounded-xl flex items-center justify-center">
-               <ShieldCheck className="h-5 w-5 text-green-600" />
-             </div>
-             <span className="text-[10px] font-bold text-orange-500 bg-orange-50 px-2 py-1 rounded">
-               {stats.unpaidEmployees} Unpaid
-             </span>
-          </div>
-          <h3 className="text-slate-400 font-black text-[9px] uppercase tracking-[0.2em] font-poppins">Paid Employees</h3>
-          <p className="text-3xl font-black text-slate-900 tracking-tighter font-poppins">{stats.paidEmployees}</p>
-        </div>
-
-        <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-[1.5rem] p-5 text-white shadow-xl shadow-indigo-500/20 relative overflow-hidden">
-            <div className="w-11 h-11 bg-white/20 rounded-xl flex items-center justify-center mb-4">
-              <IndianRupee className="h-5 w-5 text-white" />
+      <div className="p-6 space-y-8 max-w-[1600px] mx-auto">
+        {/* Stats Grid - Azure Tile Style */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white p-5 border border-[#EDEBE9] shadow-sm flex items-center gap-4 group hover:border-[#0078D4] transition-colors">
+            <div className="w-12 h-12 bg-[#F3F2F1] rounded-sm flex items-center justify-center group-hover:bg-[#DEECF9] transition-colors">
+              <Building2 className="h-6 w-6 text-[#0078D4]" />
             </div>
-            <h3 className="font-bold text-indigo-100 text-[9px] uppercase tracking-widest mb-1 font-poppins">Total Revenue</h3>
-            <p className="text-3xl font-black leading-tight font-poppins">₹{stats.totalRevenue}</p>
-        </div>
-      </div>
+            <div>
+              <p className="text-[11px] font-semibold text-[#605E5C] uppercase tracking-wider mb-1">Organizations</p>
+              <p className="text-2xl font-bold text-[#323130]">{stats.totalOrganizations}</p>
+            </div>
+          </div>
 
-      {/* Platform Identities Table */}
-      <div className="bg-white rounded-[1.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 p-5 overflow-hidden">
-         <h3 className="text-lg font-black text-slate-900 tracking-tight flex items-center gap-3 font-poppins mb-6">
-            <span className="w-1 h-5 bg-indigo-600 rounded-full"></span>
-            Platform Identities (Employees & Admins)
-         </h3>
-         <div className="overflow-x-auto">
-           <table className="w-full text-left border-collapse">
-             <thead>
-               <tr className="border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                 <th className="py-3 px-4">Name</th>
-                 <th className="py-3 px-4">Role</th>
-                 <th className="py-3 px-4">Email / ID</th>
-                 <th className="py-3 px-4 text-center">Org Stats</th>
-                 <th className="py-3 px-4 text-right">Revenue</th>
-                 <th className="py-3 px-4 text-center">Admin Access</th>
-               </tr>
-             </thead>
-             <tbody className="divide-y divide-slate-50">
-               {organizations.length === 0 ? (
-                 <tr>
-                   <td colSpan="6" className="py-8 text-center text-slate-400 font-bold italic text-sm">
-                     No users registered yet.
-                   </td>
+          <div className="bg-white p-5 border border-[#EDEBE9] shadow-sm flex items-center gap-4 group hover:border-[#0078D4] transition-colors">
+            <div className="w-12 h-12 bg-[#F3F2F1] rounded-sm flex items-center justify-center group-hover:bg-[#DEECF9] transition-colors">
+              <Users className="h-6 w-6 text-[#0078D4]" />
+            </div>
+            <div>
+              <p className="text-[11px] font-semibold text-[#605E5C] uppercase tracking-wider mb-1">Total Workforce</p>
+              <p className="text-2xl font-bold text-[#323130]">{stats.totalEmployees}</p>
+            </div>
+          </div>
+
+          <div className="bg-white p-5 border border-[#EDEBE9] shadow-sm flex items-center gap-4 group hover:border-[#0078D4] transition-colors">
+            <div className="w-12 h-12 bg-[#F3F2F1] rounded-sm flex items-center justify-center group-hover:bg-[#DEECF9] transition-colors">
+              <ShieldCheck className="h-6 w-6 text-[#107C10]" />
+            </div>
+            <div>
+              <p className="text-[11px] font-semibold text-[#605E5C] uppercase tracking-wider mb-1">Active Licenses</p>
+              <div className="flex items-end gap-2">
+                <p className="text-2xl font-bold text-[#323130]">{stats.paidEmployees}</p>
+                <span className="text-[10px] text-orange-600 font-bold mb-1 bg-orange-50 px-1.5 py-0.5 border border-orange-100">{stats.unpaidEmployees} Pending</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-[#0078D4] p-5 border border-[#005A9E] shadow-sm flex items-center gap-4 text-white">
+            <div className="w-12 h-12 bg-white/10 rounded-sm flex items-center justify-center">
+              <IndianRupee className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-[11px] font-semibold text-blue-100 uppercase tracking-wider mb-1">Global Revenue</p>
+              <p className="text-2xl font-bold">₹{stats.totalRevenue.toLocaleString()}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Resources Table - Azure Portal Resource Style */}
+        <div className="bg-white border border-[#EDEBE9] shadow-sm">
+           <div className="px-6 py-4 border-b border-[#EDEBE9] bg-[#FAF9F8]">
+              <h3 className="text-sm font-semibold text-[#323130] flex items-center gap-2">
+                <ShieldCheck className="h-4 w-4 text-[#0078D4]" />
+                Resource Management (Identity Pool)
+              </h3>
+           </div>
+           <div className="overflow-x-auto">
+             <table className="w-full text-left border-collapse">
+               <thead>
+                 <tr className="bg-[#FAF9F8] border-b border-[#EDEBE9] text-[11px] font-semibold text-[#605E5C] uppercase tracking-wider">
+                   <th className="py-3 px-6">Name</th>
+                   <th className="py-3 px-6">Role</th>
+                   <th className="py-3 px-6">Email Address</th>
+                   <th className="py-3 px-6">Staff Metrics</th>
+                   <th className="py-3 px-6 text-right">Revenue Cont.</th>
+                   <th className="py-3 px-6 text-center">Admin Status</th>
                  </tr>
-               ) : (
-                 organizations.map(user => (
-                   <tr 
-                     key={user._id} 
-                     onClick={() => setSelectedOrg(user)}
-                     className="hover:bg-indigo-50/50 cursor-pointer transition-colors group"
-                   >
-                     <td className="py-4 px-4">
-                       <div className="flex items-center gap-3">
-                         <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-xs font-black text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                           {user.name.charAt(0)}
-                         </div>
-                         <div className="flex flex-col">
-                           <span className="font-bold text-sm text-slate-900">{user.name}</span>
-                           <span className="text-[10px] text-slate-400 font-medium">{user.empId}</span>
-                         </div>
-                       </div>
-                     </td>
-                     <td className="py-4 px-4">
-                        <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider ${
-                          user.role === 'admin' ? 'bg-green-100 text-green-700' :
-                          user.role === 'orgadmin' ? 'bg-orange-100 text-orange-700' :
-                          'bg-blue-100 text-blue-700'
-                        }`}>
-                          {user.role === 'admin' && <ShieldCheck className="h-3 w-3" />}
-                          {user.role === 'orgadmin' && <ShieldAlert className="h-3 w-3" />}
-                          {user.role === 'employee' && <Users className="h-3 w-3" />}
-                          {user.role}
-                        </span>
-                     </td>
-                     <td className="py-4 px-4 text-xs font-bold text-slate-500">{user.email}</td>
-                     <td className="py-4 px-4 text-center">
-                        {user.role === 'admin' || user.role === 'orgadmin' ? (
-                          <div className="flex flex-col items-center">
-                            <span className="text-[10px] font-black text-slate-900">{user.stats?.totalStaff || 0} Staff</span>
-                            <span className="text-[8px] font-bold text-slate-400 uppercase">{user.stats?.paidStaff || 0} Paid</span>
-                          </div>
-                        ) : (
-                          <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">Employee</span>
-                        )}
-                     </td>
-                     <td className="py-4 px-4 text-right text-sm font-black text-slate-900 font-poppins">
-                       ₹{user.stats?.revenue || 0}
-                     </td>
-                     <td className="py-4 px-4 text-center" onClick={e => e.stopPropagation()}>
-                       <div className="flex items-center justify-center gap-3">
-                         <label className="relative inline-flex items-center cursor-pointer group/toggle">
-                            <input 
-                              type="checkbox" 
-                              className="sr-only peer"
-                              checked={user.role === 'orgadmin' || user.role === 'admin'}
-                              onChange={() => handleGrantAdmin(user._id, user.name, user.role)}
-                            />
-                            <div className="w-10 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
-                            <span className="ml-2 text-[10px] font-black text-slate-500 uppercase tracking-tighter group-hover/toggle:text-indigo-600 transition-colors">
-                              {user.role === 'orgadmin' || user.role === 'admin' ? 'Org Admin' : 'Make Org Admin'}
-                            </span>
-                         </label>
-                       </div>
+               </thead>
+               <tbody className="divide-y divide-[#EDEBE9]">
+                 {organizations.length === 0 ? (
+                   <tr>
+                     <td colSpan="6" className="py-12 text-center text-[#605E5C] italic text-sm">
+                       No resources found.
                      </td>
                    </tr>
-                 ))
-               )}
-             </tbody>
-           </table>
-         </div>
+                 ) : (
+                   organizations.map(user => (
+                     <tr 
+                       key={user._id} 
+                       onClick={() => setSelectedOrg(user)}
+                       className="hover:bg-[#F3F2F1] cursor-pointer transition-colors group"
+                     >
+                       <td className="py-3 px-6">
+                         <div className="flex items-center gap-3">
+                           <div className="w-8 h-8 rounded-sm bg-[#DEECF9] flex items-center justify-center text-xs font-bold text-[#0078D4]">
+                             {user.name.charAt(0).toUpperCase()}
+                           </div>
+                           <div className="flex flex-col">
+                             <span className="font-semibold text-[13px] text-[#323130] hover:text-[#0078D4] transition-colors">{user.name}</span>
+                             <span className="text-[10px] text-[#605E5C]">{user.empId}</span>
+                           </div>
+                         </div>
+                       </td>
+                       <td className="py-3 px-6">
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-sm text-[10px] font-semibold uppercase tracking-wider ${
+                            user.role === 'admin' ? 'bg-[#DFF6DD] text-[#107C10]' :
+                            user.role === 'orgadmin' ? 'bg-[#FFF4CE] text-[#797673]' :
+                            'bg-[#DEECF9] text-[#0078D4]'
+                          }`}>
+                            {user.role}
+                          </span>
+                       </td>
+                       <td className="py-3 px-6 text-[13px] text-[#605E5C]">{user.email}</td>
+                       <td className="py-3 px-6">
+                          {user.role === 'admin' || user.role === 'orgadmin' ? (
+                            <div className="flex flex-col">
+                              <span className="text-[12px] font-semibold text-[#323130]">{user.stats?.totalStaff || 0} Instances</span>
+                              <span className="text-[10px] text-[#605E5C]">{user.stats?.paidStaff || 0} Paid</span>
+                            </div>
+                          ) : (
+                            <span className="text-[10px] text-[#A19F9D] uppercase font-bold">Standard User</span>
+                          )}
+                       </td>
+                       <td className="py-3 px-6 text-right text-[13px] font-semibold text-[#323130]">
+                         ₹{user.stats?.revenue || 0}
+                       </td>
+                       <td className="py-3 px-6 text-center" onClick={e => e.stopPropagation()}>
+                         <div className="flex items-center justify-center">
+                           <label className="relative inline-flex items-center cursor-pointer group/toggle">
+                              <input 
+                                type="checkbox" 
+                                className="sr-only peer"
+                                checked={user.role === 'orgadmin' || user.role === 'admin'}
+                                onChange={() => handleGrantAdmin(user._id, user.name, user.role)}
+                              />
+                              <div className="relative w-10 h-5 bg-[#C8C6C4] peer-focus:outline-none rounded-full peer peer-checked:bg-[#0078D4] peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-[#8A8886] after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
+                              <span className="ml-2 text-[10px] font-semibold text-[#605E5C] uppercase group-hover/toggle:text-[#0078D4] transition-colors">
+                                {user.role === 'orgadmin' || user.role === 'admin' ? 'Active Admin' : 'Grant Access'}
+                              </span>
+                           </label>
+                         </div>
+                       </td>
+                     </tr>
+                   ))
+                 )}
+               </tbody>
+             </table>
+           </div>
+           <div className="px-6 py-3 border-t border-[#EDEBE9] bg-[#FAF9F8] text-[11px] text-[#605E5C] font-semibold flex justify-between">
+             <span>Showing {organizations.length} organizations</span>
+             <span>Region: Global (Platform)</span>
+           </div>
+        </div>
       </div>
 
-      {/* Detail Modal */}
-      {selectedOrg && (
-        <OrganizationDetailModal 
-          organization={selectedOrg} 
-          onClose={() => setSelectedOrg(null)} 
-          onUpdate={fetchData}
-        />
-      )}
-
-      {/* Add User Modal */}
+      {/* Add User Modal - Azure Side Panel / Center Panel Style */}
       {showAddModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 relative">
-            <h3 className="text-xl font-black text-slate-900 mb-6">Register New Identity</h3>
-            <form onSubmit={handleCreateUser} className="space-y-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/30 backdrop-blur-[1px] animate-in fade-in duration-200">
+          <div className="bg-white w-full max-w-md rounded-sm shadow-2xl border border-[#EDEBE9] overflow-hidden">
+            <div className="px-6 py-4 border-b border-[#EDEBE9] bg-[#FAF9F8] flex items-center justify-between">
+              <h3 className="text-base font-semibold text-[#323130]">Register New Identity</h3>
+              <button onClick={() => setShowAddModal(false)} className="text-[#605E5C] hover:text-[#323130]">✕</button>
+            </div>
+            <form onSubmit={handleCreateUser} className="p-6 space-y-4">
                <div>
-                  <label className="text-xs font-bold text-slate-500">Full Name / Organization Name</label>
-                  <input required type="text" className="w-full mt-1 p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
+                  <label className="text-[12px] font-semibold text-[#605E5C] mb-1 block">Display Name / Identity</label>
+                  <input required type="text" className="w-full px-3 py-1.5 bg-white border border-[#8A8886] rounded-sm text-sm focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] outline-none" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
                </div>
-               <div>
-                  <label className="text-xs font-bold text-slate-500">Email Address</label>
-                  <input required type="email" className="w-full mt-1 p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
+               <div className="grid grid-cols-2 gap-4">
+                 <div>
+                    <label className="text-[12px] font-semibold text-[#605E5C] mb-1 block">Email Address</label>
+                    <input required type="email" className="w-full px-3 py-1.5 bg-white border border-[#8A8886] rounded-sm text-sm focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] outline-none" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
+                 </div>
+                 <div>
+                    <label className="text-[12px] font-semibold text-[#605E5C] mb-1 block">Contact Phone</label>
+                    <input required type="text" className="w-full px-3 py-1.5 bg-white border border-[#8A8886] rounded-sm text-sm focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] outline-none" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
+                 </div>
                </div>
-               <div>
-                  <label className="text-xs font-bold text-slate-500">Phone</label>
-                  <input required type="text" className="w-full mt-1 p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
+               <div className="grid grid-cols-2 gap-4">
+                 <div>
+                    <label className="text-[12px] font-semibold text-[#605E5C] mb-1 block">Unique Employee ID</label>
+                    <input required type="text" className="w-full px-3 py-1.5 bg-white border border-[#8A8886] rounded-sm text-sm focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] outline-none" value={formData.empId} onChange={e => setFormData({...formData, empId: e.target.value})} />
+                 </div>
+                 <div>
+                    <label className="text-[12px] font-semibold text-[#605E5C] mb-1 block">Access Password</label>
+                    <input required type="password" className="w-full px-3 py-1.5 bg-white border border-[#8A8886] rounded-sm text-sm focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] outline-none" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} />
+                 </div>
                </div>
-               <div>
-                  <label className="text-xs font-bold text-slate-500">ID / Org Code</label>
-                  <input required type="text" className="w-full mt-1 p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium" value={formData.empId} onChange={e => setFormData({...formData, empId: e.target.value})} />
+               <div className="flex items-center gap-3 p-4 bg-[#F3F2F1] border border-[#EDEBE9] mt-6">
+                  <input type="checkbox" id="isOrgAdmin" className="w-4 h-4 text-[#0078D4] rounded-sm" checked={formData.isOrgAdmin} onChange={e => setFormData({...formData, isOrgAdmin: e.target.checked})} />
+                  <label htmlFor="isOrgAdmin" className="text-[12px] font-semibold text-[#323130] cursor-pointer">Register as Organization Admin (Tenant Access)</label>
                </div>
-               <div>
-                  <label className="text-xs font-bold text-slate-500">Password</label>
-                  <input required type="password" className="w-full mt-1 p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} />
-               </div>
-               <div className="flex items-center gap-3 p-4 bg-indigo-50 border border-indigo-100 rounded-lg mt-4">
-                  <input type="checkbox" id="isOrgAdmin" className="w-4 h-4 text-indigo-600 rounded" checked={formData.isOrgAdmin} onChange={e => setFormData({...formData, isOrgAdmin: e.target.checked})} />
-                  <label htmlFor="isOrgAdmin" className="text-xs font-bold text-indigo-900 cursor-pointer">Register as Organization Admin (Tenant)</label>
-               </div>
-               <div className="flex gap-3 pt-4">
-                  <button type="button" onClick={() => setShowAddModal(false)} className="flex-1 py-3 bg-slate-100 text-slate-600 rounded-lg font-bold text-xs uppercase hover:bg-slate-200">Cancel</button>
-                  <button type="submit" className="flex-1 py-3 bg-indigo-600 text-white rounded-lg font-bold text-xs uppercase hover:bg-indigo-700">Create Entity</button>
+               <div className="flex gap-2 pt-6">
+                  <button type="submit" className="flex-1 py-2 bg-[#0078D4] text-white rounded-sm font-semibold text-sm hover:bg-[#005A9E] transition-all shadow-sm">Review + Create</button>
+                  <button type="button" onClick={() => setShowAddModal(false)} className="px-6 py-2 bg-white border border-[#8A8886] text-[#323130] rounded-sm font-semibold text-sm hover:bg-[#F3F2F1] transition-all">Cancel</button>
                </div>
             </form>
           </div>
