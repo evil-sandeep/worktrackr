@@ -6,7 +6,8 @@ import {
   ArrowRight,
   ShieldCheck,
   ShieldAlert,
-  Users
+  Users,
+  Trash2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import adminService from '../services/adminService';
@@ -81,6 +82,21 @@ const OrganizationListPage = () => {
       fetchData();
     } catch (error) {
       addToast(error.response?.data?.message || 'Permission update failed', 'error');
+    } finally {
+      showLoader(false);
+    }
+  };
+
+  const handleDelete = async (orgId, orgName) => {
+    if (!window.confirm(`CRITICAL: This will permanently delete the organization "${orgName}" and ALL its associated data (employees, attendance, etc.). This cannot be undone. Proceed?`)) return;
+
+    showLoader(true);
+    try {
+      await adminService.deleteOrganization(orgId);
+      addToast(`Organization ${orgName} has been removed`, 'success');
+      fetchData();
+    } catch (error) {
+      addToast(error.response?.data?.message || 'Failed to delete organization', 'error');
     } finally {
       showLoader(false);
     }
@@ -204,6 +220,15 @@ const OrganizationListPage = () => {
                     }`}
                   >
                     {org?.role === 'admin' ? 'Revoke' : 'Promote'}
+                  </button>
+                  <button 
+                    className="w-9 h-9 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center hover:bg-rose-600 hover:text-white transition-all shadow-sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(org._id, org.name);
+                    }}
+                  >
+                    <Trash2 className="h-4 w-4" />
                   </button>
                   <button 
                     className="w-9 h-9 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center hover:bg-indigo-600 hover:text-white transition-all shadow-sm"
