@@ -39,7 +39,10 @@ const getOrganizations = async (req, res) => {
     const usersWithContext = await Promise.all(users.map(async (user) => {
       // If user is a tenant/admin, get their org stats
       if (user.role === 'admin' || user.role === 'orgadmin') {
-        const orgEmployees = await User.find({ organizationId: user._id, role: 'employee' });
+        const orgEmployees = await User.find({ 
+          organizationId: user.organizationId || user._id, 
+          role: 'employee' 
+        });
         const totalStaff = orgEmployees.length;
         const paidStaff = orgEmployees.filter(emp => emp.isPaid).length;
         const unpaidStaff = totalStaff - paidStaff;

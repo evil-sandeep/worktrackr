@@ -93,7 +93,11 @@ const createEmployee = async (req, res) => {
       }
     }
 
-    const user = await User.create({
+    // CRITICAL: orgadmin/superadmin must ALWAYS be in the Main DB
+    const MainUser = require('../models/User');
+    const UserModel = assignedRole === 'orgadmin' ? MainUser : User;
+
+    const user = await UserModel.create({
       name,
       email,
       phone,
@@ -102,7 +106,7 @@ const createEmployee = async (req, res) => {
       role: assignedRole,
       organizationId: assignedRole === 'orgadmin' ? null : assignedOrgId,
       isPaid: false,
-      status: 'inactive'
+      status: 'active'
     });
 
     if (assignedRole === 'orgadmin') {

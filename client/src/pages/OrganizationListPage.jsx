@@ -187,9 +187,13 @@ const OrganizationListPage = () => {
                       {org?.empId || 'N/A'}
                     </span>
                     <span className={`text-[8px] font-black uppercase tracking-widest ${
-                      org?.role === 'admin' ? 'text-indigo-600' : 'text-amber-600'
+                      org?.role === 'admin' ? 'text-indigo-600' : 
+                      org?.role === 'orgadmin' ? 'text-emerald-600' : 
+                      org?.role === 'employee' ? 'text-slate-400' : 'text-amber-600'
                     }`}>
-                      {org?.role === 'admin' ? 'Promoted' : 'Pending'}
+                      {org?.role === 'admin' ? 'Promoted' : 
+                       org?.role === 'orgadmin' ? 'Organization' : 
+                       org?.role === 'employee' ? 'Employee' : 'Pending'}
                     </span>
                   </div>
                 </div>
