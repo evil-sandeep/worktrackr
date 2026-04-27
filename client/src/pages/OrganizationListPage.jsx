@@ -7,7 +7,11 @@ import {
   ShieldCheck,
   ShieldAlert,
   Users,
-  Trash2
+  Trash2,
+  Search,
+  RotateCcw,
+  Plus,
+  ArrowUpRight
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import adminService from '../services/adminService';
@@ -25,10 +29,7 @@ const OrganizationListPage = () => {
   const fetchData = async () => {
     showLoader(true);
     try {
-      console.log('Fetching organizations...');
       const data = await adminService.getOrganizations();
-      console.log('Orgs fetched:', data);
-      
       if (Array.isArray(data)) {
         const orgAdmins = data.filter(user => 
           user && (user.role === 'orgadmin' || user.role === 'admin' || user.role === 'superadmin')
@@ -36,12 +37,10 @@ const OrganizationListPage = () => {
         setOrganizations(orgAdmins);
         setFilteredOrgs(orgAdmins);
       } else {
-        console.error('Data fetched is not an array:', data);
         setOrganizations([]);
         setFilteredOrgs([]);
       }
     } catch (error) {
-      console.error('Fetch Orgs Error:', error);
       addToast(error.response?.data?.message || 'Failed to fetch organizations', 'error');
     } finally {
       showLoader(false);
@@ -64,7 +63,6 @@ const OrganizationListPage = () => {
 
   const handleToggleAdmin = async (orgId, orgName, currentRole) => {
     const isCurrentlyAdmin = currentRole === 'admin';
-    const action = isCurrentlyAdmin ? 'revoke-admin' : 'grant-admin';
     const confirmMsg = isCurrentlyAdmin
       ? `Revoke admin dashboard access from "${orgName}"?`
       : `Grant admin dashboard access to "${orgName}"?`;
@@ -88,7 +86,7 @@ const OrganizationListPage = () => {
   };
 
   const handleDelete = async (orgId, orgName) => {
-    if (!window.confirm(`CRITICAL: This will permanently delete the organization "${orgName}" and ALL its associated data (employees, attendance, etc.). This cannot be undone. Proceed?`)) return;
+    if (!window.confirm(`CRITICAL: This will permanently delete the organization "${orgName}" and ALL its associated data. Proceed?`)) return;
 
     showLoader(true);
     try {
@@ -103,152 +101,163 @@ const OrganizationListPage = () => {
   };
 
   return (
-    <div className="h-full space-y-6 p-4">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <h2 className="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-1">Super Admin</h2>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-3 font-poppins">
-            <Building2 className="h-7 w-7 text-indigo-600" />
-            Organisation Management
-          </h1>
-          <p className="text-slate-500 text-xs font-bold uppercase tracking-wide mt-1 opacity-60">Manage organization administrators and their access levels</p>
+    <div className="h-full bg-[#F3F2F1] animate-in fade-in duration-300 overflow-y-auto">
+      {/* Azure Style Breadcrumb/Header */}
+      <div className="bg-white border-b border-[#EDEBE9] px-6 py-3 flex items-center justify-between sticky top-0 z-10">
+        <div className="flex items-center gap-2 text-sm">
+          <span className="text-[#0078D4] hover:underline cursor-pointer font-medium" onClick={() => navigate('/')}>Home</span>
+          <span className="text-[#605E5C]">/</span>
+          <span className="text-[#323130] font-semibold">Organizations</span>
         </div>
-        
-        <div className="flex items-center gap-3">
-          <div className="relative">
+        <div className="flex items-center gap-2">
+          <div className="relative group">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#605E5C] group-focus-within:text-[#0078D4]" />
             <input 
               type="text" 
-              placeholder="Search by name or email..." 
+              placeholder="Filter resources..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-4 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all w-64 shadow-sm"
+              className="pl-9 pr-4 py-1.5 bg-[#F3F2F1] border border-transparent rounded-sm text-sm focus:bg-white focus:border-[#0078D4] outline-none w-48 transition-all"
             />
           </div>
+          <div className="w-[1px] h-4 bg-[#EDEBE9] mx-1"></div>
+          <button 
+            onClick={fetchData}
+            className="flex items-center gap-2 px-3 py-1.5 hover:bg-[#F3F2F1] rounded-sm text-sm text-[#323130] transition-colors border border-transparent hover:border-[#EDEBE9]"
+          >
+            <RotateCcw className="h-4 w-4 text-[#0078D4]" />
+            Refresh
+          </button>
+          <button 
+            onClick={() => setIsAddModalOpen(true)}
+            className="flex items-center gap-2 px-4 py-1.5 bg-[#0078D4] text-white rounded-sm text-sm font-semibold hover:bg-[#005A9E] transition-colors shadow-sm"
+          >
+            <Plus className="h-4 w-4" />
+            Create
+          </button>
         </div>
       </div>
 
-      <div className="flex justify-start px-2">
-        <button
-          onClick={() => setIsAddModalOpen(true)}
-          className="group flex items-center gap-3 px-6 py-3.5 bg-indigo-600 text-white rounded-2xl font-black text-[11px] uppercase tracking-[0.15em] hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/20 active:scale-95"
-        >
-          <div className="w-5 h-5 bg-white/20 rounded-lg flex items-center justify-center transition-transform group-hover:rotate-12">
-            <Building2 className="h-3 w-3" />
-          </div>
-          Add Organisation
-        </button>
-      </div>
-
-      <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 overflow-hidden">
-        <div className="grid grid-cols-12 gap-4 px-8 py-4 bg-slate-50/80 border-b border-slate-100">
-          <div className="col-span-1 text-[9px] font-black text-slate-400 uppercase tracking-widest">#</div>
-          <div className="col-span-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Organisation</div>
-          <div className="col-span-2 text-[9px] font-black text-slate-400 uppercase tracking-widest">ID / Role</div>
-          <div className="col-span-3 text-[9px] font-black text-slate-400 uppercase tracking-widest">Contact Info</div>
-          <div className="col-span-2 text-right text-[9px] font-black text-slate-400 uppercase tracking-widest">Actions</div>
-        </div>
-
-        <div className="divide-y divide-slate-50">
-          {filteredOrgs.length === 0 ? (
-            <div className="py-20 text-center">
-              <Building2 className="h-12 w-12 text-slate-200 mx-auto mb-4" />
-              <p className="text-slate-400 font-bold italic">No organizations found.</p>
-            </div>
-          ) : (
-            filteredOrgs.map((org, index) => (
-              <div 
-                key={org?._id || index} 
-                className="grid grid-cols-12 gap-4 px-8 py-4 items-center hover:bg-indigo-50/30 transition-all duration-300 group cursor-pointer"
-                onClick={() => org?._id && navigate(`/org/${org._id}`)}
-              >
-                <div className="col-span-1 text-[10px] font-bold text-slate-300 group-hover:text-indigo-400">
-                  {String(index + 1).padStart(2, '0')}
-                </div>
-                
-                <div className="col-span-4 flex items-center gap-4">
-                  <div className="w-11 h-11 bg-indigo-50 rounded-xl flex items-center justify-center text-lg font-black text-indigo-600 ring-2 ring-white shadow-sm group-hover:ring-indigo-100 transition-all">
-                    {org?.name?.charAt(0) || '?'}
-                  </div>
-                  <div className="min-w-0">
-                    <h3 className="font-bold text-[14px] text-slate-900 truncate group-hover:text-indigo-600 transition-colors uppercase tracking-tight font-poppins">
-                      {org?.name || 'Unnamed Org'}
-                    </h3>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest">
-                        {org?.stats?.totalStaff || 0} Staff
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-span-2">
-                  <div className="flex flex-col gap-1">
-                    <span className="inline-flex items-center px-2 py-0.5 bg-slate-100 border border-slate-200/50 rounded-md text-[9px] font-black text-slate-600 tracking-widest w-fit">
-                      {org?.empId || 'N/A'}
-                    </span>
-                    <span className={`text-[8px] font-black uppercase tracking-widest ${
-                      org?.role === 'admin' ? 'text-indigo-600' : 
-                      org?.role === 'orgadmin' ? 'text-emerald-600' : 
-                      org?.role === 'employee' ? 'text-slate-400' : 'text-amber-600'
-                    }`}>
-                      {org?.role === 'admin' ? 'Promoted' : 
-                       org?.role === 'orgadmin' ? 'Organization' : 
-                       org?.role === 'employee' ? 'Employee' : 'Pending'}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="col-span-3">
-                  <div className="space-y-0.5">
-                    <div className="flex items-center gap-2 text-slate-500">
-                      <Mail className="h-3 w-3 opacity-50" />
-                      <span className="text-[11px] font-bold truncate">{org?.email || 'No Email'}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-slate-400">
-                      <Phone className="h-3 w-3 opacity-50" />
-                      <span className="text-[10px] font-bold">{org?.phone || 'No Phone'}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-span-2 flex justify-end gap-2">
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleToggleAdmin(org._id, org.name, org.role);
-                    }}
-                    className={`px-3 py-2 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all active:scale-95 border ${
-                      org?.role === 'admin' 
-                        ? 'bg-rose-50 text-rose-600 border-rose-100 hover:bg-rose-600 hover:text-white' 
-                        : 'bg-indigo-600 text-white border-indigo-600 hover:bg-indigo-700'
-                    }`}
-                  >
-                    {org?.role === 'admin' ? 'Revoke' : 'Promote'}
-                  </button>
-                  {org?.role !== 'superadmin' && (
-                    <button 
-                      className="w-9 h-9 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center hover:bg-rose-600 hover:text-white transition-all shadow-sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(org._id, org.name);
-                      }}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  )}
-                  <button 
-                    className="w-9 h-9 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center hover:bg-indigo-600 hover:text-white transition-all shadow-sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(`/org/${org._id}`);
-                    }}
-                  >
-                    <ArrowRight className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-            ))
-          )}
+      <div className="p-6 space-y-6 max-w-[1600px] mx-auto">
+        <div className="bg-white border border-[#EDEBE9] shadow-sm">
+           <div className="px-6 py-4 border-b border-[#EDEBE9] bg-[#FAF9F8] flex items-center justify-between">
+              <h3 className="text-sm font-semibold text-[#323130] flex items-center gap-2">
+                <Building2 className="h-4 w-4 text-[#0078D4]" />
+                Resource List (Organizations)
+              </h3>
+           </div>
+           
+           <div className="overflow-x-auto">
+             <table className="w-full text-left border-collapse">
+               <thead>
+                 <tr className="bg-[#FAF9F8] border-b border-[#EDEBE9] text-[11px] font-semibold text-[#605E5C] uppercase tracking-wider">
+                   <th className="py-3 px-6 w-12">#</th>
+                   <th className="py-3 px-6">Resource Name</th>
+                   <th className="py-3 px-6">ID / Status</th>
+                   <th className="py-3 px-6">Contact Endpoint</th>
+                   <th className="py-3 px-6">Metrics</th>
+                   <th className="py-3 px-6 text-right">Operation</th>
+                 </tr>
+               </thead>
+               <tbody className="divide-y divide-[#EDEBE9]">
+                 {filteredOrgs.length === 0 ? (
+                   <tr>
+                     <td colSpan="6" className="py-12 text-center text-[#605E5C] italic text-sm">
+                       No resources found matching the criteria.
+                     </td>
+                   </tr>
+                 ) : (
+                   filteredOrgs.map((org, index) => (
+                     <tr 
+                       key={org?._id || index} 
+                       className="hover:bg-[#F3F2F1] cursor-pointer transition-colors group"
+                       onClick={() => org?._id && navigate(`/org/${org._id}`)}
+                     >
+                       <td className="py-3 px-6 text-[11px] font-semibold text-[#A19F9D]">
+                         {String(index + 1).padStart(2, '0')}
+                       </td>
+                       <td className="py-3 px-6">
+                         <div className="flex items-center gap-3">
+                           <div className="w-8 h-8 rounded-sm bg-[#DEECF9] flex items-center justify-center text-xs font-bold text-[#0078D4]">
+                             {org?.name?.charAt(0).toUpperCase()}
+                           </div>
+                           <div className="flex flex-col">
+                             <span className="font-semibold text-[13px] text-[#0078D4] hover:underline">{org?.name}</span>
+                             <span className="text-[10px] text-[#605E5C] font-mono">{org?._id?.substring(0, 8)}...</span>
+                           </div>
+                         </div>
+                       </td>
+                       <td className="py-3 px-6">
+                         <div className="flex flex-col gap-1">
+                            <span className="text-[11px] font-semibold text-[#323130]">{org?.empId || 'N/A'}</span>
+                            <span className={`inline-flex items-center px-1.5 py-0.5 rounded-sm text-[9px] font-semibold uppercase w-fit ${
+                              org?.role === 'admin' ? 'bg-[#DFF6DD] text-[#107C10]' :
+                              org?.role === 'orgadmin' ? 'bg-[#FFF4CE] text-[#797673]' :
+                              'bg-[#DEECF9] text-[#0078D4]'
+                            }`}>
+                              {org?.role === 'admin' ? 'Promoted' : 
+                               org?.role === 'orgadmin' ? 'Tenant' : 'Standard'}
+                            </span>
+                         </div>
+                       </td>
+                       <td className="py-3 px-6">
+                          <div className="flex flex-col gap-0.5">
+                            <div className="flex items-center gap-2 text-[12px] text-[#323130]">
+                              <Mail className="h-3 w-3 text-[#605E5C]" />
+                              {org?.email}
+                            </div>
+                            <div className="flex items-center gap-2 text-[11px] text-[#605E5C]">
+                              <Phone className="h-3 w-3" />
+                              {org?.phone}
+                            </div>
+                          </div>
+                       </td>
+                       <td className="py-3 px-6">
+                          <div className="flex flex-col">
+                            <span className="text-[12px] font-semibold text-[#323130]">{org?.stats?.totalStaff || 0} Instances</span>
+                            <div className="w-full h-1 bg-[#EDEBE9] rounded-full mt-1 overflow-hidden">
+                               <div className="h-full bg-[#107C10]" style={{ width: `${Math.min(100, (org?.stats?.paidStaff || 0) / (org?.stats?.totalStaff || 1) * 100)}%` }}></div>
+                            </div>
+                          </div>
+                       </td>
+                       <td className="py-3 px-6 text-right" onClick={e => e.stopPropagation()}>
+                         <div className="flex items-center justify-end gap-2">
+                           <button 
+                             onClick={() => handleToggleAdmin(org._id, org.name, org.role)}
+                             className={`px-3 py-1 rounded-sm text-[10px] font-semibold uppercase tracking-wider transition-all border ${
+                               org?.role === 'admin' 
+                                 ? 'bg-white border-[#E81123] text-[#E81123] hover:bg-[#E81123] hover:text-white' 
+                                 : 'bg-[#0078D4] border-[#0078D4] text-white hover:bg-[#005A9E]'
+                             }`}
+                           >
+                             {org?.role === 'admin' ? 'Revoke' : 'Promote'}
+                           </button>
+                           {org?.role !== 'superadmin' && (
+                             <button 
+                               onClick={() => handleDelete(org._id, org.name)}
+                               className="p-1.5 text-[#605E5C] hover:text-[#E81123] hover:bg-red-50 rounded-sm transition-colors"
+                             >
+                               <Trash2 className="h-4 w-4" />
+                             </button>
+                           )}
+                           <button 
+                             onClick={() => navigate(`/org/${org._id}`)}
+                             className="p-1.5 text-[#605E5C] hover:text-[#0078D4] hover:bg-blue-50 rounded-sm transition-colors"
+                           >
+                             <ArrowUpRight className="h-4 w-4" />
+                           </button>
+                         </div>
+                       </td>
+                     </tr>
+                   ))
+                 )}
+               </tbody>
+             </table>
+           </div>
+           <div className="px-6 py-3 border-t border-[#EDEBE9] bg-[#FAF9F8] text-[11px] text-[#605E5C] font-semibold flex justify-between">
+             <span>Total: {filteredOrgs.length} resources</span>
+             <span>Identity Region: Global</span>
+           </div>
         </div>
       </div>
 
