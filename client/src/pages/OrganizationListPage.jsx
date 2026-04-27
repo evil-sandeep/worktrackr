@@ -221,15 +221,17 @@ const OrganizationListPage = () => {
                   >
                     {org?.role === 'admin' ? 'Revoke' : 'Promote'}
                   </button>
-                  <button 
-                    className="w-9 h-9 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center hover:bg-rose-600 hover:text-white transition-all shadow-sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDelete(org._id, org.name);
-                    }}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
+                  {org?.role !== 'superadmin' && (
+                    <button 
+                      className="w-9 h-9 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center hover:bg-rose-600 hover:text-white transition-all shadow-sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(org._id, org.name);
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  )}
                   <button 
                     className="w-9 h-9 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center hover:bg-indigo-600 hover:text-white transition-all shadow-sm"
                     onClick={(e) => {

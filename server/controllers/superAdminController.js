@@ -102,8 +102,17 @@ const updateOrganization = async (req, res) => {
 const deleteOrganization = async (req, res) => {
   try {
     const org = await User.findById(req.params.id);
-    if (!org || org.role !== 'orgadmin') {
+    if (!org) {
       return res.status(404).json({ message: 'Organization not found' });
+    }
+
+    // CRITICAL: Protect Super Admin accounts
+    if (org.role === 'superadmin') {
+      return res.status(403).json({ message: 'CRITICAL SECURITY: Super Admin accounts cannot be deleted.' });
+    }
+
+    if (org.role !== 'orgadmin' && org.role !== 'admin') {
+      return res.status(400).json({ message: 'Only organization accounts can be deleted.' });
     }
 
     // Find all employees belonging to this org
