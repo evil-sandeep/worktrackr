@@ -7,7 +7,6 @@ const StoreVisit = () => {
     const user = authService.getCurrentUser();
 
     return (
-    return (
         <div className="space-y-6 pb-4 animate-in fade-in duration-300 h-full flex flex-col bg-[#F3F2F1] p-6">
             {/* Azure Header Section */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#EDEBE9] pb-4 bg-white -mx-6 -mt-6 px-6 py-4">
