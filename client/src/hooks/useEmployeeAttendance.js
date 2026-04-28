@@ -4,7 +4,7 @@ import adminService from '../services/adminService';
 /**
  * Hook for managing attendance data and calculating statistics
  */
-const useEmployeeAttendance = (employeeId, viewDate) => {
+const useEmployeeAttendance = (employeeId, viewDate, orgId) => {
   const [attendanceRecords, setAttendanceRecords] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -13,7 +13,7 @@ const useEmployeeAttendance = (employeeId, viewDate) => {
       if (!employeeId) return;
       setLoading(true);
       try {
-        const response = await adminService.getEmployeeAttendance(employeeId);
+        const response = await adminService.getEmployeeAttendance(employeeId, orgId);
         setAttendanceRecords(response.data);
       } catch (error) {
         console.error('Failed to fetch employee attendance:', error);
@@ -22,7 +22,7 @@ const useEmployeeAttendance = (employeeId, viewDate) => {
       }
     };
     fetchAttendance();
-  }, [employeeId]);
+  }, [employeeId, orgId]);
 
   const attendanceMap = useMemo(() => {
     const map = {};

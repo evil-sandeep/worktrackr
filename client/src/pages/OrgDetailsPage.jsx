@@ -88,6 +88,7 @@ const OrgDetailsPage = () => {
       {selectedEmployee && (
         <EmployeeDetailModal 
           employee={selectedEmployee}
+          orgId={orgId}
           onClose={() => setSelectedEmployee(null)}
           onUpdate={fetchData}
           onDelete={fetchData}

@@ -6,19 +6,21 @@ const User = require('../models/User');
 const createEmployee = async (req, res) => {
   try {
     const { name, email, password, phone, empId, designation, salary } = req.body;
-    const orgId = req.params.orgId || req.user.organizationId;
+    const orgId = req.params.orgId || req.query.orgId || req.user.organizationId;
 
     if (!orgId) {
       return res.status(400).json({ message: "Organization ID required" });
     }
 
+    const UserModel = req.tenantModels?.User || User;
+
     // Check if user already exists
-    const userExists = await User.findOne({ $or: [{ email }, { empId }] });
+    const userExists = await UserModel.findOne({ $or: [{ email }, { empId }] });
     if (userExists) {
       return res.status(400).json({ message: "User with this email or Employee ID already exists" });
     }
 
-    const employee = await User.create({
+    const employee = await UserModel.create({
       name,
       email,
       password,
@@ -48,7 +50,9 @@ const getEmployeesByOrg = async (req, res) => {
       return res.status(400).json({ message: "Organization ID required" });
     }
 
-    const employees = await User.find({
+    const UserModel = req.tenantModels?.User || User;
+
+    const employees = await UserModel.find({
       organizationId: orgId,
       role: "employee"
     }).lean();

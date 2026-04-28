@@ -18,12 +18,14 @@ import LogDetailSidebar from './EmployeeDetail/LogDetailSidebar';
 import adminService from '../../services/adminService';
 import { formatDateISO } from '../../utils/employeeUtils';
 
-const EmployeeDetailModal = ({ employee: initialEmployee, onClose, onUpdate, onDelete }) => {
+const EmployeeDetailModal = ({ employee: initialEmployee, orgId: propOrgId, onClose, onUpdate, onDelete }) => {
   // 1. Business Logic State
   const [activeTab, setActiveTab] = useState('attendance'); 
   const [selectedDate, setSelectedDate] = useState(formatDateISO(new Date()));
   const [viewDate, setViewDate] = useState(new Date());
   
+  const effectiveOrgId = propOrgId || initialEmployee?.organizationId;
+
   // 2. Custom Hooks (Clean Architecture)
   const { 
     employee, 
@@ -31,13 +33,13 @@ const EmployeeDetailModal = ({ employee: initialEmployee, onClose, onUpdate, onD
     setFormData, 
     updateProfile, 
     deleteProfile 
-  } = useEmployeeProfile(initialEmployee._id, initialEmployee);
+  } = useEmployeeProfile(initialEmployee._id, initialEmployee, effectiveOrgId);
 
   const { 
     attendanceRecords, 
     attendanceMap, 
     stats 
-  } = useEmployeeAttendance(initialEmployee._id, viewDate);
+  } = useEmployeeAttendance(initialEmployee._id, viewDate, effectiveOrgId);
 
   // 3. Tracking Logic (Specific to current day view)
   const [trackingData, setTrackingData] = useState(null);
@@ -47,7 +49,7 @@ const EmployeeDetailModal = ({ employee: initialEmployee, onClose, onUpdate, onD
   const fetchTrackingData = async (date) => {
     setTrackingLoading(true);
     try {
-      const response = await adminService.getDailyTracking(initialEmployee._id, date);
+      const response = await adminService.getDailyTracking(initialEmployee._id, date, effectiveOrgId);
       setTrackingData(response.data);
     } catch (error) {
       addToast('Failed to fetch tracking data', 'error');
@@ -58,7 +60,7 @@ const EmployeeDetailModal = ({ employee: initialEmployee, onClose, onUpdate, onD
 
   useEffect(() => {
     if (activeTab === 'tracking') fetchTrackingData(selectedDate);
-  }, [selectedDate, activeTab]);
+  }, [selectedDate, activeTab, effectiveOrgId]);
 
   // 4. Derived State
   const selectedRecord = useMemo(() => {

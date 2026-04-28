@@ -37,11 +37,29 @@ const protect = async (req, res, next) => {
         targetDbName = org?.dbName;
       }
 
-      // If Super Admin is viewing a specific org via query param
-      if (req.user.role === 'superadmin' && req.query.orgId) {
-        const targetOrg = await User.findById(req.query.orgId).select('dbName');
-        if (targetOrg?.dbName) {
-           targetDbName = targetOrg.dbName;
+      // If Super Admin is viewing a specific org via query param or path param
+      const superAdminOrgId = req.query.orgId || req.query.organizationId || req.params.orgId;
+      if (req.user.role === 'superadmin' && superAdminOrgId) {
+        console.log(`[TENANT DEBUG] SuperAdmin resolving tenant for ID: ${superAdminOrgId}`);
+        // Try finding by direct user ID first (if it's an org admin's user ID)
+        let targetOrgUser = await User.findById(superAdminOrgId).select('dbName');
+        
+        // If not found, try finding the org admin user by their organizationId
+        if (!targetOrgUser || !targetOrgUser.dbName) {
+           targetOrgUser = await User.findOne({ 
+             organizationId: superAdminOrgId, 
+             role: 'orgadmin' 
+           }).select('dbName');
+           console.log(`[TENANT DEBUG] Resolved via organizationId check: ${targetOrgUser ? 'FOUND' : 'NOT FOUND'}`);
+        } else {
+           console.log(`[TENANT DEBUG] Resolved via direct user ID check: FOUND`);
+        }
+
+        if (targetOrgUser?.dbName) {
+           targetDbName = targetOrgUser.dbName;
+           console.log(`[TENANT DEBUG] Target Database established: ${targetDbName}`);
+        } else {
+           console.warn(`[TENANT DEBUG] FAILED to resolve tenant DB for ID: ${superAdminOrgId}`);
         }
       }
 

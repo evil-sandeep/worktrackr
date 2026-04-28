@@ -10,23 +10,27 @@ const createEmployee = async (employeeData) => {
   return response.data;
 };
 
-const getEmployeeById = async (id) => {
-  const response = await api.get(`/admin/employees/${id}`);
+const getEmployeeById = async (id, orgId) => {
+  const params = orgId ? { orgId } : {};
+  const response = await api.get(`/admin/employees/${id}`, { params });
   return response.data;
 };
 
-const updateEmployee = async (id, employeeData) => {
-  const response = await api.put(`/auth/employees/${id}`, employeeData);
+const updateEmployee = async (id, employeeData, orgId) => {
+  const params = orgId ? { orgId } : {};
+  const response = await api.put(`/auth/employees/${id}`, employeeData, { params });
   return response.data;
 };
 
-const deleteEmployee = async (id) => {
-  const response = await api.delete(`/auth/employees/${id}`);
+const deleteEmployee = async (id, orgId) => {
+  const params = orgId ? { orgId } : {};
+  const response = await api.delete(`/auth/employees/${id}`, { params });
   return response.data;
 };
 
-const getEmployeeAttendance = async (userId) => {
-  const response = await api.get(`/attendance/${userId}`);
+const getEmployeeAttendance = async (userId, orgId) => {
+  const params = orgId ? { orgId } : {};
+  const response = await api.get(`/attendance/${userId}`, { params });
   return response.data;
 };
 
@@ -35,8 +39,10 @@ const getDashboardStats = async () => {
   return response.data;
 };
 
-const getDailyTracking = async (id, date) => {
-  const response = await api.get(`/admin/employees/${id}/daily?date=${date}`);
+const getDailyTracking = async (id, date, orgId) => {
+  const params = { date };
+  if (orgId) params.orgId = orgId;
+  const response = await api.get(`/admin/employees/${id}/daily`, { params });
   return response.data;
 };
 

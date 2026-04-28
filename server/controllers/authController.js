@@ -149,7 +149,8 @@ const updateUserProfile = async (req, res) => {
 // @desc    Update employee (Admin Only)
 const updateEmployee = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const UserModel = req.tenantModels?.User || User;
+    const user = await UserModel.findById(req.params.id);
 
     if (user) {
       const { name, phone, address, designation, role, salary, isPaid, password } = req.body;
@@ -176,14 +177,15 @@ const updateEmployee = async (req, res) => {
 // @desc    Delete employee (Admin Only)
 const deleteEmployee = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const UserModel = req.tenantModels?.User || User;
+    const user = await UserModel.findById(req.params.id);
 
     if (user) {
       // Also delete all attendance associated with this user
-      const Attendance = require('../models/Attendance');
-      await Attendance.deleteMany({ userId: user._id });
+      const AttendanceModel = req.tenantModels?.Attendance || Attendance;
+      await AttendanceModel.deleteMany({ userId: user._id });
       
-      await User.deleteOne({ _id: user._id });
+      await UserModel.deleteOne({ _id: user._id });
       res.json({ message: 'User and associated data removed' });
     } else {
       res.status(404).json({ message: 'User not found' });
