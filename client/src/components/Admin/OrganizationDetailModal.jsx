@@ -19,6 +19,7 @@ const OrganizationDetailModal = ({ organization, onClose, onUpdate }) => {
     name: organization.name || '',
     email: organization.email || '',
     phone: organization.phone || '',
+    password: '',
   });
 
   const fetchEmployees = async () => {

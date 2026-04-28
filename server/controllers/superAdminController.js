@@ -87,10 +87,11 @@ const updateOrganization = async (req, res) => {
       return res.status(404).json({ message: 'Organization not found' });
     }
 
-    const { name, email, phone } = req.body;
+    const { name, email, phone, password } = req.body;
     if (name) org.name = name;
     if (email) org.email = email;
     if (phone) org.phone = phone;
+    if (password) org.password = password;
 
     const updatedOrg = await org.save();
     res.json(updatedOrg);

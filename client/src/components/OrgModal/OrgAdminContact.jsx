@@ -39,6 +39,17 @@ const OrgAdminContact = ({ organization, isEditing, setIsEditing, formData, onCh
               required
             />
           </div>
+          <div className="space-y-1">
+            <label className="text-[11px] font-semibold text-[#605E5C] uppercase tracking-wider">Reset Password (Optional)</label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={onChange}
+              placeholder="Enter new password to reset"
+              className="w-full px-3 py-1.5 bg-white border border-[#8A8886] rounded-sm focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] outline-none text-sm font-semibold"
+            />
+          </div>
           <button type="submit" className="w-full py-2 bg-[#0078D4] text-white rounded-sm font-bold text-xs uppercase tracking-widest shadow-sm hover:bg-[#005A9E] transition-colors">Apply Changes</button>
         </form>
       ) : (
