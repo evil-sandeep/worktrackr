@@ -214,6 +214,7 @@ const EmployeeListPage = () => {
       {selectedEmployee && (
         <EmployeeDetailModal 
           employee={selectedEmployee}
+          orgId={orgId}
           onClose={() => setSelectedEmployee(null)}
           onUpdate={fetchEmployees}
           onDelete={fetchEmployees}
@@ -226,6 +227,7 @@ const EmployeeListPage = () => {
         onClose={() => setIsAddModalOpen(false)}
         onSuccess={fetchEmployees}
         organizations={organizations}
+        orgId={orgId}
       />
     </div>
   );

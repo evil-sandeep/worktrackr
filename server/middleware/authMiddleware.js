@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 const User = require('../models/User');
 
 const protect = async (req, res, next) => {
@@ -39,7 +40,7 @@ const protect = async (req, res, next) => {
 
       // If Super Admin is viewing a specific org via query param or path param
       const superAdminOrgId = req.query.orgId || req.query.organizationId || req.params.orgId;
-      if (req.user.role === 'superadmin' && superAdminOrgId) {
+      if (req.user.role === 'superadmin' && superAdminOrgId && mongoose.Types.ObjectId.isValid(superAdminOrgId)) {
         console.log(`[TENANT DEBUG] SuperAdmin resolving tenant for ID: ${superAdminOrgId}`);
         // Try finding by direct user ID first (if it's an org admin's user ID)
         let targetOrgUser = await User.findById(superAdminOrgId).select('dbName');
@@ -49,10 +50,10 @@ const protect = async (req, res, next) => {
            targetOrgUser = await User.findOne({ 
              organizationId: superAdminOrgId, 
              role: { $in: ['orgadmin', 'admin'] }
-           }).select('dbName');
-           console.log(`[TENANT DEBUG] Resolved via organizationId check: ${targetOrgUser ? 'FOUND' : 'NOT FOUND'}`);
+           }).select('dbName name role organizationId');
+           console.log(`[TENANT DEBUG] OrganizationId check result: ${targetOrgUser ? `FOUND (Name: ${targetOrgUser.name}, Role: ${targetOrgUser.role}, DB: ${targetOrgUser.dbName})` : 'NOT FOUND'}`);
         } else {
-           console.log(`[TENANT DEBUG] Resolved via direct user ID check: FOUND`);
+           console.log(`[TENANT DEBUG] Direct ID check result: FOUND (DB: ${targetOrgUser.dbName})`);
         }
 
         if (targetOrgUser?.dbName) {

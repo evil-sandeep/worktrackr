@@ -140,11 +140,27 @@ const createEmployee = async (req, res) => {
 
 const getEmployeeById = async (req, res) => {
   try {
-    const { User } = req.tenantModels;
-    const employee = await User.findById(req.params.id).select('-password');
-    if (!employee) {
-      return res.status(404).json({ message: 'Employee not found' });
+    const { User: TenantUser } = req.tenantModels || {};
+    const MainUser = require('../models/User');
+    
+    let employee = null;
+    
+    // 1. Try finding in Tenant DB if available
+    if (TenantUser) {
+      console.log(`[AUTH DEBUG] getEmployeeById: Searching in TENANT DB: ${TenantUser.db.name}`);
+      employee = await TenantUser.findById(req.params.id).select('-password');
     }
+    
+    // 2. Fallback to Main DB (for Org Admins / Global Identities)
+    if (!employee) {
+      console.log(`[AUTH DEBUG] getEmployeeById: Falling back to MAIN DB for ID: ${req.params.id}`);
+      employee = await MainUser.findById(req.params.id).select('-password');
+    }
+
+    if (!employee) {
+      return res.status(404).json({ message: 'Identity not found in any database domain' });
+    }
+    
     return res.status(200).json(employee);
   } catch (error) {
     console.error('Error fetching employee by ID:', error);

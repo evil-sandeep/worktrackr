@@ -69,7 +69,35 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: 'Please provide both email and password' });
     }
 
-    const user = await User.findOne({ email });
+    // 1. Check Main Database (Super Admins, Org Admins)
+    let user = await User.findOne({ email });
+    let isTenantUser = false;
+
+    // 2. If not found in Main DB, search all Tenant Databases
+    if (!user) {
+      const { getTenantDb } = require('../config/tenantConnection');
+      const { getTenantModels } = require('../models/tenantModels');
+      
+      const orgs = await User.find({ role: 'orgadmin' }).select('dbName');
+      console.log(`[LOGIN DEBUG] User ${email} not in Main DB. Searching ${orgs.length} tenants...`);
+      
+      for (const org of orgs) {
+        if (!org.dbName) continue;
+        try {
+          const connection = await getTenantDb(org.dbName);
+          const { User: TenantUser } = getTenantModels(connection);
+          user = await TenantUser.findOne({ email });
+          if (user) {
+            console.log(`[LOGIN DEBUG] User found in tenant DB: ${org.dbName}`);
+            isTenantUser = true;
+            break;
+          }
+        } catch (tenantErr) {
+          console.error(`Error searching tenant ${org.dbName}:`, tenantErr.message);
+        }
+      }
+    }
+
     const isMatch = user ? await bcrypt.compare(password, user.password) : false;
 
     if (user && isMatch) {
@@ -149,9 +177,22 @@ const updateUserProfile = async (req, res) => {
 // @desc    Update employee (Admin Only)
 const updateEmployee = async (req, res) => {
   try {
-    const UserModel = req.tenantModels?.User || User;
-    console.log(`[AUTH DEBUG] updateEmployee: Searching for user ${req.params.id} in ${req.tenantModels ? 'TENANT' : 'MAIN'} DB`);
-    const user = await UserModel.findById(req.params.id);
+    const { User: TenantUser } = req.tenantModels || {};
+    const MainUser = require('../models/User');
+    
+    let user = null;
+    
+    // 1. Try finding in Tenant DB if available
+    if (TenantUser) {
+      console.log(`[AUTH DEBUG] updateEmployee: Searching in TENANT DB: ${TenantUser.db.name}`);
+      user = await TenantUser.findById(req.params.id);
+    }
+    
+    // 2. Fallback to Main DB
+    if (!user) {
+      console.log(`[AUTH DEBUG] updateEmployee: Falling back to MAIN DB for ID: ${req.params.id}`);
+      user = await MainUser.findById(req.params.id);
+    }
 
     if (user) {
       console.log(`[AUTH DEBUG] updateEmployee: User ${user.name} found. Applying updates...`);
@@ -169,7 +210,7 @@ const updateEmployee = async (req, res) => {
       const updatedUser = await user.save();
       res.json(updatedUser);
     } else {
-      res.status(404).json({ message: 'User not found' });
+      res.status(404).json({ message: 'Identity not found in any database domain' });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -179,20 +220,37 @@ const updateEmployee = async (req, res) => {
 // @desc    Delete employee (Admin Only)
 const deleteEmployee = async (req, res) => {
   try {
-    const UserModel = req.tenantModels?.User || User;
-    console.log(`[AUTH DEBUG] deleteEmployee: Searching for user ${req.params.id} in ${req.tenantModels ? 'TENANT' : 'MAIN'} DB`);
-    const user = await UserModel.findById(req.params.id);
+    const { User: TenantUser, Attendance: TenantAttendance } = req.tenantModels || {};
+    const MainUser = require('../models/User');
+    const MainAttendance = require('../models/Attendance');
+    
+    let user = null;
+    let UserModel = null;
+    
+    // 1. Try finding in Tenant DB if available
+    if (TenantUser) {
+      console.log(`[AUTH DEBUG] deleteEmployee: Searching in TENANT DB: ${TenantUser.db.name}`);
+      user = await TenantUser.findById(req.params.id);
+      UserModel = TenantUser;
+    }
+    
+    // 2. Fallback to Main DB
+    if (!user) {
+      console.log(`[AUTH DEBUG] deleteEmployee: Falling back to MAIN DB for ID: ${req.params.id}`);
+      user = await MainUser.findById(req.params.id);
+      UserModel = MainUser;
+    }
 
     if (user) {
       console.log(`[AUTH DEBUG] deleteEmployee: User ${user.name} found. Deleting...`);
       // Also delete all attendance associated with this user
-      const AttendanceModel = req.tenantModels?.Attendance || Attendance;
+      const AttendanceModel = TenantAttendance || MainAttendance;
       await AttendanceModel.deleteMany({ userId: user._id });
       
       await UserModel.deleteOne({ _id: user._id });
       res.json({ message: 'User and associated data removed' });
     } else {
-      res.status(404).json({ message: 'User not found' });
+      res.status(404).json({ message: 'Identity not found in any database domain' });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
