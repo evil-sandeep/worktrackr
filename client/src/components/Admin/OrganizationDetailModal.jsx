@@ -80,7 +80,8 @@ const OrganizationDetailModal = ({ organization, onClose, onUpdate }) => {
   };
 
   const handlePay = (emp) => {
-    navigate(`/payment?userId=${emp._id}&userName=${encodeURIComponent(emp.name)}`);
+    const orgId = organization.organizationId || organization._id;
+    navigate(`/payment?userId=${emp._id}&userName=${encodeURIComponent(emp.name)}&orgId=${orgId}`);
   };
 
   if (!organization) return null;

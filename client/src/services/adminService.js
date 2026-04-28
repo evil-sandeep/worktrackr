@@ -89,8 +89,9 @@ const createOrgEmployee = async (orgId, employeeData) => {
   return response.data;
 };
 
-const markAsPaid = async (id) => {
-  const response = await api.put(`/users/pay/${id}`);
+const markAsPaid = async (id, orgId) => {
+  const params = orgId ? { orgId } : {};
+  const response = await api.put(`/users/pay/${id}`, {}, { params });
   return response.data;
 };
 

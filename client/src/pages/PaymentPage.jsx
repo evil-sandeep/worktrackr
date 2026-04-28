@@ -13,6 +13,7 @@ const PaymentPage = () => {
   
   const empId = searchParams.get('userId');
   const empName = searchParams.get('userName');
+  const orgId = searchParams.get('orgId');
   const user = authService.getCurrentUser();
 
   const handleLogout = () => {
@@ -28,7 +29,7 @@ const PaymentPage = () => {
 
     showLoader(true);
     try {
-      await adminService.markAsPaid(empId);
+      await adminService.markAsPaid(empId, orgId);
       setIsSuccess(true);
       addToast(`Payment of ₹2,000 for ${empName} successful`, 'success');
       

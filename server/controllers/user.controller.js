@@ -66,9 +66,25 @@ const getEmployeesByOrg = async (req, res) => {
 
 const markAsPaid = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const { User: TenantUser } = req.tenantModels || {};
+    const MainUser = require('../models/User');
+    
+    let user = null;
+    
+    // 1. Try finding in Tenant DB if available
+    if (TenantUser) {
+      console.log(`[AUTH DEBUG] markAsPaid: Searching in TENANT DB: ${TenantUser.db.name}`);
+      user = await TenantUser.findById(req.params.id);
+    }
+    
+    // 2. Fallback to Main DB
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      console.log(`[AUTH DEBUG] markAsPaid: Falling back to MAIN DB for ID: ${req.params.id}`);
+      user = await MainUser.findById(req.params.id);
+    }
+
+    if (!user) {
+      return res.status(404).json({ message: "Identity not found in any database domain" });
     }
 
     user.isPaid = true;
