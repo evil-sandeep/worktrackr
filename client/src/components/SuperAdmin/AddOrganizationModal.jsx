@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Building2, X } from 'lucide-react';
-import { adminService } from '../services/adminService';
-import { useUI } from '../context/UIContext';
+import adminService from '../../services/adminService';
+import { useUI } from '../../context/UIContext';
 
 const AddOrganizationModal = ({ isOpen, onClose, onSuccess }) => {
   const [formData, setFormData] = useState({

@@ -66,7 +66,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       )}
 
       {/* Sidebar Container */}
-      <aside className={`fixed inset-y-0 left-0 w-64 bg-white border-r border-[#edebe9] z-50 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 transition-all duration-300 ease-in-out`}>
+      <aside className={`fixed lg:static lg:inset-auto lg:translate-x-0 inset-y-0 left-0 w-64 bg-white border-r border-[#edebe9] z-50 shrink-0 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} transition-all duration-300 ease-in-out`}>
         <div className="flex flex-col h-full">
           
           {/* Logo Section - Azure Style */}
