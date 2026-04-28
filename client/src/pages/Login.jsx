@@ -40,98 +40,74 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-slate-950">
-      {/* Dynamic Background Elements */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/20 rounded-full blur-[120px] animate-pulse"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/20 rounded-full blur-[120px] animate-pulse delay-700"></div>
-
-      <div className="max-w-md w-full px-6 py-12 relative z-10">
+    <div className="min-h-screen bg-[#F3F2F1] flex items-center justify-center p-6">
+      <div className="w-full max-w-[440px] bg-white p-10 border border-[#EDEBE9] shadow-lg animate-in fade-in duration-500">
+        
         {/* Branding */}
-        <div className="flex flex-col items-center mb-10 text-center">
-          <div className="w-20 h-20 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-blue-500/40 mb-6 transform hover:rotate-6 transition-all duration-500">
-            <ShieldCheck className="h-10 w-10 text-white" />
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-6">
+             <div className="w-8 h-8 bg-[#0078D4] flex items-center justify-center">
+                <ShieldCheck className="h-5 w-5 text-white" />
+             </div>
+             <span className="text-[20px] font-semibold text-[#323130] tracking-tight">WorkTrackr</span>
           </div>
-          <h1 className="text-5xl font-extrabold text-white tracking-tight mb-2">
-            Work<span className="text-blue-500">Trackr</span>
-          </h1>
-          <p className="text-slate-400 font-medium text-lg">Secure workforce management portal</p>
+          <h1 className="text-[24px] font-semibold text-[#323130]">Sign in</h1>
+          <p className="text-[13px] text-[#323130] mt-1">Use your organizational account to continue</p>
         </div>
 
-        {/* Glassmorphic Card */}
-        <div className="backdrop-blur-2xl bg-white/10 rounded-[2.5rem] shadow-2xl border border-white/10 p-10 relative">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent"></div>
-          
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-white">Sign In</h2>
-              <p className="text-slate-400 text-sm mt-1">Enter your credentials to continue</p>
+        <form className="space-y-6" onSubmit={handleSubmit}>
+          <div className="space-y-4">
+            {/* Email Field */}
+            <div className="space-y-1">
+              <input
+                type="email"
+                required
+                placeholder="Email, phone, or Skype"
+                className="w-full px-0 py-2.5 bg-transparent border-b border-[#8A8886] text-[#323130] placeholder-[#605E5C] focus:border-[#0078D4] outline-none transition-all text-[15px]"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
 
-            <div className="space-y-4">
-              {/* Email Field */}
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-300 ml-1">Email Address</label>
-                <div className="group relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
-                  <input
-                    type="email"
-                    required
-                    placeholder="name@company.com"
-                    className="w-full pl-12 pr-4 py-4 bg-slate-900/50 border border-slate-800 text-white placeholder-slate-600 rounded-2xl focus:bg-slate-900/80 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none transition-all font-medium"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              {/* Password Field */}
-              <div className="space-y-2">
-                <div className="flex justify-between items-center ml-1">
-                  <label className="text-sm font-bold text-slate-300">Password</label>
-                  <Link to="/forgot" className="text-xs font-bold text-blue-500 hover:text-blue-400 transition-colors">Forgot?</Link>
-                </div>
-                <div className="group relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    required
-                    placeholder="••••••••"
-                    className="w-full pl-12 pr-12 py-4 bg-slate-900/50 border border-slate-800 text-white placeholder-slate-600 rounded-2xl focus:bg-slate-900/80 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none transition-all font-medium"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-blue-400 transition-colors"
-                  >
-                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                  </button>
-                </div>
+            {/* Password Field */}
+            <div className="space-y-1">
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  placeholder="Password"
+                  className="w-full px-0 py-2.5 bg-transparent border-b border-[#8A8886] text-[#323130] placeholder-[#605E5C] focus:border-[#0078D4] outline-none transition-all text-[15px]"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 text-[#605E5C] hover:text-[#323130] transition-colors"
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
               </div>
             </div>
+          </div>
 
+          <div className="flex items-center justify-between pt-2">
+            <Link to="/forgot" className="text-[13px] text-[#0078D4] hover:underline font-medium">Forgot my password?</Link>
+          </div>
+
+          <div className="flex justify-end gap-2 pt-4">
             <button
               type="submit"
-              className="w-full h-15 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-lg rounded-2xl shadow-xl shadow-blue-900/20 hover:shadow-2xl hover:shadow-blue-500/30 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3 group active:scale-95"
+              className="px-10 py-1.5 bg-[#0078D4] text-white font-semibold text-[15px] hover:bg-[#005A9E] transition-all"
             >
-              Enter Dashboard <ArrowRight className="h-6 w-6 group-hover:translate-x-1.5 transition-transform" />
+              Next
             </button>
-          </form>
-
-          <div className="mt-10 pt-8 border-t border-white/5 text-center">
-            <p className="text-slate-400 font-medium">
-              New to WorkTrackr?{' '}
-              <Link to="/register" className="text-white font-bold hover:text-blue-400 transition-colors ml-1">
-                Create Account
-              </Link>
-            </p>
           </div>
-        </div>
+        </form>
 
-        <p className="mt-10 text-center text-slate-500 text-sm font-bold flex items-center justify-center gap-2 tracking-widest uppercase">
-          <ShieldCheck className="h-4 w-4" /> Enterprise Secure
-        </p>
+        <div className="mt-8 text-[13px] text-[#323130]">
+          No account? <Link to="/register" className="text-[#0078D4] hover:underline font-medium">Create one!</Link>
+        </div>
       </div>
     </div>
   );

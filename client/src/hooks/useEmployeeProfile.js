@@ -14,7 +14,8 @@ const useEmployeeProfile = (employeeId, initialEmployee) => {
     designation: initialEmployee?.designation || '',
     role: initialEmployee?.role || 'employee',
     salary: initialEmployee?.salary || 0,
-    isPaid: initialEmployee?.isPaid || false
+    isPaid: initialEmployee?.isPaid || false,
+    password: ''
   });
   
   const { showLoader, addToast } = useUI();
@@ -34,7 +35,8 @@ const useEmployeeProfile = (employeeId, initialEmployee) => {
           designation: data.designation || '',
           role: data.role,
           salary: data.salary || 0,
-          isPaid: data.isPaid || false
+          isPaid: data.isPaid || false,
+          password: ''
         });
       } catch (err) {
         addToast('Failed to fetch profile details', 'error');

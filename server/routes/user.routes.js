@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createEmployee, getEmployeesByOrg } = require('../controllers/user.controller');
+const { createEmployee, getEmployeesByOrg, markAsPaid } = require('../controllers/user.controller');
 const { auth, authorizeOrgAccess } = require('../middleware/auth');
 
 // @route   POST /api/users/org/:orgId/employees
@@ -12,5 +12,10 @@ router.post("/org/:orgId/employees", auth, authorizeOrgAccess, createEmployee);
 // @desc    Get employees for a specific organization
 // @access  Private
 router.get("/org/:orgId/employees", auth, authorizeOrgAccess, getEmployeesByOrg);
+
+// @route   PUT /api/users/pay/:id
+// @desc    Mark an employee as paid
+// @access  Private
+router.put("/pay/:id", auth, markAsPaid);
 
 module.exports = router;

@@ -104,37 +104,60 @@ const updateOrganization = async (req, res) => {
 // @access  Private/SuperAdmin
 const deleteOrganization = async (req, res) => {
   try {
-    const org = await User.findById(req.params.id);
-    if (!org) {
-      return res.status(404).json({ message: 'Organization not found' });
+    const userToDelete = await User.findById(req.params.id);
+    if (!userToDelete) {
+      return res.status(404).json({ message: 'User/Organization not found' });
     }
 
     // CRITICAL: Protect Super Admin accounts
-    if (org.role === 'superadmin') {
+    if (userToDelete.role === 'superadmin') {
       return res.status(403).json({ message: 'CRITICAL SECURITY: Super Admin accounts cannot be deleted.' });
     }
 
-    if (org.role !== 'orgadmin' && org.role !== 'admin') {
-      return res.status(400).json({ message: 'Only organization accounts can be deleted.' });
-    }
-
-    // Find all employees belonging to this org
-    const employees = await User.find({ organizationId: org._id });
-    const employeeIds = employees.map(emp => emp._id);
-
-    // Delete attendance/checkins for these employees
     const Attendance = require('../models/Attendance');
     const CheckIn = require('../models/CheckIn');
-    await Attendance.deleteMany({ userId: { $in: employeeIds } });
-    await CheckIn.deleteMany({ userId: { $in: employeeIds } });
 
-    // Delete the employees
-    await User.deleteMany({ organizationId: org._id });
+    // CASE 1: Deleting an Organization (Admin/OrgAdmin)
+    if (userToDelete.role === 'orgadmin' || userToDelete.role === 'admin') {
+      // Find all employees belonging to this org
+      const employees = await User.find({ organizationId: userToDelete.organizationId || userToDelete._id });
+      const employeeIds = employees.map(emp => emp._id);
 
-    // Delete the organization
-    await User.deleteOne({ _id: org._id });
+      // Delete attendance/checkins for these employees
+      await Attendance.deleteMany({ userId: { $in: employeeIds } });
+      await CheckIn.deleteMany({ userId: { $in: employeeIds } });
 
-    res.json({ message: 'Organization and all associated data removed' });
+      // Delete the employees
+      await User.deleteMany({ organizationId: userToDelete.organizationId || userToDelete._id });
+
+      // Delete the actual Organization record if it exists
+      if (userToDelete.organizationId) {
+        const Organization = require('../models/Organization');
+        await Organization.deleteOne({ _id: userToDelete.organizationId });
+      }
+
+      // Delete the admin user
+      await User.deleteOne({ _id: userToDelete._id });
+
+      return res.json({ message: 'Organization and all associated staff removed successfully.' });
+    }
+
+    // CASE 2: Deleting a standard Employee/Identity
+    if (userToDelete.role === 'employee') {
+      // Delete attendance/checkins for this specific user
+      await Attendance.deleteMany({ userId: userToDelete._id });
+      await CheckIn.deleteMany({ userId: userToDelete._id });
+
+      // Delete the user
+      await User.deleteOne({ _id: userToDelete._id });
+
+      return res.json({ message: 'User identity and attendance records removed successfully.' });
+    }
+
+    // Fallback for other roles (if any)
+    await User.deleteOne({ _id: userToDelete._id });
+    res.json({ message: 'Identity removed successfully.' });
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

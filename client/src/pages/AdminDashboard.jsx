@@ -36,143 +36,129 @@ const AdminDashboard = () => {
     fetchStats();
   }, []);
 
-  const StatCard = ({ title, value, icon: Icon, color, detail }) => (
-    <div className="bg-white p-5 rounded-[1.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 relative overflow-hidden group hover:translate-y-[-2px] transition-all duration-500">
-      <div className={`absolute top-0 right-0 w-24 h-24 ${color} opacity-[0.03] rounded-full translate-x-12 translate-y-[-12px] group-hover:scale-110 transition-transform duration-700`}></div>
-      
-      <div className="flex justify-between items-start mb-4">
-        <div className={`w-11 h-11 ${color} bg-opacity-10 rounded-xl flex items-center justify-center transition-transform group-hover:rotate-6`}>
-          <Icon className={`h-5 w-5 ${color.replace('bg-', 'text-')}`} />
-        </div>
-        <div className="px-2 py-0.5 bg-slate-50 border border-slate-100 rounded-full flex items-center gap-1">
-          <TrendingUp className="h-2.5 w-2.5 text-green-500" />
-          <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">{detail}</span>
+  const StatCard = ({ title, value, icon: Icon, colorClass, label }) => (
+    <div className="bg-white p-4 border border-[#EDEBE9] rounded-sm shadow-sm flex flex-col justify-between hover:border-[#0078D4] transition-all group">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-[11px] font-semibold text-[#605E5C] uppercase tracking-wider">{title}</span>
+        <div className={`p-1.5 ${colorClass} bg-opacity-10 rounded-sm`}>
+          <Icon className={`h-4 w-4 ${colorClass.replace('bg-', 'text-')}`} />
         </div>
       </div>
-
-      <div className="space-y-0.5">
-        <h3 className="text-slate-400 font-black text-[9px] uppercase tracking-[0.2em] font-poppins">{title}</h3>
-        <p className="text-3xl font-black text-slate-900 tracking-tighter tabular-nums font-poppins">
-          {value}
-        </p>
-      </div>
-
-      <div className="mt-4 pt-4 border-t border-slate-50 flex items-center justify-between text-[9px] font-black uppercase tracking-widest text-slate-400">
-        <span>System Logged</span>
-        <div className="w-1 h-1 bg-green-500 rounded-full animate-pulse"></div>
+      <div className="flex items-end justify-between">
+        <p className="text-2xl font-bold text-[#323130] tracking-tight">{value}</p>
+        <span className="text-[10px] font-medium text-[#605E5C] bg-[#F3F2F1] px-1.5 py-0.5 rounded-sm">{label}</span>
       </div>
     </div>
   );
 
   return (
-    <div className="h-full overflow-y-auto space-y-10 animate-in fade-in duration-700 custom-scrollbar pr-4">
-      {/* Dynamic Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div className="space-y-0.5">
-          <h2 className="text-[9px] font-black text-blue-600 uppercase tracking-[0.3em] mb-1 font-poppins">Executive Overview</h2>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tighter font-poppins">
-            System <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Analytics</span>
-          </h1>
-          <p className="text-slate-500 font-bold text-[11px] uppercase tracking-wide opacity-60">Real-time workforce metrics</p>
+    <div className="p-6 space-y-6 bg-[#F3F2F1] min-h-full">
+      {/* Page Title Area */}
+      <div className="flex items-center justify-between border-b border-[#EDEBE9] pb-4 bg-white -mx-6 -mt-6 px-6 py-4">
+        <div>
+          <h1 className="text-[20px] font-semibold text-[#323130]">Organization Overview</h1>
+          <p className="text-[12px] text-[#605E5C]">Real-time operations and personnel metrics</p>
         </div>
         <button 
           onClick={fetchStats}
-          className="group flex items-center gap-3 px-5 py-2.5 bg-slate-900 text-white rounded-lg font-black text-[9px] uppercase tracking-[0.2em] hover:bg-blue-600 transition-all shadow-xl shadow-slate-900/10 active:scale-95"
+          className="flex items-center gap-2 px-3 py-1.5 bg-[#F3F2F1] text-[#323130] border border-[#8A8886] rounded-sm text-[12px] font-semibold hover:bg-[#EDEBE9] transition-all"
         >
-          <Activity className="h-4 w-4 group-hover:animate-spin" />
-          Sync Data
+          <Activity className="h-4 w-4 text-[#0078D4]" />
+          Refresh Metrics
         </button>
       </div>
 
-      {/* Analytics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {/* Primary Analytics */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <StatCard 
-          title="Total Workforce" 
+          title="Total Personnel" 
           value={stats.totalEmployees} 
           icon={Users} 
-          color="bg-blue-600" 
-          detail="+2.4%"
+          colorClass="bg-[#0078D4]" 
+          label="Total Identity"
         />
         <StatCard 
-          title="Active Today" 
+          title="Active Status" 
           value={stats.presentToday} 
           icon={UserCheck} 
-          color="bg-green-600" 
-          detail="On Duty"
+          colorClass="bg-[#107C10]" 
+          label="Online"
         />
         <StatCard 
-          title="Daily Absence" 
+          title="Absence Log" 
           value={stats.absentToday} 
           icon={Clock} 
-          color="bg-orange-600" 
-          detail="Pending"
+          colorClass="bg-[#D83B01]" 
+          label="Inactive"
         />
       </div>
 
-      {/* Secondary Insight Row */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-        <div className="xl:col-span-8 bg-white rounded-[1.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 p-5">
-           <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-black text-slate-900 tracking-tight flex items-center gap-3 font-poppins">
-                <span className="w-1 h-5 bg-blue-600 rounded-full"></span>
-                Recent Operations Log
-              </h3>
-              <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Today</span>
-           </div>
-           
-           <div className="space-y-3">
-              {stats.recentActivity && stats.recentActivity.length > 0 ? (
-                stats.recentActivity.map((activity) => (
-                   <div key={activity._id} className="flex items-center justify-between p-3 bg-slate-50 hover:bg-blue-50/50 rounded-xl transition-colors border border-transparent hover:border-blue-100 cursor-pointer">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        {/* Activity Feed */}
+        <div className="lg:col-span-8 bg-white border border-[#EDEBE9] rounded-sm shadow-sm">
+          <div className="px-4 py-3 border-b border-[#EDEBE9] bg-[#FAF9F8] flex items-center justify-between">
+            <h3 className="text-[13px] font-semibold text-[#323130]">Recent Operational Activity</h3>
+            <span className="text-[10px] text-[#605E5C] font-medium uppercase">Live Stream</span>
+          </div>
+          <div className="p-0">
+            {stats.recentActivity && stats.recentActivity.length > 0 ? (
+              <div className="divide-y divide-[#EDEBE9]">
+                {stats.recentActivity.map((activity) => (
+                  <div key={activity._id} className="px-4 py-3 flex items-center justify-between hover:bg-[#F3F2F1] transition-colors">
                     <div className="flex items-center gap-3">
-                       <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center font-black text-slate-400 text-xs shadow-sm">
-                          {activity.user?.name?.charAt(0) || 'U'}
-                       </div>
-                       <div>
-                          <p className="text-[13px] font-black text-slate-900 font-poppins">{activity.user?.name || 'Unknown User'}</p>
-                          <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">{activity.user?.empId || 'N/A'}</p>
-                       </div>
+                      <div className="w-8 h-8 bg-[#0078D4] text-white rounded-sm flex items-center justify-center font-bold text-xs">
+                        {activity.user?.name?.charAt(0) || 'U'}
+                      </div>
+                      <div>
+                        <p className="text-[13px] font-semibold text-[#323130]">{activity.user?.name || 'Unknown User'}</p>
+                        <p className="text-[11px] text-[#605E5C]">{activity.user?.empId || 'N/A'}</p>
+                      </div>
                     </div>
                     <div className="text-right">
-                       <p className="text-[13px] font-black text-slate-900 font-poppins tracking-tighter">{activity.checkIn?.time || 'Logged'}</p>
-                       <span className="text-[9px] font-black text-green-600 uppercase tracking-widest">Present</span>
+                      <p className="text-[12px] font-bold text-[#323130]">{activity.checkIn?.time || 'N/A'}</p>
+                      <span className="text-[10px] font-semibold text-[#107C10] uppercase">Check-in Verified</span>
                     </div>
                   </div>
-                ))
-              ) : (
-                <div className="py-12 text-center">
-                   <Activity className="h-10 w-10 text-slate-200 mx-auto mb-3" />
-                   <p className="text-slate-400 font-bold italic">No activity logs captured yet today.</p>
-                </div>
-              )}
-           </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-12 text-center text-[#605E5C]">
+                <Activity className="h-8 w-8 mx-auto mb-3 opacity-20" />
+                <p className="text-[13px]">No operational activity recorded for this period.</p>
+              </div>
+            )}
+          </div>
         </div>
 
-        <div className="xl:col-span-4 space-y-6">
-           <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[1.5rem] p-6 text-white shadow-xl shadow-blue-500/20 relative overflow-hidden group">
-              <ArrowUpRight className="absolute top-4 right-4 h-5 w-5 opacity-40 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-              <div className="relative z-10">
-                <h3 className="font-bold text-blue-100 text-[9px] uppercase tracking-widest mb-3 font-poppins">Quick Action</h3>
-                <p className="text-lg font-black leading-tight mb-6 font-poppins">Manage personnel directory</p>
-                <button 
-                  onClick={() => window.location.href='/employee'}
-                  className="w-full py-3 bg-white/20 hover:bg-white/30 backdrop-blur-md rounded-xl font-black text-[11px] transition-all border border-white/10 uppercase tracking-widest shadow-lg"
-                >
-                  View Directory
-                </button>
+        {/* Action Panel */}
+        <div className="lg:col-span-4 space-y-4">
+          <div className="bg-[#0078D4] p-5 text-white rounded-sm shadow-sm relative overflow-hidden">
+             <div className="relative z-10">
+               <h4 className="text-[11px] font-bold uppercase tracking-wider mb-2 opacity-80">Quick Actions</h4>
+               <p className="text-[16px] font-semibold mb-4 leading-tight">Identity & Resource Management</p>
+               <Link 
+                 to="/admin/employee"
+                 className="block w-full py-2 bg-white text-[#0078D4] text-center rounded-sm font-bold text-[12px] hover:bg-[#F3F2F1] transition-all"
+               >
+                 Go to Employee Directory
+               </Link>
+             </div>
+             <Users className="absolute -bottom-4 -right-4 h-24 w-24 opacity-10" />
+          </div>
+
+          <div className="bg-white border border-[#EDEBE9] p-4 rounded-sm shadow-sm">
+            <h4 className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider mb-3">System Health</h4>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between text-[12px]">
+                <span className="text-[#323130]">API Status</span>
+                <span className="text-[#107C10] font-bold">Operational</span>
               </div>
-           </div>
-           
-           <div className="bg-slate-900 rounded-[1.5rem] p-6 text-white shadow-xl shadow-slate-900/10">
-              <h3 className="font-bold text-slate-400 text-[9px] uppercase tracking-widest mb-4 font-poppins">System Health</h3>
-              <div className="flex items-center gap-3 mb-4">
-                 <div className="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                    <div className="w-[95%] h-full bg-blue-500"></div>
-                 </div>
-                 <span className="text-[9px] font-black tabular-nums font-poppins">95%</span>
+              <div className="h-1.5 bg-[#F3F2F1] rounded-full overflow-hidden">
+                <div className="h-full bg-[#107C10] w-[98%]"></div>
               </div>
-              <p className="text-[9px] font-bold text-slate-500 leading-relaxed uppercase tracking-widest">Services operational. Encryption verified.</p>
-           </div>
+              <p className="text-[10px] text-[#605E5C]">All organizational endpoints are responding within normal parameters.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

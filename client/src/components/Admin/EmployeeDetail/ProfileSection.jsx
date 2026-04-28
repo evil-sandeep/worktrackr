@@ -192,6 +192,14 @@ const ProfileSection = ({ employee, formData, onFormChange, onUpdate, onDelete, 
               placeholder="Phone" 
               className="w-full px-4 py-3 bg-white border border-slate-100 rounded-xl font-bold text-sm text-slate-900 shadow-sm mb-2" 
             />
+            <input 
+              name="password" 
+              type="password"
+              value={formData.password || ''} 
+              onChange={onFormChange} 
+              placeholder="New Password (Leave blank to keep current)" 
+              className="w-full px-4 py-3 bg-white border border-slate-100 rounded-xl font-bold text-sm text-slate-900 shadow-sm mb-2 outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" 
+            />
             <textarea 
               name="address" 
               value={formData.address} 

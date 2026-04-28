@@ -221,31 +221,16 @@ const OrganizationListPage = () => {
                           </div>
                        </td>
                        <td className="py-3 px-6 text-right" onClick={e => e.stopPropagation()}>
-                         <div className="flex items-center justify-end gap-2">
-                           <button 
-                             onClick={() => handleToggleAdmin(org._id, org.name, org.role)}
-                             className={`px-3 py-1 rounded-sm text-[10px] font-semibold uppercase tracking-wider transition-all border ${
-                               org?.role === 'admin' 
-                                 ? 'bg-white border-[#E81123] text-[#E81123] hover:bg-[#E81123] hover:text-white' 
-                                 : 'bg-[#0078D4] border-[#0078D4] text-white hover:bg-[#005A9E]'
-                             }`}
-                           >
-                             {org?.role === 'admin' ? 'Revoke' : 'Promote'}
-                           </button>
+                         <div className="flex items-center justify-end">
                            {org?.role !== 'superadmin' && (
                              <button 
                                onClick={() => handleDelete(org._id, org.name)}
-                               className="p-1.5 text-[#605E5C] hover:text-[#E81123] hover:bg-red-50 rounded-sm transition-colors"
+                               className="p-1.5 text-[#605E5C] hover:text-[#E81123] hover:bg-red-50 rounded-sm transition-colors flex items-center gap-2 group"
                              >
                                <Trash2 className="h-4 w-4" />
+                               <span className="text-[10px] font-semibold uppercase hidden group-hover:block">Delete Resource</span>
                              </button>
                            )}
-                           <button 
-                             onClick={() => navigate(`/org/${org._id}`)}
-                             className="p-1.5 text-[#605E5C] hover:text-[#0078D4] hover:bg-blue-50 rounded-sm transition-colors"
-                           >
-                             <ArrowUpRight className="h-4 w-4" />
-                           </button>
                          </div>
                        </td>
                      </tr>

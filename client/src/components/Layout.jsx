@@ -32,18 +32,18 @@ const Layout = ({ children, user = { role: 'employee' } }) => {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-[#F8FAFC] bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:32px_32px] flex text-slate-900">
+    <div className="h-screen overflow-hidden bg-[#F3F2F1] flex text-[#323130]">
       {/* Sidebar Navigation */}
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} navLinks={getNavLinks()} />
 
       {/* Main Content Area */}
-      <div className="flex-1 lg:ml-72 flex flex-col h-screen overflow-hidden bg-slate-50/50">
+      <div className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Top Navbar */}
         <Navbar toggleSidebar={toggleSidebar} />
 
         {/* Content - Scrollable Main */}
-        <main className="p-4 md:p-6 flex-1 overflow-y-auto">
-          <div className="max-w-[1600px] mx-auto h-full flex flex-col">
+        <main className="flex-1 overflow-y-auto">
+          <div className="h-full">
             {children}
           </div>
         </main>

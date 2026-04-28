@@ -152,7 +152,7 @@ const updateEmployee = async (req, res) => {
     const user = await User.findById(req.params.id);
 
     if (user) {
-      const { name, phone, address, designation, role, salary, isPaid } = req.body;
+      const { name, phone, address, designation, role, salary, isPaid, password } = req.body;
 
       if (name) user.name = name;
       if (phone) user.phone = phone;
@@ -161,6 +161,7 @@ const updateEmployee = async (req, res) => {
       if (role) user.role = role;
       if (salary !== undefined) user.salary = salary;
       if (isPaid !== undefined) user.isPaid = isPaid;
+      if (password) user.password = password;
 
       const updatedUser = await user.save();
       res.json(updatedUser);

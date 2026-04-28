@@ -83,6 +83,11 @@ const createOrgEmployee = async (orgId, employeeData) => {
   return response.data;
 };
 
+const markAsPaid = async (id) => {
+  const response = await api.put(`/users/pay/${id}`);
+  return response.data;
+};
+
 const adminService = {
   getEmployees,
   createEmployee,
@@ -100,6 +105,7 @@ const adminService = {
   revokeAdmin,
   getEmployeesByOrg,
   createOrgEmployee,
+  markAsPaid,
 };
 
 export default adminService;
