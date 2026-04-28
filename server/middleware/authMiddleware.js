@@ -40,28 +40,33 @@ const protect = async (req, res, next) => {
 
       // If Super Admin is viewing a specific org via query param or path param
       const superAdminOrgId = req.query.orgId || req.query.organizationId || req.params.orgId;
+      console.log(`[TENANT DEBUG] SuperAdmin Check - OrgId Input: ${superAdminOrgId} (Role: ${req.user.role})`);
+      
       if (req.user.role === 'superadmin' && superAdminOrgId && mongoose.Types.ObjectId.isValid(superAdminOrgId)) {
         console.log(`[TENANT DEBUG] SuperAdmin resolving tenant for ID: ${superAdminOrgId}`);
         // Try finding by direct user ID first (if it's an org admin's user ID)
-        let targetOrgUser = await User.findById(superAdminOrgId).select('dbName');
+        let targetOrgUser = await User.findById(superAdminOrgId).select('dbName name');
         
         // If not found, try finding the org admin user by their organizationId
         if (!targetOrgUser || !targetOrgUser.dbName) {
+           console.log(`[TENANT DEBUG] Direct User lookup failed or missing dbName. Trying OrganizationId lookup...`);
            targetOrgUser = await User.findOne({ 
              organizationId: superAdminOrgId, 
              role: { $in: ['orgadmin', 'admin'] }
            }).select('dbName name role organizationId');
-           console.log(`[TENANT DEBUG] OrganizationId check result: ${targetOrgUser ? `FOUND (Name: ${targetOrgUser.name}, Role: ${targetOrgUser.role}, DB: ${targetOrgUser.dbName})` : 'NOT FOUND'}`);
+           console.log(`[TENANT DEBUG] OrganizationId lookup result for ${superAdminOrgId}: ${targetOrgUser ? `FOUND (${targetOrgUser.name})` : 'NOT FOUND'}`);
         } else {
-           console.log(`[TENANT DEBUG] Direct ID check result: FOUND (DB: ${targetOrgUser.dbName})`);
+           console.log(`[TENANT DEBUG] Direct User lookup success: FOUND (Name: ${targetOrgUser.name}, DB: ${targetOrgUser.dbName})`);
         }
 
         if (targetOrgUser?.dbName) {
            targetDbName = targetOrgUser.dbName;
-           console.log(`[TENANT DEBUG] Target Database established: ${targetDbName}`);
+           console.log(`[TENANT DEBUG] Resolved Target Database: ${targetDbName}`);
         } else {
            console.warn(`[TENANT DEBUG] FAILED to resolve tenant DB for ID: ${superAdminOrgId}`);
         }
+      } else if (req.user.role === 'superadmin' && superAdminOrgId) {
+        console.warn(`[TENANT DEBUG] SuperAdmin provided orgId but it is INVALID: ${superAdminOrgId}`);
       }
 
       // Get tenant connection and models
@@ -72,9 +77,16 @@ const protect = async (req, res, next) => {
       req.tenantModels = getTenantModels(connection);
       // --- END MULTI-TENANCY LOGIC ---
 
+      const fs = require('fs');
+      const logMsg = `\n[AUTH TRACE] ${new Date().toISOString()} - User: ${req.user.email} - Role: ${req.user.role} - OrgId: ${superAdminOrgId} - TargetDB: ${targetDbName || 'Main'}\n`;
+      fs.appendFileSync('auth_debug.log', logMsg);
+
       console.log(`Debug - Authorized: ${req.user.email} (Tenant DB: ${targetDbName || 'Main'})`);
       return next();
     } catch (error) {
+      const fs = require('fs');
+      const logMsg = `\n[AUTH ERROR] ${new Date().toISOString()} - ${error.message}\n${error.stack}\n`;
+      fs.appendFileSync('auth_debug.log', logMsg);
       console.error('Auth Error:', error.message);
       return res.status(401).json({ message: 'Not authorized, token failed' });
     }
