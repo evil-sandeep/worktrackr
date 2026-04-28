@@ -15,28 +15,24 @@ import {
 } from 'lucide-react';
 
 const FullscreenPreview = ({ url, locationText, onClose }) => (
-  <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/95 backdrop-blur-2xl animate-in fade-in duration-300">
+  <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/90 backdrop-blur-sm animate-in fade-in duration-300">
     <button 
       onClick={onClose}
-      className="absolute top-10 right-10 p-4 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all active:scale-95 border border-white/20 z-[110]"
+      className="absolute top-6 right-6 p-2 bg-white text-[#323130] rounded-sm transition-all hover:bg-[#F3F2F1] z-[120] border border-[#EDEBE9]"
     >
-      <X className="h-8 w-8" />
+      <X className="h-6 w-6" />
     </button>
-    <div className="relative w-full h-full p-10 sm:p-20 flex flex-col items-center justify-center gap-8">
+    <div className="relative w-full h-full p-4 flex flex-col items-center justify-center gap-6">
       <img 
         src={url} 
-        alt="Full size biometric" 
-        className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-[0_0_100px_rgba(0,0,0,0.5)] border border-white/10"
+        alt="Biometric Snapshot" 
+        className="max-w-full max-h-[75vh] object-contain rounded-sm shadow-2xl border border-white/20"
       />
-      <div className="flex flex-col items-center gap-2">
-         <div className="px-8 py-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 text-white text-center shadow-2xl min-w-[300px]">
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/60 mb-2">Verified Coordinates</p>
-            {locationText?.split('\n').map((line, i) => (
-              <p key={i} className={`font-bold ${i === 0 ? 'text-sm mb-1' : 'text-xs text-blue-300 tracking-widest font-mono'}`}>
-                {line}
-              </p>
-            ))}
-         </div>
+      <div className="bg-white p-4 rounded-sm border border-[#EDEBE9] shadow-xl max-w-md w-full">
+         <p className="text-[10px] font-bold uppercase tracking-wider text-[#605E5C] mb-2">Verified Endpoint Signature</p>
+         <p className="text-[12px] font-semibold text-[#323130] leading-relaxed break-words whitespace-pre-wrap">
+            {locationText}
+         </p>
       </div>
     </div>
   </div>
@@ -67,157 +63,155 @@ const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
 
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-950/40 backdrop-blur-md animate-in fade-in duration-500">
-        <div className="bg-white w-full max-w-3xl rounded-[3rem] shadow-premium-layered border border-slate-100 overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-500 relative">
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/40 backdrop-blur-none animate-in fade-in duration-300">
+        <div className="bg-white w-full max-w-3xl rounded-sm shadow-2xl border border-[#EDEBE9] overflow-hidden flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-300 relative">
           
           {previewImage && <FullscreenPreview url={previewImage} locationText={previewLocation} onClose={closePreview} />}
 
-          {/* Modal Header */}
-          <div className="px-10 py-8 flex items-center justify-between bg-white relative z-20">
-            <div className="flex items-center gap-5">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-slate-900 rounded-2xl flex items-center justify-center shadow-xl shadow-slate-900/20">
-                <Fingerprint className="h-6 w-6 sm:h-7 sm:w-7 text-white" />
+          {/* Modal Header - Azure Style */}
+          <div className="px-8 py-6 flex items-center justify-between bg-[#FAF9F8] border-b border-[#EDEBE9]">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 bg-[#0078D4] rounded-sm flex items-center justify-center shadow-sm">
+                <Fingerprint className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-1 font-outfit">Session Data</p>
-                <h2 className="text-xl font-black text-slate-900 tracking-tight leading-none uppercase font-outfit">{date}</h2>
+                <p className="text-[10px] font-bold text-[#605E5C] uppercase tracking-wider mb-0.5">Telemetry Snapshot</p>
+                <h2 className="text-lg font-bold text-[#323130] tracking-tight leading-none uppercase">{date}</h2>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="p-3 bg-slate-50 text-slate-400 hover:text-slate-900 rounded-2xl transition-all hover:bg-slate-100 active:scale-95 border border-slate-100/50"
+              className="p-1.5 text-[#605E5C] hover:text-[#323130] hover:bg-[#F3F2F1] rounded-sm transition-all"
             >
-              <X className="h-6 w-6" />
+              <X className="h-5 w-5" />
             </button>
           </div>
 
-          {/* Stats Command Row */}
-          <div className="px-10 pb-8 grid grid-cols-2 gap-4 border-b border-slate-50">
-            <div className="bg-slate-900 p-6 rounded-[2rem] text-white flex items-center justify-between group overflow-hidden relative">
-              <div className="relative z-10">
-                 <p className="text-[8px] font-black text-white/40 uppercase tracking-[0.3em] mb-2">Duration</p>
-                 <p className="text-2xl font-black tracking-tighter">{record?.totalHours || record?.workingHours || 'Active'}</p>
+          {/* Performance Metrics Bar */}
+          <div className="px-8 py-6 grid grid-cols-2 gap-4 bg-white border-b border-[#EDEBE9]">
+            <div className="bg-[#FAF9F8] p-4 rounded-sm border border-[#EDEBE9] flex items-center justify-between group">
+              <div>
+                 <p className="text-[9px] font-bold text-[#605E5C] uppercase tracking-wider mb-1">Session Lifecycle</p>
+                 <p className="text-xl font-bold text-[#323130] tracking-tight">{record?.totalHours || record?.workingHours || 'Active Node'}</p>
               </div>
-              <Clock className="h-8 w-8 text-white/10 group-hover:text-blue-500/20 transition-all duration-700" />
-              <div className="absolute -right-4 -bottom-4 w-12 h-12 bg-blue-600/20 rounded-full blur-xl"></div>
+              <Clock className="h-6 w-6 text-[#0078D4]/40" />
             </div>
 
-            <div className="bg-slate-50 p-6 rounded-[2rem] border border-slate-100 flex items-center justify-between group overflow-hidden relative">
-              <div className="relative z-10">
-                 <p className="text-[8px] font-black text-slate-400 uppercase tracking-[0.3em] mb-2">Yield Accrued</p>
-                 <p className="text-2xl font-black text-slate-900 tracking-tighter">₹{record?.earning || 0}</p>
+            <div className="bg-[#FAF9F8] p-4 rounded-sm border border-[#EDEBE9] flex items-center justify-between group">
+              <div>
+                 <p className="text-[9px] font-bold text-[#605E5C] uppercase tracking-wider mb-1">Accrued Rev</p>
+                 <p className="text-xl font-bold text-[#323130] tracking-tight">₹{record?.earning || 0}</p>
               </div>
-              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-blue-600 font-bold border border-slate-200">₹</div>
-              <div className="absolute -right-4 -bottom-4 w-12 h-12 bg-slate-200/40 rounded-full blur-xl"></div>
+              <div className="w-8 h-8 bg-white border border-[#EDEBE9] rounded-sm flex items-center justify-center text-[#0078D4] font-bold text-xs shadow-sm">₹</div>
             </div>
           </div>
 
-          {/* Scrollable Content */}
-          <div className="flex-1 overflow-y-auto p-10 space-y-10 custom-scrollbar bg-slate-50/10">
+          {/* Trace Log Content */}
+          <div className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar bg-white">
             {record?.status === 'absent' ? (
-              <div className="flex flex-col items-center justify-center space-y-8 py-12 text-center">
-                <div className="w-24 h-24 bg-rose-50 rounded-[2.5rem] flex items-center justify-center border border-rose-100 shadow-xl">
-                  <AlertCircle className="h-10 w-10 text-rose-500" />
+              <div className="flex flex-col items-center justify-center space-y-6 py-12 text-center">
+                <div className="w-16 h-16 bg-[#FAF9F8] rounded-sm flex items-center justify-center border border-dashed border-[#C8C6C4]">
+                  <AlertCircle className="h-8 w-8 text-[#E81123]" />
                 </div>
-                <div className="space-y-4">
-                  <h3 className="text-xl font-black text-slate-900 tracking-tight uppercase">Protocol Standby</h3>
-                  <p className="text-slate-400 font-bold max-w-[300px] mx-auto text-[10px] leading-relaxed uppercase tracking-widest">
-                    No attendance sequences detected for this cycle.
+                <div className="space-y-2">
+                  <h3 className="text-base font-bold text-[#323130] uppercase tracking-tight">Resource Offline</h3>
+                  <p className="text-[#605E5C] font-semibold max-w-[300px] mx-auto text-[10px] leading-relaxed uppercase tracking-wider">
+                    No active telemetry sequences detected for this cycle.
                   </p>
                 </div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-8">
-                 {/* Entry Node */}
-                 <div className="flex gap-8 group/node">
-                    <div className="hidden sm:flex flex-col items-center gap-4">
-                       <div className="w-4 h-4 bg-blue-600 rounded-full ring-4 ring-blue-100 shrink-0"></div>
-                       <div className="w-0.5 h-full bg-slate-100 rounded-full group-last/node:hidden"></div>
-                    </div>
-                    <div className="flex-1 space-y-6">
+              <div className="space-y-10">
+                 {/* Ingress Sequence */}
+                 <div className="relative pl-8">
+                    <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[#F3F2F1]"></div>
+                    <div className="absolute left-[-5px] top-0 w-3 h-3 bg-[#0078D4] rounded-full border-2 border-white shadow-sm"></div>
+                    
+                    <div className="space-y-4">
                        <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                             <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Node 01: Initialized</span>
-                             <span className="px-3 py-1 bg-blue-50 text-blue-600 text-[8px] font-black uppercase tracking-widest rounded-full">{checkInData.time}</span>
+                             <span className="text-[11px] font-bold text-[#323130] uppercase tracking-wider">Seq 01: Ingress Authentication</span>
+                             <span className="px-2 py-0.5 bg-[#DEECF9] text-[#0078D4] text-[9px] font-bold uppercase tracking-wider rounded-sm border border-[#0078D4]/10">{checkInData.time}</span>
                           </div>
-                           <button 
+                          <button 
                             onClick={() => { setPreviewImage(checkInData.imageUrl); setPreviewLocation(checkInData.location); }}
-                            className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-black text-[9px] uppercase tracking-widest transition-all hover:translate-x-1"
+                            className="text-[#0078D4] hover:underline font-bold text-[10px] uppercase tracking-wider flex items-center gap-1.5"
                           >
-                            View Signature <ArrowRight size={14} />
+                            Inspect <ArrowRight size={12} />
                           </button>
                        </div>
-                       <div className="bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-sm flex flex-col md:flex-row gap-8 hover:shadow-xl transition-all duration-700">
-                          <div className="w-full md:w-32 aspect-square rounded-2xl overflow-hidden bg-slate-950 shrink-0 ring-4 ring-slate-50 cursor-pointer" onClick={() => { setPreviewImage(checkInData.imageUrl); setPreviewLocation(checkInData.location); }}>
-                             <img src={checkInData.imageUrl} className="w-full h-full object-cover" alt="entry" />
+
+                       <div className="bg-[#FAF9F8] border border-[#EDEBE9] rounded-sm p-5 flex flex-col md:flex-row gap-6 hover:border-[#0078D4] transition-all duration-300 shadow-sm">
+                          <div className="w-full md:w-28 aspect-square rounded-sm overflow-hidden bg-black shrink-0 border border-[#EDEBE9] cursor-pointer shadow-inner" onClick={() => { setPreviewImage(checkInData.imageUrl); setPreviewLocation(checkInData.location); }}>
+                             <img src={checkInData.imageUrl} className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" alt="entry" />
                           </div>
-                          <div className="space-y-6 flex-1">
-                             <div className="grid grid-cols-2 gap-8">
-                                <div className="space-y-2">
-                                   <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Verification</p>
-                                   <p className="text-xs font-bold text-slate-900">Authenticated Scan</p>
+                          <div className="space-y-4 flex-1">
+                             <div className="grid grid-cols-2 gap-6">
+                                <div className="space-y-1">
+                                   <p className="text-[9px] font-bold text-[#605E5C] uppercase tracking-wider">Validation</p>
+                                   <p className="text-[12px] font-semibold text-[#323130]">Azure Identity Verified</p>
                                 </div>
-                                <div className="space-y-2">
-                                   <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Digital Lock</p>
-                                   <p className="text-[10px] font-bold text-slate-900 leading-tight uppercase tracking-tight line-clamp-2 italic opacity-80 break-words">{checkInData.location}</p>
+                                <div className="space-y-1">
+                                   <p className="text-[9px] font-bold text-[#605E5C] uppercase tracking-wider">Network Origin</p>
+                                   <p className="text-[10px] font-medium text-[#323130] leading-tight break-words">{checkInData.location}</p>
                                 </div>
                              </div>
-                             <div className="flex items-center gap-3 text-green-500 font-black text-[8px] uppercase tracking-widest">
-                                <ShieldCheck size={12} /> Secure Protocol Success
+                             <div className="flex items-center gap-2 text-[#107C10] font-bold text-[9px] uppercase tracking-widest bg-[#DFF6DD] w-fit px-2 py-1 rounded-sm border border-[#107C10]/10">
+                                <ShieldCheck size={12} /> Secure Handshake Success
                              </div>
                           </div>
                        </div>
                     </div>
                  </div>
 
-                 {/* Exit Node */}
-                 <div className="flex gap-8 group/node">
-                    <div className="hidden sm:flex flex-col items-center gap-4">
-                       <div className={`w-4 h-4 ${isCheckOutComplete ? 'bg-amber-600 ring-amber-100' : 'bg-slate-200 ring-slate-100'} rounded-full ring-4 shrink-0`}></div>
-                       <div className="w-0.5 h-full bg-slate-100 rounded-full group-last/node:hidden"></div>
-                    </div>
-                    <div className="flex-1 space-y-6">
+                 {/* Egress Sequence */}
+                 <div className="relative pl-8">
+                    <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[#F3F2F1]"></div>
+                    <div className={`absolute left-[-5px] top-0 w-3 h-3 ${isCheckOutComplete ? 'bg-[#0078D4]' : 'bg-[#C8C6C4]'} rounded-full border-2 border-white shadow-sm`}></div>
+                    
+                    <div className="space-y-4">
                        <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                             <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Node 02: Termination</span>
-                             <span className={`px-3 py-1 ${isCheckOutComplete ? 'bg-amber-50 text-amber-600' : 'bg-slate-50 text-slate-400'} text-[8px] font-black uppercase tracking-widest rounded-full`}>{checkOutData.time || 'Pending'}</span>
+                             <span className="text-[11px] font-bold text-[#323130] uppercase tracking-wider">Seq 02: Egress Termination</span>
+                             <span className={`px-2 py-0.5 ${isCheckOutComplete ? 'bg-[#DEECF9] text-[#0078D4] border-[#0078D4]/10' : 'bg-[#F3F2F1] text-[#A19F9D] border-[#EDEBE9]'} text-[9px] font-bold uppercase tracking-wider rounded-sm border`}>{checkOutData.time || 'Awaiting Sync'}</span>
                           </div>
                           {isCheckOutComplete && (
                             <button 
                               onClick={() => { setPreviewImage(checkOutData.imageUrl); setPreviewLocation(checkOutData.location); }}
-                              className="flex items-center gap-2 text-amber-600 hover:text-amber-700 font-black text-[9px] uppercase tracking-widest transition-all hover:translate-x-1"
+                              className="text-[#0078D4] hover:underline font-bold text-[10px] uppercase tracking-wider flex items-center gap-1.5"
                             >
-                              View Signature <ArrowRight size={14} />
+                              Inspect <ArrowRight size={12} />
                             </button>
                           )}
                        </div>
+
                        {isCheckOutComplete ? (
-                          <div className="bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-sm flex flex-col md:flex-row gap-8 hover:shadow-xl transition-all duration-700">
-                             <div className="w-full md:w-32 aspect-square rounded-2xl overflow-hidden bg-slate-950 shrink-0 ring-4 ring-slate-50 cursor-pointer" onClick={() => { setPreviewImage(checkOutData.imageUrl); setPreviewLocation(checkOutData.location); }}>
-                                <img src={checkOutData.imageUrl} className="w-full h-full object-cover" alt="exit" />
+                          <div className="bg-[#FAF9F8] border border-[#EDEBE9] rounded-sm p-5 flex flex-col md:flex-row gap-6 hover:border-[#0078D4] transition-all duration-300 shadow-sm">
+                             <div className="w-full md:w-28 aspect-square rounded-sm overflow-hidden bg-black shrink-0 border border-[#EDEBE9] cursor-pointer shadow-inner" onClick={() => { setPreviewImage(checkOutData.imageUrl); setPreviewLocation(checkOutData.location); }}>
+                                <img src={checkOutData.imageUrl} className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" alt="exit" />
                              </div>
-                             <div className="space-y-6 flex-1">
-                                <div className="grid grid-cols-2 gap-8">
-                                   <div className="space-y-2">
-                                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Verification</p>
-                                      <p className="text-xs font-bold text-slate-900">Exit Auth Success</p>
+                             <div className="space-y-4 flex-1">
+                                <div className="grid grid-cols-2 gap-6">
+                                   <div className="space-y-1">
+                                      <p className="text-[9px] font-bold text-[#605E5C] uppercase tracking-wider">Validation</p>
+                                      <p className="text-[12px] font-semibold text-[#323130]">Azure Session Finalized</p>
                                    </div>
-                                   <div className="space-y-2">
-                                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Digital Lock</p>
-                                      <p className="text-[10px] font-bold text-slate-900 leading-tight uppercase tracking-tight line-clamp-2 italic opacity-80 break-words">{checkOutData.location}</p>
+                                   <div className="space-y-1">
+                                      <p className="text-[9px] font-bold text-[#605E5C] uppercase tracking-wider">Network Origin</p>
+                                      <p className="text-[10px] font-medium text-[#323130] leading-tight break-words">{checkOutData.location}</p>
                                    </div>
                                 </div>
-                                <div className="flex items-center gap-3 text-green-500 font-black text-[8px] uppercase tracking-widest">
-                                   <CheckCircle size={12} /> Log Finalized
+                                <div className="flex items-center gap-2 text-[#107C10] font-bold text-[9px] uppercase tracking-widest bg-[#DFF6DD] w-fit px-2 py-1 rounded-sm border border-[#107C10]/10">
+                                   <CheckCircle size={12} /> Resource De-provisioned Successfully
                                 </div>
                              </div>
                           </div>
                        ) : (
-                          <div className="bg-slate-50/50 border-2 border-dashed border-slate-200 rounded-[2.5rem] p-10 flex flex-col items-center text-center space-y-4">
-                             <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-amber-400 border border-slate-200 shadow-sm"><AlertCircle size={24} /></div>
+                          <div className="bg-[#FAF9F8] border border-dashed border-[#C8C6C4] rounded-sm p-8 flex flex-col items-center text-center space-y-4">
+                             <div className="w-10 h-10 bg-white rounded-sm flex items-center justify-center text-[#A19F9D] border border-[#EDEBE9] shadow-sm"><AlertCircle size={20} /></div>
                              <div>
-                                <p className="text-xs font-black text-slate-900 uppercase">Awaiting Protocol Termination</p>
-                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-relaxed mt-1">Check-out biometric verification not yet recorded.</p>
+                                <p className="text-[11px] font-bold text-[#323130] uppercase tracking-wider">Awaiting Resource Release</p>
+                                <p className="text-[9px] font-semibold text-[#605E5C] uppercase tracking-widest leading-relaxed mt-1">Egress biometric signature not detected in local buffer.</p>
                              </div>
                           </div>
                        )}
@@ -227,33 +221,16 @@ const AttendanceDetailModal = ({ isOpen, onClose, record, date }) => {
             )}
           </div>
 
-          {/* Modal Footer */}
-          <div className="px-10 py-8 bg-white border-t border-slate-50 flex justify-end">
+          {/* Modal Actions */}
+          <div className="px-8 py-6 bg-[#FAF9F8] border-t border-[#EDEBE9] flex justify-end gap-3">
             <button
               onClick={onClose}
-              className="px-10 py-4 bg-slate-900 text-white rounded-2xl font-black text-[10px] tracking-[0.2em] uppercase hover:bg-slate-800 transition-all active:scale-95 shadow-2xl shadow-slate-900/20"
+              className="px-6 py-2 bg-[#0078D4] text-white rounded-sm font-bold text-[11px] uppercase tracking-widest hover:bg-[#005A9E] transition-all shadow-sm"
             >
-              Close Report
+              Acknowledge Report
             </button>
           </div>
         </div>
-
-        <style dangerouslySetInnerHTML={{
-          __html: `
-          .custom-scrollbar::-webkit-scrollbar {
-            width: 4px;
-          }
-          .custom-scrollbar::-webkit-scrollbar-track {
-            background: transparent;
-          }
-          .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #e2e8f0;
-            border-radius: 10px;
-          }
-          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #cbd5e1;
-          }
-        `}} />
       </div>
     </>
   );

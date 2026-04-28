@@ -48,128 +48,141 @@ const ProfileSection = ({ employee, formData, onFormChange, onUpdate, onDelete, 
   };
 
   return (
-    <div className="w-full xl:w-80 p-6 md:p-8 border-b xl:border-b-0 xl:border-r border-slate-100 overflow-y-auto custom-scrollbar bg-slate-50/30 flex-shrink-0">
-      <h2 className="text-2xl font-black text-slate-900 tracking-tighter mb-1">Profile</h2>
-      <p className="text-[10px] font-bold text-blue-600 uppercase tracking-widest mb-6">Employee Management</p>
+    <div className="flex flex-col h-full bg-[#FAF9F8] p-6 overflow-y-auto custom-scrollbar">
+      <div className="mb-6">
+        <h2 className="text-lg font-bold text-[#323130] tracking-tight">Resource Profile</h2>
+        <p className="text-[11px] font-semibold text-[#605E5C] uppercase tracking-wider">Identity Instance Management</p>
+      </div>
 
-      <div className="space-y-4">
-        <div className="flex items-center gap-4 p-4 bg-white rounded-[1.5rem] border border-slate-100 shadow-sm relative overflow-hidden group hover:border-blue-200 transition-colors">
-          <div className="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl flex items-center justify-center font-black text-xl text-slate-400 shadow-inner overflow-hidden ring-4 ring-slate-50 relative">
-            {employee.profileImg ? (
-              <img src={employee.profileImg} alt={employee.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-            ) : (
-              employee.name?.charAt(0) || 'U'
-            )}
-            <div className={`absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-white shadow-sm ${status.color}`}></div>
-          </div>
-          <div className="space-y-1 truncate">
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Emp ID</p>
-            <p className="text-base font-black text-slate-900 tracking-tight flex items-center gap-1.5 truncate">
-              <IdCard className="h-3.5 w-3.5 text-blue-500" />
-              {employee.empId}
-            </p>
-            {/* Role Badge */}
-            <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest border ${roleBadge.bg} ${roleBadge.text} ${roleBadge.border}`}>
-              <RoleIcon className="h-2.5 w-2.5" />
-              {roleBadge.label}
+      <div className="space-y-6">
+        {/* Profile Identity Card */}
+        <div className="bg-white border border-[#EDEBE9] p-4 shadow-sm relative group">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 bg-[#F3F2F1] rounded-sm flex items-center justify-center font-bold text-xl text-[#A19F9D] border border-[#EDEBE9] relative overflow-hidden shrink-0">
+              {employee.profileImg ? (
+                <img src={employee.profileImg} alt={employee.name} className="w-full h-full object-cover" />
+              ) : (
+                employee.name?.charAt(0) || 'U'
+              )}
+              <div className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${status.color}`}></div>
+            </div>
+            <div className="min-w-0">
+              <p className="text-[10px] font-bold text-[#605E5C] uppercase tracking-wider mb-0.5">Instance ID</p>
+              <p className="text-sm font-bold text-[#323130] flex items-center gap-1.5 truncate">
+                <IdCard className="h-3.5 w-3.5 text-[#0078D4]" />
+                {employee.empId}
+              </p>
+              <div className={`mt-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-wider border ${roleBadge.bg} ${roleBadge.text} ${roleBadge.border}`}>
+                <RoleIcon className="h-2.5 w-2.5" />
+                {roleBadge.label}
+              </div>
             </div>
           </div>
         </div>
 
-        <div className={`p-4 rounded-[1.5rem] border ${status.bg} space-y-2`}>
+        {/* Lifecycle Status */}
+        <div className={`bg-white border border-[#EDEBE9] p-4 shadow-sm space-y-3`}>
           <div className="flex items-center justify-between">
-            <span className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest text-white ${status.color}`}>
+            <p className="text-[10px] font-bold text-[#605E5C] uppercase tracking-wider">Provisioning State</p>
+            <span className={`px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-wider text-white ${status.color}`}>
               {status.label}
             </span>
-            <span className="text-[9px] font-bold text-slate-400">
-              {employee.lastSeen ? new Date(employee.lastSeen).toLocaleTimeString() : 'N/A'}
-            </span>
           </div>
-          <p className="text-[10px] font-bold text-slate-600 leading-tight">
-            Last active pulse: <br/>
-            <span className="text-slate-400 font-medium">
-              {employee.lastSeen ? new Date(employee.lastSeen).toLocaleString() : 'Never Active'}
-            </span>
-          </p>
+          <div className="bg-[#FAF9F8] p-2 border border-[#EDEBE9] rounded-sm">
+             <p className="text-[10px] font-medium text-[#605E5C] leading-tight">
+              Last Telemetry: <br/>
+              <span className="text-[#323130] font-semibold">
+                {employee.lastSeen ? new Date(employee.lastSeen).toLocaleString() : 'Never Sync'}
+              </span>
+            </p>
+          </div>
         </div>
 
-        {/* Make as Admin Toggle — Super Admin Only */}
+        {/* Access Control Area */}
         {isSuperAdmin && (employee.role === 'orgadmin' || employee.role === 'admin') && (
-          <div className="flex items-center justify-between p-4 bg-white border border-indigo-100 rounded-xl shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
-            <div className="space-y-0.5">
-              <label className="text-xs font-black text-slate-900 tracking-tight flex items-center gap-1.5">
-                <ShieldCheck className="h-3.5 w-3.5 text-indigo-500" />
-                Make as Admin
+          <div className="bg-white border border-[#EDEBE9] p-4 shadow-sm relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-[#0078D4]"></div>
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <label className="text-xs font-bold text-[#323130] flex items-center gap-1.5 uppercase tracking-tight">
+                  <ShieldCheck className="h-3.5 w-3.5 text-[#0078D4]" />
+                  Elevate Permissions
+                </label>
+                <span className="text-[10px] font-semibold text-[#605E5C] uppercase tracking-wider">
+                  {isAdmin ? 'System Admin Active' : 'Promotion Eligibility'}
+                </span>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  checked={isAdmin} 
+                  onChange={handleToggleAdmin} 
+                  className="sr-only peer"
+                />
+                <div className="w-10 h-5 bg-[#F3F2F1] border border-[#8A8886] rounded-full peer-focus:outline-none peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-[#8A8886] after:border-white after:border after:rounded-full after:h-3.5 after:w-3.5 after:transition-all peer-checked:bg-[#0078D4] peer-checked:after:bg-white"></div>
               </label>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                {isAdmin ? 'Has admin access' : 'Pending approval'}
-              </span>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input 
-                type="checkbox" 
-                checked={isAdmin} 
-                onChange={handleToggleAdmin} 
-                className="sr-only peer"
-              />
-              <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
-            </label>
           </div>
         )}
 
-        <div className="space-y-4">
+        {/* Configuration Properties */}
+        <div className="bg-white border border-[#EDEBE9] p-4 shadow-sm space-y-4">
+          <p className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider mb-2">Properties</p>
+          
           <div className="space-y-1.5">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Full Name</label>
+            <label className="text-[10px] font-semibold text-[#605E5C] uppercase tracking-wider">Identity Name</label>
             <input 
               name="name" 
               value={formData.name} 
               onChange={onFormChange} 
-              className="w-full px-4 py-3 bg-white border border-slate-100 rounded-xl focus:ring-2 focus:ring-blue-500/20 outline-none transition-all font-bold text-sm text-slate-900 shadow-sm" 
+              className="w-full px-3 py-2 bg-white border border-[#8A8886] rounded-sm focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] outline-none transition-all font-semibold text-[13px] text-[#323130]" 
             />
           </div>
           
-          <div className="space-y-1.5">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Role & Title</label>
-            <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-semibold text-[#605E5C] uppercase tracking-wider">Auth Role</label>
               <select 
                 name="role" 
                 value={formData.role} 
                 onChange={onFormChange} 
-                className="px-3 py-3 bg-white border border-slate-100 rounded-xl font-bold text-xs text-slate-900 shadow-sm appearance-none cursor-pointer"
+                className="w-full px-2 py-2 bg-[#FAF9F8] border border-[#8A8886] rounded-sm font-semibold text-xs text-[#323130] outline-none focus:border-[#0078D4]"
               >
                 <option value="employee">Staff</option>
                 <option value="orgadmin">Org Admin</option>
                 <option value="admin">Admin</option>
               </select>
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-semibold text-[#605E5C] uppercase tracking-wider">Job Title</label>
               <input 
                 name="designation" 
                 value={formData.designation} 
                 onChange={onFormChange} 
                 placeholder="Title" 
-                className="px-3 py-3 bg-white border border-slate-100 rounded-xl font-bold text-xs text-slate-900 shadow-sm outline-none focus:ring-2 focus:ring-blue-500/20" 
+                className="w-full px-2 py-2 bg-white border border-[#8A8886] rounded-sm font-semibold text-xs text-[#323130] outline-none focus:border-[#0078D4]" 
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Salary (₹)</label>
+            <label className="text-[10px] font-semibold text-[#605E5C] uppercase tracking-wider">Financial Rate (₹)</label>
             <div className="relative">
-              <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+              <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#605E5C]" />
               <input 
                 name="salary" 
                 type="number" 
                 value={formData.salary} 
                 onChange={onFormChange} 
-                className="w-full pl-9 pr-4 py-3 bg-white border border-slate-100 rounded-xl outline-none font-bold text-sm text-slate-900 shadow-sm" 
+                className="w-full pl-9 pr-3 py-2 bg-[#FAF9F8] border border-[#8A8886] rounded-sm outline-none font-semibold text-[13px] text-[#323130] focus:border-[#0078D4]" 
               />
             </div>
           </div>
 
-          <div className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-xl shadow-sm">
+          <div className="flex items-center justify-between p-3 bg-[#FAF9F8] border border-[#EDEBE9] rounded-sm">
             <div className="space-y-0.5">
-               <label className="text-xs font-black text-slate-900 tracking-tight block">Payment Status</label>
-               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Is this employee paid?</span>
+               <label className="text-[11px] font-bold text-[#323130] tracking-tight block uppercase">Billing Cycle</label>
+               <span className="text-[9px] font-semibold text-[#605E5C] uppercase">Paid Status</span>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input 
@@ -179,52 +192,61 @@ const ProfileSection = ({ employee, formData, onFormChange, onUpdate, onDelete, 
                 onChange={(e) => onFormChange({ target: { name: 'isPaid', value: e.target.checked } })} 
                 className="sr-only peer"
               />
-              <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+              <div className="w-10 h-5 bg-[#F3F2F1] border border-[#8A8886] rounded-full peer-focus:outline-none peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-[#8A8886] after:border-white after:border after:rounded-full after:h-3.5 after:w-3.5 after:transition-all peer-checked:bg-[#107C10] peer-checked:after:bg-white"></div>
             </label>
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Contact</label>
-            <input 
-              name="phone" 
-              value={formData.phone} 
-              onChange={onFormChange} 
-              placeholder="Phone" 
-              className="w-full px-4 py-3 bg-white border border-slate-100 rounded-xl font-bold text-sm text-slate-900 shadow-sm mb-2" 
-            />
-            <input 
-              name="password" 
-              type="password"
-              value={formData.password || ''} 
-              onChange={onFormChange} 
-              placeholder="New Password (Leave blank to keep current)" 
-              className="w-full px-4 py-3 bg-white border border-slate-100 rounded-xl font-bold text-sm text-slate-900 shadow-sm mb-2 outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" 
-            />
-            <textarea 
-              name="address" 
-              value={formData.address} 
-              onChange={onFormChange} 
-              rows="2" 
-              placeholder="Street Address" 
-              className="w-full px-4 py-3 bg-white border border-slate-100 rounded-xl outline-none font-bold text-sm text-slate-900 shadow-sm resize-none text-xs" 
-            />
+          <div className="space-y-3">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-semibold text-[#605E5C] uppercase tracking-wider">Contact Endpoint</label>
+              <input 
+                name="phone" 
+                value={formData.phone} 
+                onChange={onFormChange} 
+                placeholder="Phone" 
+                className="w-full px-3 py-2 bg-white border border-[#8A8886] rounded-sm font-semibold text-xs text-[#323130] focus:border-[#0078D4] outline-none" 
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-semibold text-[#605E5C] uppercase tracking-wider">Access Security</label>
+              <input 
+                name="password" 
+                type="password"
+                value={formData.password || ''} 
+                onChange={onFormChange} 
+                placeholder="Reset Authentication Key" 
+                className="w-full px-3 py-2 bg-white border border-[#8A8886] rounded-sm font-semibold text-xs text-[#323130] focus:border-[#0078D4] outline-none" 
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-semibold text-[#605E5C] uppercase tracking-wider">Location Metadata</label>
+              <textarea 
+                name="address" 
+                value={formData.address} 
+                onChange={onFormChange} 
+                rows="2" 
+                placeholder="Physical Address" 
+                className="w-full px-3 py-2 bg-white border border-[#8A8886] rounded-sm outline-none font-semibold text-xs text-[#323130] focus:border-[#0078D4] resize-none" 
+              />
+            </div>
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 pt-2">
+        {/* Management Operations */}
+        <div className="flex flex-col gap-3 pt-2 pb-6">
           <button 
             onClick={onUpdate} 
-            className="flex items-center justify-center gap-2 w-full py-4 bg-blue-600 text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-700 transition-all shadow-lg shadow-blue-200"
+            className="flex items-center justify-center gap-2 w-full py-2.5 bg-[#0078D4] text-white rounded-sm font-bold text-[11px] uppercase tracking-widest hover:bg-[#005A9E] transition-all shadow-sm"
           >
             <Save className="h-3.5 w-3.5" />
-            Update Profile
+            Apply Changes
           </button>
           <button 
             onClick={onDelete} 
-            className="flex items-center justify-center gap-2 w-full py-4 text-rose-500 bg-white border border-rose-100 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-rose-500 hover:text-white transition-all shadow-sm"
+            className="flex items-center justify-center gap-2 w-full py-2.5 text-[#E81123] bg-white border border-[#E81123] rounded-sm font-bold text-[11px] uppercase tracking-widest hover:bg-[#E81123] hover:text-white transition-all shadow-sm"
           >
             <Trash2 className="h-3.5 w-3.5" />
-            Delete
+            De-provision
           </button>
         </div>
       </div>

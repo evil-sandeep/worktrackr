@@ -45,108 +45,104 @@ const PaymentPage = () => {
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 font-poppins">
-        <div className="w-full max-w-xl bg-white rounded-[3rem] shadow-2xl p-10 text-center space-y-6 animate-in zoom-in-95 duration-500">
-          <div className="w-24 h-24 bg-emerald-50 rounded-[2rem] flex items-center justify-center mx-auto">
-            <CheckCircle2 className="h-12 w-12 text-emerald-500" />
+      <div className="min-h-screen bg-[#F3F2F1] flex flex-col items-center justify-center p-6">
+        <div className="w-full max-w-md bg-white border border-[#EDEBE9] shadow-xl p-10 text-center space-y-6 animate-in fade-in duration-500 rounded-none">
+          <div className="w-20 h-20 bg-[#DFF6DD] rounded-sm flex items-center justify-center mx-auto border border-[#107C10]/10">
+            <CheckCircle2 className="h-10 w-10 text-[#107C10]" />
           </div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Payment Successful</h1>
-          <p className="text-slate-500 font-bold text-sm">
-            ₹2,000 has been debited and <span className="text-indigo-600">{empName}</span> is now authorized for the platform.
-          </p>
+          <div className="space-y-2">
+            <h1 className="text-xl font-bold text-[#323130] tracking-tight uppercase">Provisioning Successful</h1>
+            <p className="text-[#605E5C] font-semibold text-xs leading-relaxed uppercase tracking-wider">
+              Asset authorized. Identity <span className="text-[#0078D4]">{empName}</span> is now active in the fleet.
+            </p>
+          </div>
           <div className="pt-4">
              <button 
                 onClick={() => navigate('/superadmindashboard')}
-                className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-600 transition-all"
+                className="w-full py-3 bg-[#0078D4] text-white rounded-sm font-bold text-[10px] uppercase tracking-widest hover:bg-[#005A9E] transition-all shadow-sm"
              >
-                Return to Dashboard
+                Return to Control Plane
              </button>
           </div>
-          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Redirecting in 3 seconds...</p>
+          <p className="text-[9px] text-[#A19F9D] font-bold uppercase tracking-widest">Automatic redirect in sequence...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 font-poppins">
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600"></div>
-      
-      <div className="w-full max-w-xl bg-white rounded-[3rem] shadow-2xl shadow-slate-200/60 border border-slate-100 overflow-hidden animate-in zoom-in-95 duration-500">
+    <div className="min-h-screen bg-[#F3F2F1] flex flex-col items-center justify-center p-6">
+      <div className="w-full max-w-md bg-white border border-[#EDEBE9] shadow-2xl overflow-hidden animate-in fade-in duration-500 rounded-none">
+        {/* Azure Status Bar */}
+        <div className="h-1 w-full bg-[#0078D4]"></div>
+        
         <div className="p-10 text-center space-y-8">
-          {/* Status Icon */}
-          <div className="relative inline-block">
-             <div className="w-24 h-24 bg-indigo-50 rounded-[2rem] flex items-center justify-center">
-                <CreditCard className="h-10 w-10 text-indigo-500" />
-             </div>
-             <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-white rounded-2xl shadow-lg border border-slate-50 flex items-center justify-center">
-                <ShieldCheck className="h-5 w-5 text-emerald-500" />
-             </div>
-          </div>
-
-          {/* Heading */}
-          <div className="space-y-3">
-             <h1 className="text-3xl font-black text-slate-900 tracking-tight">Authorization Payment</h1>
-             <p className="text-slate-500 font-bold text-sm leading-relaxed max-w-sm mx-auto">
-                {empId ? (
-                  <>You are authorizing license for <span className="text-indigo-600">{empName}</span>.</>
-                ) : (
-                  <>Subscription required for account access.</>
-                )}
-             </p>
-          </div>
-
-          {/* Details */}
-          <div className="grid grid-cols-1 gap-3 text-left">
-             <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center">
-                    <IndianRupee size={20} />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Payment Amount</p>
-                    <p className="text-xl font-black text-slate-900">₹2,000.00</p>
-                  </div>
+          {/* Identity/Payment Node */}
+          <div className="flex flex-col items-center gap-4">
+             <div className="w-20 h-20 bg-[#FAF9F8] rounded-sm flex items-center justify-center border border-[#EDEBE9] relative shadow-sm">
+                <CreditCard className="h-8 w-8 text-[#0078D4]" />
+                <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-white border border-[#EDEBE9] rounded-sm shadow-md flex items-center justify-center">
+                   <ShieldCheck className="h-4 w-4 text-[#107C10]" />
                 </div>
-                <div className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest">
-                  One-time
+             </div>
+             <div className="space-y-1">
+               <h1 className="text-lg font-bold text-[#323130] uppercase tracking-tight">Resource Authorization</h1>
+               <p className="text-[10px] font-bold text-[#605E5C] uppercase tracking-widest">
+                 Provisioning License for node: <span className="text-[#0078D4]">{empName}</span>
+               </p>
+             </div>
+          </div>
+
+          {/* Billing Detail Table */}
+          <div className="bg-[#FAF9F8] border border-[#EDEBE9] p-4 text-left space-y-3">
+             <div className="flex justify-between items-center border-b border-[#EDEBE9] pb-2">
+                <span className="text-[10px] font-bold text-[#605E5C] uppercase tracking-wider">SKU Description</span>
+                <span className="text-[10px] font-bold text-[#323130] uppercase">Enterprise Seat</span>
+             </div>
+             <div className="flex justify-between items-end">
+                <div>
+                   <p className="text-[9px] font-bold text-[#605E5C] uppercase tracking-widest mb-1">Billing Amount</p>
+                   <p className="text-2xl font-bold text-[#323130]">₹2,000.00</p>
+                </div>
+                <div className="bg-[#DEECF9] text-[#0078D4] px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-wider border border-[#0078D4]/10">
+                  Fixed Asset Fee
                 </div>
              </div>
           </div>
 
-          {/* Action */}
-          <div className="space-y-4 pt-4">
+          {/* Execution Actions */}
+          <div className="space-y-4 pt-2">
              <button 
                 onClick={handlePayment}
-                className="w-full py-5 bg-slate-900 text-white rounded-[1.5rem] font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-slate-900/20 hover:bg-indigo-600 hover:shadow-indigo-600/20 transition-all active:scale-[0.98] flex items-center justify-center gap-3 group"
+                className="w-full py-4 bg-[#0078D4] text-white rounded-sm font-bold text-[11px] uppercase tracking-widest shadow-sm hover:bg-[#005A9E] transition-all flex items-center justify-center gap-3 group"
              >
-                <span>Authorize Payment</span>
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                Commit Authorization
+                <ArrowRight className="h-4 w-4" />
              </button>
              
              <button 
                 onClick={() => navigate(-1)}
-                className="flex items-center gap-2 mx-auto text-slate-400 hover:text-slate-600 font-black text-[10px] uppercase tracking-widest transition-colors"
+                className="text-[10px] font-bold text-[#605E5C] uppercase tracking-wider hover:text-[#323130] transition-colors underline decoration-[#EDEBE9] underline-offset-4"
              >
-                <span>Cancel & Go Back</span>
+                Abort Provisioning
              </button>
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="px-10 py-6 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+        {/* Technical Footer */}
+        <div className="px-10 py-5 bg-[#FAF9F8] border-t border-[#EDEBE9] flex items-center justify-between">
            <div className="flex flex-col">
-              <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Protocol Version</span>
-              <span className="text-[10px] font-bold text-slate-900">v2.4.0-Enterprise</span>
+              <span className="text-[8px] font-bold text-[#A19F9D] uppercase tracking-widest">Schema Hash</span>
+              <span className="text-[9px] font-bold text-[#323130] uppercase">AZ-882-SYS</span>
            </div>
            <div className="flex items-center gap-2">
-              <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Secure Gateway</span>
-              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+              <div className="w-1.5 h-1.5 bg-[#107C10] rounded-full"></div>
+              <span className="text-[9px] font-bold text-[#605E5C] uppercase tracking-widest">Security Link Verified</span>
            </div>
         </div>
       </div>
 
-      <p className="mt-8 text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] opacity-40">Secured by WorkTrackr Protocol</p>
+      <p className="mt-8 text-[8px] font-bold text-[#A19F9D] uppercase tracking-[0.4em] opacity-50">Microsoft Azure Enterprise Billing Protocol v2.1</p>
     </div>
   );
 };

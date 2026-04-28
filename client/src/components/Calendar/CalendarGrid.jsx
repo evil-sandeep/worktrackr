@@ -23,7 +23,7 @@ const CalendarGrid = ({ days, currentDate, selectedDate, attendanceData, onDateC
   return (
     <div 
       key={`${currentDate.getMonth()}-${currentDate.getFullYear()}`}
-      className="w-full h-full flex flex-col bg-white/40 backdrop-blur-xl rounded-2xl overflow-hidden animate-slide-right"
+      className="w-full h-full flex flex-col bg-white rounded-sm overflow-hidden border border-[#EDEBE9] animate-in fade-in duration-300"
     >
       {/* Week Day Header - Premium Spacing */}
       <div className="grid grid-cols-7 mb-3 mt-1">

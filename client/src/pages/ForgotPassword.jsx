@@ -115,27 +115,30 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="min-h-screen bg-[#F3F2F1] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans relative">
       <div id="recaptcha-container"></div>
       
+      {/* Structural Accent */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-[#0078D4]"></div>
+      
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <Link to="/login" className="inline-flex items-center text-sm font-bold text-slate-400 hover:text-blue-600 transition-colors mb-8 group">
-          <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-          Back to Login
+        <Link to="/login" className="inline-flex items-center text-[11px] font-bold text-[#605E5C] hover:text-[#0078D4] uppercase tracking-widest transition-colors mb-6 group">
+          <ArrowLeft className="h-3 w-3 mr-2 group-hover:-translate-x-1 transition-transform" />
+          Back to Authentication
         </Link>
-        <div className="bg-white px-8 py-10 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-slate-100 relative overflow-hidden">
-          {/* Header */}
+        <div className="bg-white px-8 py-10 rounded-sm shadow-xl border border-[#EDEBE9] relative overflow-hidden">
+          {/* Header Area */}
           <div className="relative z-10 mb-8">
-            <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-6">
-              <KeyRound className="h-8 w-8 text-blue-600" />
+            <div className="w-12 h-12 bg-[#0078D4] rounded-sm flex items-center justify-center mb-6 shadow-md">
+              <KeyRound className="h-6 w-6 text-white" />
             </div>
-            <h2 className="text-3xl font-black text-slate-900 tracking-tight leading-tight">
-              {step === 1 ? 'Forgot Password?' : 'Verify Identity'}
+            <h2 className="text-2xl font-bold text-[#323130] tracking-tight">
+              {step === 1 ? 'Recover Identity' : 'Verify Authorization'}
             </h2>
-            <p className="mt-2 text-slate-500 font-medium">
+            <p className="mt-2 text-[12px] font-semibold text-[#605E5C] leading-relaxed">
               {step === 1 
-                ? "Enter your details to receive an OTP on your registered mobile number."
-                : `We've sent a 6-digit code to your mobile number. Enter it below to continue.`}
+                ? "Enter your organizational credentials to receive an out-of-band verification code."
+                : `A security code has been dispatched to your mobile endpoint. Enter it below to proceed.`}
             </p>
           </div>
 
@@ -143,36 +146,36 @@ const ForgotPassword = () => {
             {step === 1 ? (
               <>
                 <div className="space-y-4">
-                  <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Employee ID</label>
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider ml-0.5">Asset Tag (Emp ID)</label>
                     <div className="relative group">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <IdCard className="h-5 w-5 text-slate-300 group-focus-within:text-blue-500 transition-colors" />
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                        <IdCard className="h-4 w-4 text-[#A19F9D] group-focus-within:text-[#0078D4] transition-colors" />
                       </div>
                       <input
                         type="text"
                         required
                         value={empId}
                         onChange={(e) => setEmpId(e.target.value.toUpperCase())}
-                        className="block w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl text-slate-900 font-bold placeholder-slate-300 focus:ring-4 focus:ring-blue-500/10 transition-all text-sm"
-                        placeholder="e.g. EMP-101"
+                        className="block w-full pl-10 pr-4 py-2.5 bg-white border border-[#8A8886] rounded-sm text-[#323130] font-semibold placeholder-[#A19F9D] focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] transition-all text-sm outline-none"
+                        placeholder="e.g. WT-00X"
                       />
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Mobile Number</label>
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider ml-0.5">Mobile Endpoint</label>
                     <div className="relative group">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <Phone className="h-5 w-5 text-slate-300 group-focus-within:text-blue-500 transition-colors" />
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                        <Phone className="h-4 w-4 text-[#A19F9D] group-focus-within:text-[#0078D4] transition-colors" />
                       </div>
                       <input
                         type="tel"
                         required
                         value={mobile}
                         onChange={(e) => setMobile(e.target.value)}
-                        className="block w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl text-slate-900 font-bold placeholder-slate-300 focus:ring-4 focus:ring-blue-500/10 transition-all text-sm"
-                        placeholder="10-digit mobile number"
+                        className="block w-full pl-10 pr-4 py-2.5 bg-white border border-[#8A8886] rounded-sm text-[#323130] font-semibold placeholder-[#A19F9D] focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] transition-all text-sm outline-none"
+                        placeholder="+XX XXXXX XXXXX"
                       />
                     </div>
                   </div>
@@ -181,26 +184,23 @@ const ForgotPassword = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full flex items-center justify-center py-4 px-4 bg-slate-900 hover:bg-black text-white rounded-2xl font-black text-sm tracking-widest uppercase transition-all shadow-xl shadow-slate-200 active:scale-[0.98] disabled:opacity-50"
+                  className="w-full flex items-center justify-center py-2.5 px-4 bg-[#0078D4] hover:bg-[#005A9E] text-white rounded-sm font-bold text-sm tracking-tight transition-all shadow-md active:scale-[0.98] disabled:opacity-50"
                 >
-                  {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : (
+                  {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : (
                     <>
-                      Send OTP
+                      Request Verification Code
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </>
                   )}
                 </button>
-                <p className="mt-4 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-relaxed">
-                  Tip: Use "Test Phone Numbers" in Firebase Console <br/> to avoid billing during development.
-                </p>
               </>
             ) : (
               <>
-                <div>
-                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">6-Digit Code</label>
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider ml-0.5">6-Digit Authorization Code</label>
                   <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <ShieldCheck className="h-5 w-5 text-slate-300 group-focus-within:text-blue-500 transition-colors" />
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                      <ShieldCheck className="h-4 w-4 text-[#A19F9D] group-focus-within:text-[#0078D4] transition-colors" />
                     </div>
                     <input
                       type="text"
@@ -208,21 +208,21 @@ const ForgotPassword = () => {
                       required
                       value={otp}
                       onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                      className="block w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl text-slate-900 font-black tracking-[0.5em] placeholder-slate-300 focus:ring-4 focus:ring-blue-500/10 transition-all text-center text-xl"
+                      className="block w-full pl-10 pr-4 py-3 bg-[#FAF9F8] border border-[#8A8886] rounded-sm text-[#323130] font-bold tracking-[0.4em] placeholder-[#A19F9D] focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] transition-all text-center text-xl outline-none"
                       placeholder="000000"
                     />
                   </div>
                   {timer > 0 ? (
-                    <p className="mt-3 text-center text-xs font-bold text-slate-400 uppercase tracking-widest">
-                      Resend available in <span className="text-blue-600">{timer}s</span>
+                    <p className="mt-3 text-center text-[10px] font-bold text-[#605E5C] uppercase tracking-widest">
+                      Code rotation in <span className="text-[#0078D4]">{timer}s</span>
                     </p>
                   ) : (
                     <button 
                       type="button"
                       onClick={handleSendOTP}
-                      className="mt-3 w-full text-center text-xs font-black text-blue-600 uppercase tracking-widest hover:text-blue-700"
+                      className="mt-3 w-full text-center text-[10px] font-bold text-[#0078D4] uppercase tracking-widest hover:underline"
                     >
-                      Resend OTP
+                      Resend Authorization Code
                     </button>
                   )}
                 </div>
@@ -230,26 +230,24 @@ const ForgotPassword = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full flex items-center justify-center py-4 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black text-sm tracking-widest uppercase transition-all shadow-xl shadow-blue-100 active:scale-[0.98] disabled:opacity-50"
+                  className="w-full flex items-center justify-center py-2.5 px-4 bg-[#0078D4] hover:bg-[#005A9E] text-white rounded-sm font-bold text-sm tracking-tight transition-all shadow-md active:scale-[0.98] disabled:opacity-50"
                 >
-                  {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Verify & Continue'}
+                  {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Validate & Initialize Reset'}
                 </button>
                 
                 <button 
                   type="button" 
                   onClick={() => setStep(1)}
-                  className="w-full text-center text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-slate-600"
+                  className="w-full text-center text-[9px] font-bold text-[#605E5C] uppercase tracking-[0.2em] hover:text-[#323130]"
                 >
-                  Change Mobile Number
+                  Update Endpoint Identifier
                 </button>
               </>
             )}
           </form>
-
-          {/* Decorative Background Elements */}
-          <div className="absolute -right-16 -top-16 w-48 h-48 bg-blue-50 rounded-full blur-3xl opacity-50"></div>
-          <div className="absolute -left-16 -bottom-16 w-48 h-48 bg-indigo-50 rounded-full blur-3xl opacity-50"></div>
         </div>
+        
+        <p className="mt-8 text-center text-[9px] font-bold text-[#A19F9D] uppercase tracking-[0.4em]">WorkTrackr Identity Recovery Protocol v1.4</p>
       </div>
     </div>
   );

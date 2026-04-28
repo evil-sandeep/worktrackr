@@ -142,7 +142,7 @@ const EmployeeListPage = () => {
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-[#DEECF9] text-[#0078D4] rounded-full flex items-center justify-center font-bold text-[11px]">
+                        <div className="w-8 h-8 bg-[#DEECF9] text-[#0078D4] rounded-sm flex items-center justify-center font-bold text-[11px]">
                           {emp.name?.charAt(0).toUpperCase()}
                         </div>
                         <div>

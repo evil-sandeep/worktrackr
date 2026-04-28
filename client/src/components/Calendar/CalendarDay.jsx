@@ -17,32 +17,38 @@ const CalendarDay = ({ day, isCurrentMonth, isToday, isSelected, record, onClick
   return (
     <div
       onClick={() => !isFuture && onClick(day)}
-      className={`relative h-full flex flex-col items-center justify-center glass-premium-blur rounded-[1.3rem] border border-white/20 transition-all duration-500 group ripple-effect
-        ${!isFuture ? 'cursor-pointer hover:bg-slate-50/50 hover:z-30' : 'cursor-not-allowed opacity-20'}
-        ${isSelected ? 'selected-pop' : 'neu-inset-shadow'}
-        ${!isCurrentMonth ? 'opacity-10 grayscale' : ''}
+      className={`relative h-full flex flex-col items-center justify-center rounded-sm border transition-all duration-200 group
+        ${!isFuture ? 'cursor-pointer hover:bg-[#F3F2F1] hover:border-[#0078D4]/30' : 'cursor-not-allowed bg-[#FAF9F8] opacity-30'}
+        ${isSelected ? 'bg-[#DEECF9] border-[#0078D4]' : 'bg-white border-[#EDEBE9]'}
+        ${!isCurrentMonth ? 'opacity-20' : ''}
       `}
     >
-      {/* Today Neutral Ring Indicator */}
+      {/* Today Indicator */}
       {isToday && (
-        <div className="absolute inset-0 ring-2 ring-slate-200/50 -z-10 rounded-[1.3rem]"></div>
+        <div className="absolute top-0 left-0 right-0 h-1 bg-[#0078D4]"></div>
       )}
 
-      {/* Centered Date Number Box */}
-      <div className="relative z-10 flex flex-col items-center justify-center">
-        <div className={`aspect-square w-12 h-12 flex items-center justify-center rounded-[1.1rem] transition-all duration-700 font-poppins shadow-premium-layered
-          ${isPresent ? 'bg-emerald-500 text-white shadow-emerald-500/20 scale-110' : 
-            (isIncomplete ? 'bg-yellow-500 text-white shadow-yellow-500/20 scale-110' :
-              (isToday ? 'bg-slate-900 text-white shadow-xl shadow-black/10' : 
-                (isSelected ? 'bg-slate-200 text-slate-900' : 'bg-white/40 text-slate-400 group-hover:text-slate-900 group-hover:bg-white')))}
+      {/* Date Container */}
+      <div className="relative z-10 flex flex-col items-center justify-center w-full h-full">
+        <div className={`flex items-center justify-center rounded-sm transition-all duration-300
+          ${isPresent ? 'text-[#107C10]' : 
+            (isIncomplete ? 'text-[#D83B01]' :
+              (isToday ? 'text-[#0078D4] font-bold' : 
+                (isSelected ? 'text-[#0078D4]' : 'text-[#323130]')))}
         `}>
-          <span className="text-xl font-black tracking-tight">
+          <span className="text-lg font-semibold tracking-tight">
             {day.getDate()}
           </span>
         </div>
+        
+        {/* Status Dot */}
+        {(isPresent || isIncomplete || isAbsent) && (
+          <div className={`mt-1 w-1.5 h-1.5 rounded-full ${
+            isPresent ? 'bg-[#107C10]' : 
+            isIncomplete ? 'bg-[#D83B01]' : 'bg-[#A19F9D]'
+          }`}></div>
+        )}
       </div>
-
-      {/* Top Right Status Status icons removed for ultra-clean look */}
     </div>
   );
 };

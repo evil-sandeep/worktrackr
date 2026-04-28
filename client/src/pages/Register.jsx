@@ -40,158 +40,158 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-slate-950 py-12 px-4">
-      {/* Dynamic Background Elements */}
-      <div className="absolute top-[-10%] right-[-10%] w-[45%] h-[45%] bg-indigo-600/10 rounded-full blur-[140px] animate-pulse"></div>
-      <div className="absolute bottom-[-10%] left-[-10%] w-[45%] h-[45%] bg-blue-600/10 rounded-full blur-[140px] animate-pulse delay-700"></div>
+    <div className="min-h-screen flex items-center justify-center bg-[#FAF9F8] py-12 px-4 relative">
+      {/* Structural Accent */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-[#0078D4]"></div>
 
-      <div className="max-w-2xl w-full relative z-10">
-        {/* Branding */}
-        <div className="flex flex-col items-center mb-8 text-center">
-          <div className="w-16 h-16 bg-gradient-to-tr from-indigo-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-indigo-500/40 mb-5 transform hover:-rotate-6 transition-all duration-500">
-            <UserPlus className="h-8 w-8 text-white" />
+      <div className="max-w-md w-full">
+        {/* Branding Node */}
+        <div className="flex flex-col items-center mb-6 text-center">
+          <div className="w-14 h-14 bg-[#0078D4] rounded-sm flex items-center justify-center shadow-lg mb-4">
+            <UserPlus className="h-7 w-7 text-white" />
           </div>
-          <h1 className="text-4xl font-extrabold text-white tracking-tight mb-1">
-            Create <span className="text-indigo-500">Account</span>
-          </h1>
-          <p className="text-slate-400 font-medium">Join the next generation of workforce management</p>
+          <h1 className="text-2xl font-bold text-[#323130] tracking-tight">Provision Identity</h1>
+          <p className="text-[11px] font-bold text-[#605E5C] uppercase tracking-widest mt-1">WorkTrackr Cloud Directory Services</p>
         </div>
 
-        {/* Glassmorphic Card */}
-        <div className="backdrop-blur-2xl bg-white/5 rounded-[2.5rem] shadow-2xl border border-white/5 p-8 sm:p-12 relative">
-          <div className="absolute top-0 right-0 w-full h-1 bg-gradient-to-l from-transparent via-indigo-500 to-transparent"></div>
+        {/* Provisioning Card */}
+        <div className="bg-white border border-[#EDEBE9] shadow-2xl p-8 sm:p-10 rounded-sm relative">
+          <div className="absolute top-0 right-0 p-3">
+             <div className="flex items-center gap-1.5">
+                <div className="w-1.5 h-1.5 bg-[#107C10] rounded-full"></div>
+                <span className="text-[9px] font-bold text-[#605E5C] uppercase">Secure Link</span>
+             </div>
+          </div>
           
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {/* Full Name */}
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-300 ml-1">Full Name</label>
-                <div className="group relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
-                  <input
-                    name="name"
-                    type="text"
-                    required
-                    placeholder="John Doe"
-                    className="w-full pl-12 pr-4 py-4 bg-slate-900/50 border border-slate-800 text-white placeholder-slate-600 rounded-2xl focus:bg-slate-900/80 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all font-medium"
-                    value={formData.name}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-
-              {/* Employee ID */}
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-300 ml-1">Employee ID</label>
-                <div className="group relative">
-                  <Hash className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
-                  <input
-                    name="empId"
-                    type="text"
-                    required
-                    placeholder="WT-001"
-                    className="w-full pl-12 pr-4 py-4 bg-slate-900/50 border border-slate-800 text-white placeholder-slate-600 rounded-2xl focus:bg-slate-900/80 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all font-medium"
-                    value={formData.empId}
-                    onChange={handleChange}
-                  />
-                </div>
+          <form className="space-y-5" onSubmit={handleSubmit}>
+            {/* Full Name */}
+            <div className="space-y-1.5">
+              <label className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider ml-0.5">Resource Name</label>
+              <div className="relative group">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#A19F9D]" />
+                <input
+                  name="name"
+                  type="text"
+                  required
+                  placeholder="Identity Identifier"
+                  className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#8A8886] text-[#323130] placeholder-[#A19F9D] rounded-sm focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] outline-none transition-all font-semibold text-sm"
+                  value={formData.name}
+                  onChange={handleChange}
+                />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {/* Email */}
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-300 ml-1">Work Email</label>
-                <div className="group relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
-                  <input
-                    name="email"
-                    type="email"
-                    required
-                    placeholder="john@company.com"
-                    className="w-full pl-12 pr-4 py-4 bg-slate-900/50 border border-slate-800 text-white placeholder-slate-600 rounded-2xl focus:bg-slate-900/80 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all font-medium"
-                    value={formData.email}
-                    onChange={handleChange}
-                  />
-                </div>
+            {/* Employee ID */}
+            <div className="space-y-1.5">
+              <label className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider ml-0.5">Asset Tag (Emp ID)</label>
+              <div className="relative group">
+                <Hash className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#A19F9D]" />
+                <input
+                  name="empId"
+                  type="text"
+                  required
+                  placeholder="WT-00X"
+                  className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#8A8886] text-[#323130] placeholder-[#A19F9D] rounded-sm focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] outline-none transition-all font-semibold text-sm"
+                  value={formData.empId}
+                  onChange={handleChange}
+                />
               </div>
+            </div>
 
-              {/* Phone */}
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-300 ml-1">Phone Number</label>
-                <div className="group relative">
-                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
-                  <input
-                    name="phone"
-                    type="text"
-                    required
-                    placeholder="+91 9876543210"
-                    className="w-full pl-12 pr-4 py-4 bg-slate-900/50 border border-slate-800 text-white placeholder-slate-600 rounded-2xl focus:bg-slate-900/80 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all font-medium"
-                    value={formData.phone}
-                    onChange={handleChange}
-                  />
-                </div>
+            {/* Email */}
+            <div className="space-y-1.5">
+              <label className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider ml-0.5">Routing Endpoint (Email)</label>
+              <div className="relative group">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#A19F9D]" />
+                <input
+                  name="email"
+                  type="email"
+                  required
+                  placeholder="identity@endpoint.com"
+                  className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#8A8886] text-[#323130] placeholder-[#A19F9D] rounded-sm focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] outline-none transition-all font-semibold text-sm"
+                  value={formData.email}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+
+            {/* Phone */}
+            <div className="space-y-1.5">
+              <label className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider ml-0.5">Communications Node</label>
+              <div className="relative group">
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#A19F9D]" />
+                <input
+                  name="phone"
+                  type="text"
+                  required
+                  placeholder="+XX XXXXX XXXXX"
+                  className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#8A8886] text-[#323130] placeholder-[#A19F9D] rounded-sm focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] outline-none transition-all font-semibold text-sm"
+                  value={formData.phone}
+                  onChange={handleChange}
+                />
               </div>
             </div>
 
             {/* Password */}
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-slate-300 ml-1">Choose Password</label>
-              <div className="group relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+            <div className="space-y-1.5">
+              <label className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider ml-0.5">Secure Key</label>
+              <div className="relative group">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#A19F9D]" />
                 <input
                   name="password"
                   type={showPassword ? 'text' : 'password'}
                   required
                   placeholder="••••••••"
-                  className="w-full pl-12 pr-12 py-4 bg-slate-900/50 border border-slate-800 text-white placeholder-slate-600 rounded-2xl focus:bg-slate-900/80 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all font-medium"
+                  className="w-full pl-10 pr-10 py-2.5 bg-white border border-[#8A8886] text-[#323130] placeholder-[#A19F9D] rounded-sm focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] outline-none transition-all font-semibold text-sm"
                   value={formData.password}
                   onChange={handleChange}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-indigo-400 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#605E5C] hover:text-[#0078D4] transition-colors"
                 >
-                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
 
             {/* Role Selection */}
-            <div className="space-y-3">
-              <label className="text-sm font-bold text-slate-300 ml-1">Account Type</label>
-              <div className="grid grid-cols-2 gap-4">
-                <label className={`flex items-center justify-center gap-2 p-3 rounded-xl border cursor-pointer transition-all ${formData.role === 'employee' ? 'bg-indigo-500/20 border-indigo-500 text-white' : 'bg-slate-900/50 border-slate-800 text-slate-400 hover:bg-slate-800'}`}>
+            <div className="space-y-2">
+              <label className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider ml-0.5">Access Authorization Level</label>
+              <div className="grid grid-cols-2 gap-3">
+                <label className={`flex items-center justify-center gap-2 p-2.5 rounded-sm border cursor-pointer transition-all ${formData.role === 'employee' ? 'bg-[#DEECF9] border-[#0078D4] text-[#0078D4]' : 'bg-white border-[#8A8886] text-[#605E5C] hover:bg-[#FAF9F8]'}`}>
                   <input type="radio" name="role" value="employee" className="hidden" checked={formData.role === 'employee'} onChange={handleChange} />
-                  <User className="h-4 w-4" />
-                  <span className="font-bold text-sm tracking-wide">Employee</span>
+                  <User className="h-3.5 w-3.5" />
+                  <span className="font-bold text-[11px] uppercase">Staff Node</span>
                 </label>
-                <label className={`flex items-center justify-center gap-2 p-3 rounded-xl border cursor-pointer transition-all ${formData.role === 'orgadmin' ? 'bg-indigo-500/20 border-indigo-500 text-white' : 'bg-slate-900/50 border-slate-800 text-slate-400 hover:bg-slate-800'}`}>
+                <label className={`flex items-center justify-center gap-2 p-2.5 rounded-sm border cursor-pointer transition-all ${formData.role === 'orgadmin' ? 'bg-[#DEECF9] border-[#0078D4] text-[#0078D4]' : 'bg-white border-[#8A8886] text-[#605E5C] hover:bg-[#FAF9F8]'}`}>
                   <input type="radio" name="role" value="orgadmin" className="hidden" checked={formData.role === 'orgadmin'} onChange={handleChange} />
-                  <Briefcase className="h-4 w-4" />
-                  <span className="font-bold text-sm tracking-wide">Org Admin</span>
+                  <Briefcase className="h-3.5 w-3.5" />
+                  <span className="font-bold text-[11px] uppercase">Admin Node</span>
                 </label>
               </div>
             </div>
 
             <button
               type="submit"
-              className="w-full h-15 mt-4 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-black text-lg rounded-2xl shadow-xl shadow-indigo-900/20 hover:shadow-2xl hover:shadow-indigo-500/30 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3 group active:scale-95"
+              className="w-full py-3 bg-[#0078D4] text-white font-bold text-sm rounded-sm shadow-md hover:bg-[#005A9E] transition-all flex items-center justify-center gap-2 group active:scale-[0.98]"
             >
-              Register Now <ArrowRight className="h-6 w-6 group-hover:translate-x-1.5 transition-transform" />
+              Commit Provisioning <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </button>
           </form>
 
-          <div className="mt-10 pt-8 border-t border-white/5 text-center">
-            <p className="text-slate-400 font-medium">
-              Already a member?{' '}
-              <Link to="/login" className="text-white font-bold hover:text-indigo-400 transition-colors ml-1">
-                Log In Instead
+          <div className="mt-8 pt-6 border-t border-[#EDEBE9] text-center">
+            <p className="text-[11px] text-[#605E5C] font-semibold uppercase tracking-wider">
+              Existing identity?{' '}
+              <Link to="/login" className="text-[#0078D4] font-bold hover:underline ml-1">
+                Authenticate Instead
               </Link>
             </p>
           </div>
         </div>
+        
+        <p className="mt-6 text-center text-[9px] font-bold text-[#A19F9D] uppercase tracking-[0.3em]">WorkTrackr Identity Protocol v2.1-Enterprise</p>
       </div>
     </div>
   );

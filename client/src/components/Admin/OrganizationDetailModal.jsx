@@ -87,34 +87,34 @@ const OrganizationDetailModal = ({ organization, onClose, onUpdate }) => {
   const stats = organization.stats || { totalStaff: 0, paidStaff: 0, unpaidStaff: 0, revenue: 0 };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white rounded-[2rem] w-full max-w-4xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-        {/* Header */}
-        <div className="bg-slate-50 p-6 border-b border-slate-100 flex justify-between items-start">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-none animate-in fade-in duration-200">
+      <div className="bg-white border border-[#EDEBE9] w-full max-w-4xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] rounded-none">
+        {/* Azure Header Section */}
+        <div className="bg-[#FAF9F8] p-6 border-b border-[#EDEBE9] flex justify-between items-start">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center">
+            <div className="w-14 h-14 bg-[#DEECF9] text-[#0078D4] rounded-sm flex items-center justify-center border border-[#0078D4]/10">
               <Building2 className="h-7 w-7" />
             </div>
             <div>
-              <h2 className="text-xl font-black text-slate-900 tracking-tight font-poppins">{organization.name}</h2>
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-1">
-                Organization Profile & Fleet Management
+              <h2 className="text-xl font-bold text-[#323130] tracking-tight">{organization.name}</h2>
+              <p className="text-[11px] font-semibold text-[#605E5C] uppercase tracking-wider mt-0.5">
+                Organizational Identity & Resource Allocation Control
               </p>
             </div>
           </div>
           <button 
             onClick={onClose}
-            className="p-2 bg-white text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-colors shadow-sm"
+            className="p-1.5 text-[#605E5C] hover:text-[#323130] hover:bg-[#EDEBE9] rounded-sm transition-colors"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        {/* Content */}
-        <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
+        {/* Clinical Content Area */}
+        <div className="p-6 overflow-y-auto flex-1 custom-scrollbar space-y-8">
           <OrgDetailStats stats={stats} />
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <OrgAdminContact 
               organization={organization}
               isEditing={isEditing}
@@ -127,10 +127,16 @@ const OrganizationDetailModal = ({ organization, onClose, onUpdate }) => {
             <OrgDangerZone onDelete={handleDelete} />
           </div>
 
-          <OrgFleetTable 
-            employees={employees}
-            onPay={handlePay}
-          />
+          <div className="pt-2">
+            <div className="flex items-center gap-2 mb-4 px-1">
+               <div className="w-1.5 h-4 bg-[#0078D4]"></div>
+               <h3 className="text-sm font-bold text-[#323130] uppercase tracking-wider">Workforce Instances</h3>
+            </div>
+            <OrgFleetTable 
+              employees={employees}
+              onPay={handlePay}
+            />
+          </div>
         </div>
       </div>
     </div>

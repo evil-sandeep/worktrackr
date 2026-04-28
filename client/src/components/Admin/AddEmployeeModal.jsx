@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, User, Mail, Lock, Phone, Hash, Shield, Building2 } from 'lucide-react';
+import { X, User, Mail, Lock, Phone, Hash, Shield, Building2, Plus } from 'lucide-react';
 import adminService from '../../services/adminService';
 import { useUI } from '../../context/UIContext';
 

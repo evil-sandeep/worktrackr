@@ -3,28 +3,30 @@ import { Camera, Clock, Image as ImageIcon, Map, MapPin } from 'lucide-react';
 
 const LogDetailSidebar = ({ selectedDate, selectedRecord }) => {
   return (
-    <div className="lg:col-span-12 xl:col-span-4">
+    <div className="h-full">
       <div className="sticky top-0 space-y-6">
-        <h4 className="text-lg font-black text-slate-900 tracking-tight">Day Log Detail</h4>
-        <p className="text-[10px] font-bold text-blue-600 uppercase tracking-widest -mt-5">
-          Selected: {selectedDate}
-        </p>
+        <div>
+          <h4 className="text-base font-bold text-[#323130] tracking-tight">Audit Log Detail</h4>
+          <p className="text-[11px] font-semibold text-[#0078D4] uppercase tracking-wider mt-0.5">
+            Snapshot: {selectedDate}
+          </p>
+        </div>
 
         {selectedRecord ? (
           <div className="space-y-6">
-            <div className={`p-6 rounded-[2rem] border ${selectedRecord.status === 'absent' ? 'bg-rose-50 border-rose-100' : 'bg-green-50 border-green-100'}`}>
-              <div className="flex items-center justify-between mb-4">
-                <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest text-white ${selectedRecord.status === 'absent' ? 'bg-rose-500' : 'bg-green-600'}`}>
-                  {selectedRecord.status || 'Present'}
+            <div className={`p-5 rounded-sm border shadow-sm ${selectedRecord.status === 'absent' ? 'bg-[#FDE7E9] border-[#FDE7E9]' : 'bg-[#DFF6DD] border-[#DFF6DD]'}`}>
+              <div className="flex items-center justify-between mb-3">
+                <span className={`px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-wider text-white ${selectedRecord.status === 'absent' ? 'bg-[#E81123]' : 'bg-[#107C10]'}`}>
+                  {selectedRecord.status || 'Active'}
                 </span>
-                <div className="flex items-center gap-1.5 text-slate-900 font-black text-lg">
+                <div className="flex items-center gap-1 text-[#323130] font-bold text-lg tracking-tight">
                   ₹{selectedRecord.earning || 0}
                 </div>
               </div>
               {selectedRecord.status !== 'absent' && (
-                <div className="flex items-center gap-3 text-slate-600 text-sm font-bold uppercase tracking-widest">
-                  <Clock className="h-4 w-4" />
-                  Worked {selectedRecord.totalHours || '--:--'}
+                <div className="flex items-center gap-2 text-[#605E5C] text-[11px] font-bold uppercase tracking-wider">
+                  <Clock className="h-3.5 w-3.5" />
+                  Compute Time: {selectedRecord.totalHours || '--:--'}
                 </div>
               )}
             </div>
@@ -32,57 +34,62 @@ const LogDetailSidebar = ({ selectedDate, selectedRecord }) => {
             {selectedRecord.status !== 'absent' && (
               <>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                      <Camera className="h-3 w-3" /> Check-In
+                  <div className="space-y-1.5">
+                    <p className="text-[10px] font-bold text-[#605E5C] uppercase tracking-wider flex items-center gap-2">
+                      <Camera className="h-3 w-3" /> Ingress Visual
                     </p>
-                    <div className="aspect-[3/4] rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden relative group">
+                    <div className="aspect-[4/3] rounded-sm bg-[#F3F2F1] border border-[#EDEBE9] overflow-hidden relative group shadow-inner">
                       {selectedRecord.checkIn?.imageUrl ? (
-                        <img src={selectedRecord.checkIn.imageUrl} alt="In" className="w-full h-full object-cover group-hover:scale-110" />
+                        <img src={selectedRecord.checkIn.imageUrl} alt="In" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-slate-300">
-                          <ImageIcon className="h-8 w-8" />
+                        <div className="w-full h-full flex items-center justify-center text-[#C8C6C4]">
+                          <ImageIcon className="h-6 w-6" />
                         </div>
                       )}
-                      <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent text-[10px] font-black text-white">
-                        {selectedRecord.checkIn?.time || 'N/A'}
+                      <div className="absolute bottom-0 left-0 right-0 p-2 bg-black/50 backdrop-blur-sm text-[9px] font-bold text-white uppercase tracking-widest">
+                        {selectedRecord.checkIn?.time || 'Pending'}
                       </div>
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                      <Clock className="h-3 w-3" /> Check-Out
+                  <div className="space-y-1.5">
+                    <p className="text-[10px] font-bold text-[#605E5C] uppercase tracking-wider flex items-center gap-2">
+                      <Clock className="h-3 w-3" /> Egress Visual
                     </p>
-                    <div className="aspect-[3/4] rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden relative group">
+                    <div className="aspect-[4/3] rounded-sm bg-[#F3F2F1] border border-[#EDEBE9] overflow-hidden relative group shadow-inner">
                       {selectedRecord.checkOut?.imageUrl ? (
-                        <img src={selectedRecord.checkOut.imageUrl} alt="Out" className="w-full h-full object-cover group-hover:scale-110" />
+                        <img src={selectedRecord.checkOut.imageUrl} alt="Out" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-slate-300">
-                          <ImageIcon className="h-8 w-8" />
+                        <div className="w-full h-full flex items-center justify-center text-[#C8C6C4]">
+                          <ImageIcon className="h-6 w-6" />
                         </div>
                       )}
-                      <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent text-[10px] font-black text-white">
-                        {selectedRecord.checkOut?.time || 'N/A'}
+                      <div className="absolute bottom-0 left-0 right-0 p-2 bg-black/50 backdrop-blur-sm text-[9px] font-bold text-white uppercase tracking-widest">
+                        {selectedRecord.checkOut?.time || 'Pending'}
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100 space-y-4">
+                
+                <div className="bg-[#FAF9F8] border border-[#EDEBE9] p-4 rounded-sm space-y-4 shadow-sm">
                   <div className="flex items-start gap-3">
-                    <MapPin className="h-4 w-4 text-blue-600 mt-1 shrink-0" />
-                    <div>
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Check-In</p>
-                      <p className="text-xs font-bold text-slate-900 truncate">
-                        {selectedRecord.checkIn?.location || 'N/A'}
+                    <div className="mt-1 w-6 h-6 bg-[#DEECF9] rounded-sm flex items-center justify-center border border-[#0078D4]/20">
+                      <MapPin className="h-3.5 w-3.5 text-[#0078D4]" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[9px] font-bold text-[#605E5C] uppercase tracking-widest mb-0.5">Ingress Point</p>
+                      <p className="text-xs font-semibold text-[#323130] truncate">
+                        {selectedRecord.checkIn?.location || 'Network Edge'}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <Map className="h-4 w-4 text-indigo-600 mt-1 shrink-0" />
-                    <div>
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Check-Out</p>
-                      <p className="text-xs font-bold text-slate-900 truncate">
-                        {selectedRecord.checkOut?.location || 'N/A'}
+                    <div className="mt-1 w-6 h-6 bg-[#F3F2F1] rounded-sm flex items-center justify-center border border-[#EDEBE9]">
+                      <Map className="h-3.5 w-3.5 text-[#605E5C]" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[9px] font-bold text-[#605E5C] uppercase tracking-widest mb-0.5">Egress Point</p>
+                      <p className="text-xs font-semibold text-[#323130] truncate">
+                        {selectedRecord.checkOut?.location || 'Network Edge'}
                       </p>
                     </div>
                   </div>
@@ -91,9 +98,10 @@ const LogDetailSidebar = ({ selectedDate, selectedRecord }) => {
             )}
           </div>
         ) : (
-          <div className="py-20 text-center bg-slate-50 rounded-[2rem] border border-dashed border-slate-200">
-            <ImageIcon className="h-10 w-10 text-slate-300 mx-auto mb-4" />
-            <p className="text-slate-400 font-bold text-sm">No record found.</p>
+          <div className="py-20 text-center bg-[#FAF9F8] rounded-sm border border-dashed border-[#C8C6C4] shadow-inner">
+            <ImageIcon className="h-8 w-8 text-[#C8C6C4] mx-auto mb-3" />
+            <p className="text-[#605E5C] font-bold text-[11px] uppercase tracking-widest">Resource Telemetry Missing</p>
+            <p className="text-[#A19F9D] text-[10px] mt-1 italic">Select a node from the calendar</p>
           </div>
         )}
       </div>

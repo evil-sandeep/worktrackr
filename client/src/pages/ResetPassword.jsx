@@ -63,22 +63,23 @@ const ResetPassword = () => {
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen bg-[#F3F2F1] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans relative">
+        <div className="absolute top-0 left-0 w-full h-1 bg-[#107C10]"></div>
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="bg-white px-8 py-12 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-slate-100 text-center">
-            <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle2 className="h-10 w-10 text-green-500" />
+          <div className="bg-white px-8 py-12 rounded-sm shadow-xl border border-[#EDEBE9] text-center">
+            <div className="w-16 h-16 bg-[#DFF6DD] rounded-sm flex items-center justify-center mx-auto mb-6 border border-[#107C10]/10 shadow-sm">
+              <CheckCircle2 className="h-8 w-8 text-[#107C10]" />
             </div>
-            <h2 className="text-3xl font-black text-slate-900 tracking-tight mb-4">Password Reset!</h2>
-            <p className="text-slate-500 font-medium mb-8">
-              Your password has been successfully updated. You will be redirected to the login page in a few seconds.
+            <h2 className="text-2xl font-bold text-[#323130] tracking-tight mb-2">Credential Reset Success</h2>
+            <p className="text-[12px] font-semibold text-[#605E5C] mb-8 leading-relaxed uppercase tracking-wider">
+              Identity keys have been synchronized. Redirecting to primary authentication portal...
             </p>
             <Link 
               to="/login"
-              className="inline-flex items-center text-sm font-black text-blue-600 uppercase tracking-[0.2em] hover:text-blue-700 transition-colors"
+              className="inline-flex items-center text-[11px] font-bold text-[#0078D4] uppercase tracking-widest hover:underline transition-all"
             >
-              Go to Login Now
-              <ArrowRight className="ml-2 h-4 w-4" />
+              Force Redirect
+              <ArrowRight className="ml-2 h-3.5 w-3.5" />
             </Link>
           </div>
         </div>
@@ -87,52 +88,55 @@ const ResetPassword = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="min-h-screen bg-[#F3F2F1] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans relative">
+      {/* Structural Accent */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-[#0078D4]"></div>
+      
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white px-8 py-10 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-slate-100 relative overflow-hidden">
-          {/* Header */}
+        <div className="bg-white px-8 py-10 rounded-sm shadow-xl border border-[#EDEBE9] relative overflow-hidden">
+          {/* Header Area */}
           <div className="relative z-10 mb-8">
-            <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-6">
-              <ShieldCheck className="h-8 w-8 text-blue-600" />
+            <div className="w-12 h-12 bg-[#0078D4] rounded-sm flex items-center justify-center mb-6 shadow-md">
+              <ShieldCheck className="h-6 w-6 text-white" />
             </div>
-            <h2 className="text-3xl font-black text-slate-900 tracking-tight leading-tight">Create New Password</h2>
-            <p className="mt-2 text-slate-500 font-medium">
-              Identity verified. Please choose a strong password for your account associated with <span className="text-slate-900 font-bold">{mobile}</span>.
+            <h2 className="text-2xl font-bold text-[#323130] tracking-tight">Provision New Key</h2>
+            <p className="mt-2 text-[12px] font-semibold text-[#605E5C] leading-relaxed">
+              Validation verified for endpoint <span className="text-[#323130] font-bold">{mobile}</span>. Enter new security credentials.
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
             <div className="space-y-4">
-              <div>
-                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">New Password</label>
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider ml-0.5">Secure Key</label>
                 <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-slate-300 group-focus-within:text-blue-500 transition-colors" />
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                    <Lock className="h-4 w-4 text-[#A19F9D] group-focus-within:text-[#0078D4] transition-colors" />
                   </div>
                   <input
                     type="password"
                     required
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    className="block w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl text-slate-900 font-bold placeholder-slate-300 focus:ring-4 focus:ring-blue-500/10 transition-all text-sm"
-                    placeholder="Min. 6 characters"
+                    className="block w-full pl-10 pr-4 py-2.5 bg-white border border-[#8A8886] rounded-sm text-[#323130] font-semibold placeholder-[#A19F9D] focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] transition-all text-sm outline-none"
+                    placeholder="Entropy Minimum 6"
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Confirm Password</label>
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider ml-0.5">Confirm Identity Key</label>
                 <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <ShieldAlert className="h-5 w-5 text-slate-300 group-focus-within:text-blue-500 transition-colors" />
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                    <ShieldAlert className="h-4 w-4 text-[#A19F9D] group-focus-within:text-[#0078D4] transition-colors" />
                   </div>
                   <input
                     type="password"
                     required
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="block w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl text-slate-900 font-bold placeholder-slate-300 focus:ring-4 focus:ring-blue-500/10 transition-all text-sm"
-                    placeholder="Repeat new password"
+                    className="block w-full pl-10 pr-4 py-2.5 bg-white border border-[#8A8886] rounded-sm text-[#323130] font-semibold placeholder-[#A19F9D] focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] transition-all text-sm outline-none"
+                    placeholder="Verify Entropy"
                   />
                 </div>
               </div>
@@ -141,21 +145,19 @@ const ResetPassword = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center py-4 px-4 bg-slate-900 hover:bg-black text-white rounded-2xl font-black text-sm tracking-widest uppercase transition-all shadow-xl shadow-slate-200 active:scale-[0.98] disabled:opacity-50"
+              className="w-full flex items-center justify-center py-2.5 px-4 bg-[#0078D4] hover:bg-[#005A9E] text-white rounded-sm font-bold text-sm tracking-tight transition-all shadow-md active:scale-[0.98] disabled:opacity-50"
             >
-              {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : (
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : (
                 <>
-                  Update Password
+                  Commit Security Update
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </>
               )}
             </button>
           </form>
-
-          {/* Decorative Background Elements */}
-          <div className="absolute -right-16 -top-16 w-48 h-48 bg-blue-50 rounded-full blur-3xl opacity-50"></div>
-          <div className="absolute -left-16 -bottom-16 w-48 h-48 bg-indigo-50 rounded-full blur-3xl opacity-50"></div>
         </div>
+        
+        <p className="mt-8 text-center text-[9px] font-bold text-[#A19F9D] uppercase tracking-[0.4em]">WorkTrackr Secure Provisioning v1.0</p>
       </div>
     </div>
   );

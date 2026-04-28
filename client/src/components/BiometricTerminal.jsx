@@ -203,66 +203,61 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
 
   return (
     <div className="flex-1 w-full flex flex-col min-h-0">
-      <div className="relative flex-1 w-full bg-slate-950 rounded-3xl overflow-hidden shadow-2xl group ring-1 ring-slate-100/10 min-h-0 min-w-[300px]">
+      <div className="relative flex-1 w-full bg-[#11100F] rounded-sm overflow-hidden shadow-xl border border-[#EDEBE9] group min-h-0 min-w-[300px]">
         {!isCameraActive && !capturedImage ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center space-y-10 bg-slate-950">
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center space-y-8 bg-[#FAF9F8]">
              <div className="relative group/btn cursor-pointer" onClick={startCamera}>
-                {/* Massive Glow Effect */}
-                <div className={`absolute inset-0 ${mode === 'checkin' ? 'bg-blue-600/40 group-hover/btn:bg-blue-600/60' : 'bg-rose-600/40 group-hover/btn:bg-rose-600/60'} rounded-full blur-[60px] animate-pulse transition-all duration-700`}></div>
+                {/* Azure Pulse Effect */}
+                <div className={`absolute inset-0 ${mode === 'checkin' ? 'bg-[#0078D4]/10' : 'bg-[#E81123]/10'} rounded-full blur-2xl animate-pulse transition-all duration-700`}></div>
                 
                 <button 
-                  className={`relative w-28 h-28 sm:w-32 sm:h-32 ${mode === 'checkin' ? 'bg-blue-600 shadow-[0_0_50px_rgba(37,99,235,0.4)]' : 'bg-rose-600 shadow-[0_0_50px_rgba(225,29,72,0.4)]'} text-white rounded-full flex items-center justify-center transform group-hover/btn:scale-110 active:scale-95 transition-all duration-500 border-4 border-white/10`}
+                  className={`relative w-24 h-24 sm:w-28 sm:h-28 ${mode === 'checkin' ? 'bg-[#0078D4]' : 'bg-[#E81123]'} text-white rounded-sm flex items-center justify-center transform group-hover/btn:scale-105 transition-all duration-300 shadow-lg`}
                 >
                    {mode === 'checkin' ? (
-                     <LogIn className="h-10 w-10 sm:h-12 sm:w-12 filter drop-shadow-[0_0_10px_rgba(255,255,255,0.4)] ml-1" />
+                     <LogIn className="h-10 w-10 sm:h-12 sm:w-12" />
                    ) : (
-                     <LogOut className="h-10 w-10 sm:h-12 sm:w-12 filter drop-shadow-[0_0_10px_rgba(255,255,255,0.4)] mr-1" />
+                     <LogOut className="h-10 w-10 sm:h-12 sm:w-12" />
                    )}
                 </button>
-                
-                {/* Orbital Ring */}
-                <div className="absolute -inset-4 border-2 border-slate-800 rounded-full animate-[spin_10s_linear_infinite] pointer-events-none">
-                   <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 ${mode === 'checkin' ? 'bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,1)]' : 'bg-rose-500 shadow-[0_0_10px_rgba(225,29,72,1)]'} rounded-full`}></div>
-                </div>
              </div>
 
-             <div className="space-y-3">
-               <h3 className={`text-xl font-black uppercase tracking-tighter ${mode === 'checkin' ? 'text-blue-400' : 'text-rose-400'}`}>
-                 {mode === 'checkin' ? 'Initialize Entry' : 'Initialize Exit'}
+             <div className="space-y-2">
+               <h3 className={`text-lg font-bold uppercase tracking-tight ${mode === 'checkin' ? 'text-[#0078D4]' : 'text-[#E81123]'}`}>
+                 {mode === 'checkin' ? 'Initialize Ingress' : 'Initialize Egress'}
                </h3>
-               <p className="text-white/40 text-[10px] font-bold uppercase tracking-[0.4em] leading-relaxed">
-                 Identity scan required for terminal {mode === 'checkin' ? 'access' : 'exit'}
+               <p className="text-[#605E5C] text-[10px] font-semibold uppercase tracking-wider leading-relaxed">
+                 Biometric Identity Verification Required
                </p>
              </div>
           </div>
         ) : capturedImage ? (
-          <div className="relative w-full h-full animate-in fade-in duration-700">
+          <div className="relative w-full h-full animate-in fade-in duration-500">
             <img 
               src={capturedImage} 
               alt="captured" 
-              className="w-full h-full object-cover scale-[1.01]" 
+              className="w-full h-full object-cover" 
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-4 sm:p-10">
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 backdrop-blur-md bg-white/5 p-4 sm:p-6 rounded-3xl sm:rounded-[2.5rem] border border-white/10">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/20">
-                    <CheckCircle className="h-5 w-5 text-white" />
+            <div className="absolute inset-0 bg-black/40 flex flex-col justify-end p-6">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-sm border border-[#EDEBE9] shadow-2xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-[#DFF6DD] rounded-sm flex items-center justify-center border border-[#107C10]/20">
+                    <CheckCircle className="h-4 w-4 text-[#107C10]" />
                   </div>
                    <div>
-                    <h4 className="text-white font-bold text-[10px] tracking-tight">Identity Verified</h4>
-                    <p className="text-white/30 text-[8px] font-bold uppercase tracking-[0.2em]">{currentTime.toLocaleTimeString()}</p>
+                    <h4 className="text-[#323130] font-bold text-[11px] tracking-tight">Telemetry Captured</h4>
+                    <p className="text-[#605E5C] text-[9px] font-bold uppercase tracking-wider">{currentTime.toLocaleTimeString()}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 w-full sm:w-auto">
-                  <button onClick={resetCapture} className="flex-1 sm:flex-initial px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-black text-[9px] uppercase tracking-widest transition-all">
-                    Retry
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <button onClick={resetCapture} className="flex-1 sm:flex-initial px-4 py-1.5 bg-[#F3F2F1] hover:bg-[#EDEBE9] text-[#323130] rounded-sm font-bold text-[10px] uppercase tracking-wider transition-all border border-[#D2D0CE]">
+                    Discard
                   </button>
                   <button 
                     onClick={handleUpload}
-                    className={`flex-1 sm:flex-initial px-8 py-3 ${mode === 'checkin' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-rose-600 hover:bg-rose-700'} text-white rounded-xl font-black text-[9px] uppercase tracking-widest shadow-xl transition-all flex items-center justify-center gap-2`}
+                    className={`flex-1 sm:flex-initial px-6 py-1.5 ${mode === 'checkin' ? 'bg-[#0078D4] hover:bg-[#005A9E]' : 'bg-[#E81123] hover:bg-[#A80000]'} text-white rounded-sm font-bold text-[10px] uppercase tracking-wider shadow-sm transition-all flex items-center justify-center gap-2`}
                   >
-                    <UploadCloud className="h-4 w-4" />
-                    Upload Log
+                    <UploadCloud className="h-3.5 w-3.5" />
+                    Commit Log
                   </button>
                 </div>
               </div>
@@ -276,47 +271,44 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
               playsInline
               muted
               onPlay={() => setIsCameraReady(true)}
-              className="w-full h-full object-cover transform scale-x-[-1] brightness-[1.1] contrast-[1.05]"
+              className="w-full h-full object-cover transform scale-x-[-1] opacity-90"
             />
             <canvas ref={canvasRef} className="hidden" />
 
-            {/* Viewfinder Overlay */}
+            {/* Viewfinder Overlay - Azure Professional Style */}
             <div className="absolute inset-0 pointer-events-none">
                <div className="w-full h-full relative">
-                  {/* Digital Scanline Effect */}
-                  <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(255,0,0,0.03),rgba(0,255,0,0.01),rgba(0,0,255,0.03))] bg-[length:100%_4px,3px_100%]"></div>
+                  {/* Digital Grid */}
+                  <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[length:40px_40px]"></div>
                   
-                  {/* Corners */}
-                  <div className="absolute top-12 left-12 w-16 h-16 border-t-4 border-l-4 border-rose-500/40 rounded-tl-3xl shadow-[-10px_-10px_30px_rgba(225,29,72,0.2)]"></div>
-                  <div className="absolute top-12 right-12 w-16 h-16 border-t-4 border-r-4 border-rose-500/40 rounded-tr-3xl shadow-[10px_-10px_30px_rgba(225,29,72,0.2)]"></div>
-                  <div className="absolute bottom-12 left-12 w-16 h-16 border-b-4 border-l-4 border-rose-500/40 rounded-bl-3xl shadow-[-10px_10px_30px_rgba(225,29,72,0.2)]"></div>
-                  <div className="absolute bottom-12 right-12 w-16 h-16 border-b-4 border-r-4 border-rose-500/40 rounded-br-3xl shadow-[10px_10px_30px_rgba(225,29,72,0.2)]"></div>
+                  {/* Precision Corners */}
+                  <div className="absolute top-8 left-8 w-8 h-8 border-t border-l border-[#0078D4]"></div>
+                  <div className="absolute top-8 right-8 w-8 h-8 border-t border-r border-[#0078D4]"></div>
+                  <div className="absolute bottom-8 left-8 w-8 h-8 border-b border-l border-[#0078D4]"></div>
+                  <div className="absolute bottom-8 right-8 w-8 h-8 border-b border-r border-[#0078D4]"></div>
                   
-                  {/* Digital Target */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[60%] w-72 h-72 border border-white/20 rounded-full animate-pulse flex items-center justify-center">
-                     <div className="w-64 h-64 border border-white/10 rounded-full"></div>
-                     <div className="absolute inset-0 bg-[conic-gradient(from_0deg,transparent,rgba(225,29,72,0.1),transparent)] animate-[spin_4s_linear_infinite] rounded-full"></div>
+                  {/* Central Reticle */}
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border border-white/10 rounded-sm">
+                     <div className="absolute top-1/2 left-0 right-0 h-px bg-white/5"></div>
+                     <div className="absolute top-0 bottom-0 left-1/2 w-px bg-white/5"></div>
                   </div>
                </div>
             </div>
 
             {!isCameraReady && (
-              <div className="absolute inset-0 flex items-center justify-center bg-slate-950/90 backdrop-blur-2xl">
-                 <div className="flex flex-col items-center gap-6">
-                   <div className="relative">
-                      <div className="w-20 h-20 border-2 border-blue-500/20 rounded-full animate-ping absolute inset-0"></div>
-                      <Loader2 className="h-12 w-12 text-blue-500 animate-spin relative z-10" />
-                   </div>
-                   <span className="text-white font-black text-[10px] tracking-[0.4em] uppercase opacity-60">Synchronizing Lens API</span>
+              <div className="absolute inset-0 flex items-center justify-center bg-[#11100F]">
+                 <div className="flex flex-col items-center gap-4">
+                   <Loader2 className="h-8 w-8 text-[#0078D4] animate-spin" />
+                   <span className="text-white font-bold text-[9px] tracking-widest uppercase opacity-60">Initializing Azure Lens...</span>
                  </div>
               </div>
             )}
             
             {isCameraReady && !capturedImage && (
-              <div className="absolute inset-x-0 bottom-0 p-4 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-4 pointer-events-none z-20">
-                <div className="flex-shrink-0 px-4 py-2 bg-black/40 backdrop-blur-xl rounded-xl border border-white/10 shadow-2xl flex items-center gap-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.8)]"></div>
-                  <span className="text-[10px] font-black tracking-widest tabular-nums text-white uppercase">
+              <div className="absolute inset-x-0 bottom-0 p-6 flex flex-col sm:flex-row items-center justify-between gap-4 pointer-events-none z-20">
+                <div className="flex-shrink-0 px-3 py-1 bg-black/60 rounded-sm border border-white/10 flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-[#0078D4] rounded-full animate-pulse"></div>
+                  <span className="text-[10px] font-bold text-white uppercase tracking-wider tabular-nums">
                     {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                   </span>
                 </div>
@@ -324,28 +316,28 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
                 <div className="pointer-events-auto">
                   <button 
                      onClick={handleCapture}
-                     className="group relative w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-white/20 flex items-center justify-center bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-all active:scale-90 shadow-2xl"
+                     className="group relative w-16 h-16 rounded-full border border-white/40 flex items-center justify-center bg-white/10 hover:bg-white/20 transition-all active:scale-90"
                   >
-                    <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full ${mode === 'checkin' ? 'bg-blue-600 shadow-[0_0_30px_rgba(37,99,235,0.4)]' : 'bg-rose-600 shadow-[0_0_30px_rgba(225,29,72,0.4)]'} flex items-center justify-center transition-transform group-hover:scale-105`}>
-                      <Camera className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
+                    <div className={`w-12 h-12 rounded-full ${mode === 'checkin' ? 'bg-[#0078D4]' : 'bg-[#E81123]'} flex items-center justify-center`}>
+                      <Camera className="h-6 w-6 text-white" />
                     </div>
                   </button>
                 </div>
 
-                <div className="flex-shrink-0 px-4 py-2 bg-black/40 backdrop-blur-xl rounded-xl border border-white/10 shadow-2xl flex items-center gap-3 max-w-[120px] sm:max-w-[200px]">
-                  <MapPin className="h-3.5 w-3.5 text-blue-400" />
-                   <span className="text-[8px] font-bold text-white/70 uppercase tracking-[0.2em] truncate">
-                     {address ? 'SIGNAL_LOCKED' : 'SEARCHING...'}
+                <div className="flex-shrink-0 px-3 py-1 bg-black/60 rounded-sm border border-white/10 flex items-center gap-2 max-w-[150px]">
+                  <MapPin className="h-3 w-3 text-[#0078D4]" />
+                   <span className="text-[9px] font-bold text-white/80 uppercase tracking-wider truncate">
+                     {address ? 'SIGNAL_LOCKED' : 'SYNCING GPS...'}
                   </span>
                 </div>
               </div>
             )}
 
             {isCameraActive && !capturedImage && (
-              <div className="absolute top-8 right-8">
-                <div className="px-5 py-2.5 bg-black/40 backdrop-blur-xl rounded-2xl flex items-center gap-3 border border-white/10 shadow-2xl">
-                   <div className="w-2 h-2 bg-rose-500 rounded-full animate-pulse shadow-[0_0_15px_rgba(244,63,94,1)]"></div>
-                    <span className="text-[8px] font-bold text-white/60 uppercase tracking-[0.3em]">Live // Auth_Mode</span>
+              <div className="absolute top-6 right-6">
+                <div className="px-3 py-1 bg-[#E81123] rounded-sm flex items-center gap-2 shadow-lg">
+                   <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
+                    <span className="text-[8px] font-bold text-white uppercase tracking-widest">Live Remote Auth</span>
                 </div>
               </div>
             )}
@@ -355,6 +347,5 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
     </div>
   );
 };
-
 
 export default BiometricTerminal;
