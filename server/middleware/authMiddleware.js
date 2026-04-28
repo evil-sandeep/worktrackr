@@ -22,17 +22,29 @@ const protect = async (req, res, next) => {
       console.log(`Debug - Token decoded for user ID: ${decoded.id}`);
 
       // Get user from the token
+      // Get user from the token - Try Main DB first
       req.user = await User.findById(decoded.id).select('-password');
+      
+      // --- MULTI-TENANCY LOGIC ---
+      let targetDbName = decoded.dbName || req.user?.dbName;
+
+      // If user not in Main DB (e.g. Tenant Employee), find them in the tenant DB specified by the token
+      if (!req.user && decoded.dbName) {
+        const { getTenantDb } = require('../config/tenantConnection');
+        const { getTenantModels } = require('../models/tenantModels');
+        const connection = await getTenantDb(decoded.dbName);
+        const { User: TenantUser } = getTenantModels(connection);
+        
+        req.user = await TenantUser.findById(decoded.id).select('-password');
+        console.log(`[AUTH DEBUG] User ${decoded.id} found in TENANT DB: ${decoded.dbName}`);
+      }
 
       if (!req.user) {
         console.warn(`Debug - User not found for ID: ${decoded.id}`);
         return res.status(401).json({ message: 'User not found' });
       }
 
-      // --- MULTI-TENANCY LOGIC ---
-      let targetDbName = req.user.dbName;
-      
-      // If employee, get dbName from their organization (admin)
+      // Fallback resolution
       if (!targetDbName && req.user.organizationId) {
         const org = await User.findById(req.user.organizationId).select('dbName');
         targetDbName = org?.dbName;

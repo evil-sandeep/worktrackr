@@ -4,10 +4,10 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 // Generate JWT Token
-const generateToken = (id) => {
+const generateToken = (id, dbName) => {
   const secret = process.env.JWT_SECRET || 'fallback_secret_key';
   console.log(`Debug - Controller Generating Token with secret prefix: ${secret.substring(0, 3)}...`);
-  return jwt.sign({ id }, secret, {
+  return jwt.sign({ id, dbName }, secret, {
     expiresIn: '30d',
   });
 };
@@ -50,7 +50,7 @@ const registerUser = async (req, res) => {
         email: user.email,
         empId: user.empId,
         role: user.role,
-        token: generateToken(user._id),
+        token: generateToken(user._id, user.dbName),
       });
     } else {
       res.status(400).json({ message: 'Invalid user data received' });
@@ -71,7 +71,7 @@ const loginUser = async (req, res) => {
 
     // 1. Check Main Database (Super Admins, Org Admins)
     let user = await User.findOne({ email });
-    let isTenantUser = false;
+    let resolvedDbName = user?.dbName || null;
 
     // 2. If not found in Main DB, search all Tenant Databases
     if (!user) {
@@ -89,7 +89,7 @@ const loginUser = async (req, res) => {
           user = await TenantUser.findOne({ email });
           if (user) {
             console.log(`[LOGIN DEBUG] User found in tenant DB: ${org.dbName}`);
-            isTenantUser = true;
+            resolvedDbName = org.dbName;
             break;
           }
         } catch (tenantErr) {
@@ -101,6 +101,13 @@ const loginUser = async (req, res) => {
     const isMatch = user ? await bcrypt.compare(password, user.password) : false;
 
     if (user && isMatch) {
+      // For employees in tenant DBs, they might not have dbName on their record, 
+      // but we resolved it during login from the organization.
+      if (!resolvedDbName && user.organizationId) {
+        const org = await User.findById(user.organizationId).select('dbName');
+        resolvedDbName = org?.dbName;
+      }
+
       res.json({
         _id: user._id,
         name: user.name,
@@ -110,7 +117,7 @@ const loginUser = async (req, res) => {
         organizationId: user.organizationId,
         isPaid: user.isPaid,
         status: user.status,
-        token: generateToken(user._id),
+        token: generateToken(user._id, resolvedDbName),
       });
     } else {
       res.status(401).json({ message: 'Invalid credentials' });
