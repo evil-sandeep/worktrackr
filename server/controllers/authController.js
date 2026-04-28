@@ -150,9 +150,11 @@ const updateUserProfile = async (req, res) => {
 const updateEmployee = async (req, res) => {
   try {
     const UserModel = req.tenantModels?.User || User;
+    console.log(`[AUTH DEBUG] updateEmployee: Searching for user ${req.params.id} in ${req.tenantModels ? 'TENANT' : 'MAIN'} DB`);
     const user = await UserModel.findById(req.params.id);
 
     if (user) {
+      console.log(`[AUTH DEBUG] updateEmployee: User ${user.name} found. Applying updates...`);
       const { name, phone, address, designation, role, salary, isPaid, password } = req.body;
 
       if (name) user.name = name;
@@ -178,9 +180,11 @@ const updateEmployee = async (req, res) => {
 const deleteEmployee = async (req, res) => {
   try {
     const UserModel = req.tenantModels?.User || User;
+    console.log(`[AUTH DEBUG] deleteEmployee: Searching for user ${req.params.id} in ${req.tenantModels ? 'TENANT' : 'MAIN'} DB`);
     const user = await UserModel.findById(req.params.id);
 
     if (user) {
+      console.log(`[AUTH DEBUG] deleteEmployee: User ${user.name} found. Deleting...`);
       // Also delete all attendance associated with this user
       const AttendanceModel = req.tenantModels?.Attendance || Attendance;
       await AttendanceModel.deleteMany({ userId: user._id });

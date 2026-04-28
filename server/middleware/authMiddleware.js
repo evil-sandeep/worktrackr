@@ -48,7 +48,7 @@ const protect = async (req, res, next) => {
         if (!targetOrgUser || !targetOrgUser.dbName) {
            targetOrgUser = await User.findOne({ 
              organizationId: superAdminOrgId, 
-             role: 'orgadmin' 
+             role: { $in: ['orgadmin', 'admin'] }
            }).select('dbName');
            console.log(`[TENANT DEBUG] Resolved via organizationId check: ${targetOrgUser ? 'FOUND' : 'NOT FOUND'}`);
         } else {

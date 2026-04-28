@@ -25,6 +25,7 @@ const EmployeeDetailModal = ({ employee: initialEmployee, orgId: propOrgId, onCl
   const [viewDate, setViewDate] = useState(new Date());
   
   const effectiveOrgId = propOrgId || initialEmployee?.organizationId;
+  console.log(`[DEBUG] EmployeeDetailModal: effectiveOrgId = ${effectiveOrgId}, propOrgId = ${propOrgId}, empOrgId = ${initialEmployee?.organizationId}`);
 
   // 2. Custom Hooks (Clean Architecture)
   const { 

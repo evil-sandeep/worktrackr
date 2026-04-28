@@ -68,7 +68,7 @@ const useEmployeeProfile = (employeeId, initialEmployee, orgId) => {
     
     showLoader(true);
     try {
-      await adminService.deleteEmployee(employeeId);
+      await adminService.deleteEmployee(employeeId, orgId || initialEmployee?.organizationId);
       addToast('Employee deleted successfully', 'success');
       if (onDeleteCallback) onDeleteCallback(employeeId);
     } catch (err) {
