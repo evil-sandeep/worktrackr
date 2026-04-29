@@ -13,6 +13,11 @@ const organizationSchema = new mongoose.Schema({
   },
   phone: String,
   address: String,
+  joinCode: {
+    type: String,
+    unique: true,
+    sparse: true,
+  },
   status: {
     type: String,
     enum: ['active', 'inactive'],

@@ -37,8 +37,11 @@ const getOrganizations = async (req, res) => {
     
     // Attach employee stats if they are an admin or orgadmin, or just return user data
     const usersWithContext = await Promise.all(users.map(async (user) => {
-      // If user is a tenant/admin, get their org stats
+      // If user is a tenant/admin, get their org stats and join code
       if (user.role === 'admin' || user.role === 'orgadmin') {
+        const Organization = require('../models/Organization');
+        const orgData = user.organizationId ? await Organization.findById(user.organizationId) : null;
+        
         const orgEmployees = await User.find({ 
           organizationId: user.organizationId || user._id, 
           role: 'employee' 
@@ -50,6 +53,7 @@ const getOrganizations = async (req, res) => {
 
         return {
           ...user._doc,
+          joinCode: orgData ? orgData.joinCode : 'N/A',
           stats: {
             totalStaff,
             paidStaff,
@@ -183,6 +187,7 @@ const grantAdminPermission = async (req, res) => {
       name: user.name,
       email: user.email,
       phone: user.phone,
+      joinCode: Math.random().toString(36).substring(2, 8).toUpperCase(),
       status: 'active'
     });
 

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import authService from '../services/authService';
 import { useUI } from '../context/UIContext';
-import { UserPlus, User, Mail, Phone, Hash, Lock, Eye, EyeOff, ArrowRight, ShieldCheck, Briefcase, Globe, HelpCircle } from 'lucide-react';
+import { UserPlus, User, Mail, Phone, Hash, Lock, Eye, EyeOff, ArrowRight, ShieldCheck, Briefcase, Globe, HelpCircle, Building2 } from 'lucide-react';
 
 const Register = () => {
   const { showLoader, addToast } = useUI();
@@ -12,7 +12,8 @@ const Register = () => {
     phone: '',
     empId: '',
     password: '',
-    role: 'employee'
+    role: 'employee',
+    secretCode: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -23,18 +24,17 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     showLoader(true);
 
     try {
-      // Respect the user's selected role (employee or orgadmin)
       await authService.register(formData);
       addToast('Registration successful! Welcome to WorkTrackr.', 'success');
       
-      // Redirect based on role
       if (formData.role === 'orgadmin') {
-        navigate('/admindashboard');
+        navigate('/orgadmin/dashboard');
       } else {
-        navigate('/employeedashboard');
+        navigate('/employee/dashboard');
       }
     } catch (err) {
       addToast(err.response?.data?.message || 'Registration failed.', 'error');
@@ -181,6 +181,28 @@ const Register = () => {
                 </label>
               </div>
             </div>
+
+            {/* Organization Secret Code (Optional for Staff) */}
+            {formData.role === 'employee' && (
+              <div className="relative group/input animate-in fade-in slide-in-from-top-2 duration-300">
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider block">Organization Secret Code</label>
+                  <span className="text-[10px] font-semibold text-[#A19F9D] uppercase">Optional</span>
+                </div>
+                <div className="relative">
+                  <ShieldCheck className="absolute left-0 bottom-3 h-4 w-4 text-[#A19F9D]" />
+                  <input
+                    name="secretCode"
+                    type="text"
+                    placeholder="Enter 6-digit code (e.g. WT-X12)"
+                    className="w-full pl-6 pr-0 py-2 bg-transparent border-b border-[#8A8886] text-[#323130] placeholder-[#A19F9D] outline-none focus:border-[#0078D4] transition-all text-[15px]"
+                    value={formData.secretCode}
+                    onChange={handleChange}
+                  />
+                </div>
+                <p className="mt-1.5 text-[10px] text-[#A19F9D] italic">Enter code to join your company, or leave blank to join as platform guest.</p>
+              </div>
+            )}
 
             <button
               type="submit"

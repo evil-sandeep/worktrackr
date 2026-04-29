@@ -154,6 +154,7 @@ const OrganizationListPage = () => {
                    <th className="py-3 px-6 w-12">#</th>
                    <th className="py-3 px-6">Resource Name</th>
                    <th className="py-3 px-6">ID / Status</th>
+                   <th className="py-3 px-6">Secret Code</th>
                    <th className="py-3 px-6">Contact Endpoint</th>
                    <th className="py-3 px-6">Metrics</th>
                    <th className="py-3 px-6 text-right">Operation</th>
@@ -197,6 +198,13 @@ const OrganizationListPage = () => {
                             }`}>
                               {org?.role === 'admin' ? 'Promoted' : 
                                org?.role === 'orgadmin' ? 'Tenant' : 'Standard'}
+                            </span>
+                         </div>
+                       </td>
+                       <td className="py-3 px-6">
+                         <div className="flex items-center gap-2">
+                            <span className="bg-[#FAF9F8] border border-[#EDEBE9] px-2 py-1 rounded-sm font-mono text-[11px] text-[#323130] font-bold">
+                              {org?.joinCode || 'N/A'}
                             </span>
                          </div>
                        </td>

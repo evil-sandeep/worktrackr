@@ -48,6 +48,11 @@ const resetPassword = async (phone, newPassword) => {
   return response.data;
 };
 
+const getPublicOrganizations = async () => {
+  const response = await api.get('/auth/organizations');
+  return response.data;
+};
+
 const authService = {
   login,
   register,
@@ -56,6 +61,7 @@ const authService = {
   updateProfile,
   verifyUser,
   resetPassword,
+  getPublicOrganizations,
 };
 
 export default authService;

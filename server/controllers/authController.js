@@ -12,10 +12,20 @@ const generateToken = (id, dbName) => {
   });
 };
 
+// @desc    Get public list of organizations (for registration)
+const getPublicOrganizations = async (req, res) => {
+  try {
+    const orgs = await User.find({ role: { $in: ['orgadmin', 'admin'] } }).select('name _id');
+    res.json(orgs);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // @desc    Register a new user
 const registerUser = async (req, res) => {
   try {
-    const { name, email, phone, empId, password, role } = req.body;
+    const { name, email, phone, empId, password, role, secretCode } = req.body;
 
     if (!name || !email || !phone || !empId || !password) {
       return res.status(400).json({ message: 'Please add all required fields' });
@@ -34,6 +44,15 @@ const registerUser = async (req, res) => {
       assignedRole = 'orgadmin';
     }
 
+    let assignedOrgId = undefined;
+    if (assignedRole === 'employee' && secretCode) {
+      const Organization = require('../models/Organization');
+      const org = await Organization.findOne({ joinCode: secretCode.trim() });
+      if (org) {
+        assignedOrgId = org._id;
+      }
+    }
+
     const user = await User.create({
       name,
       email,
@@ -41,6 +60,7 @@ const registerUser = async (req, res) => {
       empId,
       password,
       role: assignedRole,
+      organizationId: assignedOrgId
     });
 
     if (user) {
@@ -401,5 +421,6 @@ module.exports = {
   deleteEmployee,
   getAdminDashboardStats,
   verifyUser,
-  resetPassword
+  resetPassword,
+  getPublicOrganizations
 };

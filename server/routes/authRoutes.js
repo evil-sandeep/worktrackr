@@ -9,7 +9,8 @@ const {
   deleteEmployee,
   getAdminDashboardStats,
   verifyUser,
-  resetPassword
+  resetPassword,
+  getPublicOrganizations
 } = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -22,6 +23,10 @@ router.get('/admin-stats', protect, getAdminDashboardStats);
 // @route   POST /api/auth/register
 // @desc    Register a user
 router.post('/register', registerUser);
+
+// @route   GET /api/auth/organizations
+// @desc    Get public organizations list
+router.get('/organizations', getPublicOrganizations);
 
 // @route   POST /api/auth/login
 // @desc    Authenticate a user

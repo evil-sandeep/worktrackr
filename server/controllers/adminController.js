@@ -17,14 +17,28 @@ const getAllEmployees = async (req, res) => {
       const { getTenantDb } = require('../config/tenantConnection');
       const { getTenantModels } = require('../models/tenantModels');
 
-      // 1. Get all Super Admins and Org Admins from Main DB
+      // 1. Get all Identities from Main DB (Super Admins, Org Admins, and Self-Registered Employees)
       const mainIdentities = await MainUser.find({ 
-        role: { $in: ['superadmin', 'orgadmin', 'admin'] } 
+        role: { $in: ['superadmin', 'orgadmin', 'admin', 'employee'] } 
       }).select('-password');
       
-      let allIdentities = [...mainIdentities.map(u => ({ ...u._doc, organizationName: u.role === 'superadmin' ? 'Platform' : u.name }))];
+      // 2. Resolve Organization Names for Main DB Identities
+      const allIdentities = await Promise.all(mainIdentities.map(async (u) => {
+        let orgName = 'System';
+        if (u.role === 'superadmin') {
+          orgName = 'Platform';
+        } else if (u.role === 'orgadmin' || u.role === 'admin') {
+          orgName = u.name;
+        } else if (u.organizationId) {
+          const org = await MainUser.findById(u.organizationId).select('name');
+          orgName = org ? org.name : 'Unknown Tenant';
+        }
+        return { ...u._doc, organizationName: orgName };
+      }));
+      
+      let finalIdentities = [...allIdentities];
 
-      // 2. Get all Organization Admins to find their dbNames for fetching Employees
+      // 3. Get all Organization Admins to find their dbNames for fetching Tenant Employees
       const orgs = await MainUser.find({ role: 'orgadmin' }).select('_id dbName name');
 
       for (const org of orgs) {
@@ -41,13 +55,13 @@ const getAllEmployees = async (req, res) => {
             organizationName: org.name
           }));
           
-          allIdentities = [...allIdentities, ...employeesWithOrg];
+          finalIdentities = [...finalIdentities, ...employeesWithOrg];
         } catch (err) {
           console.error(`Error fetching identities for org ${org.name}:`, err);
         }
       }
       
-      return res.status(200).json(allIdentities);
+      return res.status(200).json(finalIdentities);
     }
 
     // CASE 2: Specific Tenant Directory
@@ -116,6 +130,7 @@ const createEmployee = async (req, res) => {
         name: user.name,
         email: user.email,
         phone: user.phone,
+        joinCode: Math.random().toString(36).substring(2, 8).toUpperCase(),
         status: 'active'
       });
 
