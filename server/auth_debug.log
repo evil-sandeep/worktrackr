@@ -282,3 +282,425 @@ MongoServerSelectionError: getaddrinfo ENOTFOUND ac-sve3w3s-shard-00-00.w2qh5ki.
 [AUTH TRACE] 2026-04-29T02:39:05.233Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
 
 [AUTH TRACE] 2026-04-29T02:39:05.484Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T02:41:59.077Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:41:59.250Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:42:44.416Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:43:08.067Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:43:42.894Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:43:59.309Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:44:07.550Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:44:14.134Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:44:14.300Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:44:15.729Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:44:15.895Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:44:16.058Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:44:53.062Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:44:53.080Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:44:53.251Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:44:53.262Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:44:53.458Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:44:53.651Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:44:58.275Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:44:58.468Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:45:20.788Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69f16f397c172844bdd46b57 - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:45:20.922Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:45:21.038Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69f16f397c172844bdd46b57 - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:45:21.158Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:45:23.642Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:45:23.831Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:45:25.190Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:45:25.327Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:45:25.380Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:45:25.522Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:45:28.249Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:45:28.260Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:45:28.437Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:45:28.448Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:45:32.644Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:45:37.854Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:45:37.985Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:45:48.781Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:45:52.192Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:45:52.322Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:45:56.772Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:45:56.960Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:45:58.509Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69d5013866d534240634c8aa - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:45:58.646Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:45:58.702Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69d5013866d534240634c8aa - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:45:58.835Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:46:00.925Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:46:01.111Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:46:14.778Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:46:14.783Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:46:14.978Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:46:15.129Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:46:17.448Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:46:17.562Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:46:18.649Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:46:18.660Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:46:18.773Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:46:18.778Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:46:20.504Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:46:20.629Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:46:52.979Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:46:53.333Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:47:00.654Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:47:00.778Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:47:04.440Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:47:04.796Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:47:08.546Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:47:08.690Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:47:34.837Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:47:35.158Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:47:39.302Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:47:39.314Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:47:39.428Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:47:39.431Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:52:11.533Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:52:11.867Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:54:56.774Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:54:56.887Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:54:59.229Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:54:59.248Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:54:59.511Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:54:59.514Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:55:33.910Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:55:33.919Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:55:34.027Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:55:34.106Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:55:42.577Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:55:42.585Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:55:42.700Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:55:42.710Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:55:50.598Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:55:53.153Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:55:53.287Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:55:54.713Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:56:01.911Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:56:02.045Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:56:32.620Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:56:32.623Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:56:32.739Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:56:32.812Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:59:09.898Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:59:09.903Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:59:10.025Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:59:10.029Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:59:17.801Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:59:18.020Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:59:23.056Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:59:23.073Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:59:23.192Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:59:23.253Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:59:35.436Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:59:35.445Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:59:35.550Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:59:35.632Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:59:43.719Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:59:43.724Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:59:43.838Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:59:43.909Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:59:51.170Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:59:51.179Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:59:51.296Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:59:51.305Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:59:55.067Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T02:59:55.192Z - User: brovanta@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T03:00:16.620Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:00:16.623Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:00:16.812Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:00:16.820Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:00:17.001Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:00:17.187Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:00:29.161Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:00:29.172Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:00:29.359Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:00:29.414Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:00:35.050Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T03:00:35.056Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T03:00:35.235Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T03:00:35.240Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T03:00:37.371Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T03:00:38.895Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:00:39.029Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:00:41.156Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T03:00:48.969Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T03:00:48.976Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T03:00:49.155Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T03:00:49.168Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T03:00:52.069Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-04-29T03:00:53.872Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:00:54.010Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:01:07.585Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:01:07.596Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:01:07.775Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:01:07.850Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:01:07.963Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:01:08.150Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:03:34.735Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:03:34.743Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:03:34.930Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:03:34.944Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:03:35.126Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:03:35.318Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:03:41.845Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:03:42.039Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:03:43.425Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69f16f397c172844bdd46b57 - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:03:43.568Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:03:43.684Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69f16f397c172844bdd46b57 - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:03:43.819Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:04:05.854Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69f16f397c172844bdd46b57 - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:04:10.453Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69f16f397c172844bdd46b57 - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:04:10.602Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:04:12.340Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69f16f397c172844bdd46b57 - TargetDB: worktrackr_org_super_admin_c8aa
+
+[CONTROLLER TRACE] 2026-04-29T03:04:12.477Z - markAsPaid SUCCESS - User: sambit sahoo - DB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:04:38.336Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:04:38.345Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:04:38.546Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:04:38.582Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:04:40.888Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:04:41.079Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:04:50.642Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69f16f397c172844bdd46b57 - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:04:50.776Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:04:50.905Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69f16f397c172844bdd46b57 - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:04:51.035Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:05:08.723Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69f16f397c172844bdd46b57 - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:05:11.163Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69f16f397c172844bdd46b57 - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:05:11.303Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T03:07:45.092Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T03:07:45.101Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T03:07:45.283Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T03:07:45.422Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T03:08:00.542Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T03:08:00.553Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T03:08:00.737Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T03:08:00.855Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T03:08:50.640Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T03:08:50.652Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T03:08:50.776Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T03:08:50.809Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T03:08:59.013Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T03:08:59.323Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T03:09:00.499Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T03:09:00.622Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T03:09:16.489Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T03:09:20.073Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T03:09:24.726Z - User: suno@gmail.com - Role: orgadmin - OrgId: 69f16f397c172844bdd46b57 - TargetDB: Main
+
+[CONTROLLER TRACE] 2026-04-29T03:09:24.859Z - markAsPaid SUCCESS - User: sfm - DB: test
+
+[AUTH TRACE] 2026-04-29T03:09:27.687Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T03:09:27.690Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T03:09:27.882Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T03:09:28.008Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T03:09:30.577Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T03:09:30.707Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main

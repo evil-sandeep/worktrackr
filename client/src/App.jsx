@@ -147,6 +147,16 @@ const AppRoutes = () => {
           </ProtectedRoute>
         } 
       />
+      <Route 
+        path="/orgadmin/employee" 
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <EmployeeListPage />
+            </Layout>
+          </ProtectedRoute>
+        } 
+      />
       
       {/* Default Redirect Logic */}
       <Route path="/" element={<HomeRedirect />} />

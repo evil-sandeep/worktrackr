@@ -12,9 +12,10 @@ import authService from '../services/authService';
 import { useUI } from '../context/UIContext';
 import EmployeeDetailModal from '../components/Admin/EmployeeDetailModal';
 import AddEmployeeModal from '../components/Admin/AddEmployeeModal';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const EmployeeListPage = () => {
+  const navigate = useNavigate();
   const [employees, setEmployees] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState('all');
@@ -161,10 +162,25 @@ const EmployeeListPage = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <p className="text-[12px] text-[#323130]">{emp.email}</p>
-                      <span className={`text-[9px] font-bold uppercase ${emp.isPaid ? 'text-[#107C10]' : 'text-[#D83B01]'}`}>
-                        {emp.isPaid ? '• Licensed' : '• Pending License'}
-                      </span>
+                      <div className="flex flex-col gap-1">
+                        <p className="text-[12px] text-[#323130]">{emp.email}</p>
+                        <div className="flex items-center gap-3">
+                          <span className={`text-[9px] font-bold uppercase ${emp.isPaid ? 'text-[#107C10]' : 'text-[#D83B01]'}`}>
+                            {emp.isPaid ? '• Licensed' : '• Pending License'}
+                          </span>
+                          {!emp.isPaid && (
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/payment?userId=${emp._id}&userName=${encodeURIComponent(emp.name)}&orgId=${emp.organizationId || ''}&orgName=${encodeURIComponent(emp.organizationName || 'System')}&empId=${emp.empId}`);
+                              }}
+                              className="text-[9px] font-black text-[#0078D4] hover:underline uppercase tracking-tighter bg-[#DEECF9] px-1.5 py-0.5 rounded-sm"
+                            >
+                              Pay ₹2,000
+                            </button>
+                          )}
+                        </div>
+                      </div>
                     </td>
                     <td className="px-6 py-4">
                       <span className="text-[11px] font-medium text-[#605E5C] uppercase">

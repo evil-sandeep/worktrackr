@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { X, User, Mail, Lock, Phone, Hash, Shield, Building2, Plus } from 'lucide-react';
+import { X, User, Mail, Lock, Phone, Hash, Shield, Building2, Plus, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import adminService from '../../services/adminService';
+import authService from '../../services/authService';
 import { useUI } from '../../context/UIContext';
 
 const AddEmployeeModal = ({ isOpen, onClose, onSuccess, organizations = [], orgId = null }) => {
@@ -21,22 +23,33 @@ const AddEmployeeModal = ({ isOpen, onClose, onSuccess, organizations = [], orgI
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const navigate = useNavigate();
+  const [createdEmployee, setCreatedEmployee] = useState(null);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
+      let response;
       if (orgId) {
-        await adminService.createOrgEmployee(orgId, formData);
+        response = await adminService.createOrgEmployee(orgId, formData);
       } else {
         const payload = { 
           ...formData, 
           isOrgAdmin: formData.role === 'orgadmin' 
         };
-        await adminService.createEmployee(payload);
+        response = await adminService.createEmployee(payload);
       }
+      
+      const emp = response.data || response;
       addToast(formData.role === 'orgadmin' ? 'Organization added successfully' : 'Employee added successfully', 'success');
-      onSuccess();
-      onClose();
+      
+      if (formData.role === 'employee') {
+        setCreatedEmployee(emp);
+      } else {
+        onSuccess();
+        onClose();
+      }
     } catch (error) {
       addToast(error.response?.data?.message || 'Failed to add employee', 'error');
     } finally {
@@ -44,7 +57,68 @@ const AddEmployeeModal = ({ isOpen, onClose, onSuccess, organizations = [], orgI
     }
   };
 
+
+  const currentUser = authService.getCurrentUser();
+  const currentOrgName = currentUser?.organizationName || 'WorkTrackr Cloud';
+
   if (!isOpen) return null;
+
+  if (createdEmployee) {
+    return (
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-none animate-in fade-in duration-200">
+        <div className="bg-white border border-[#EDEBE9] w-full max-w-md shadow-2xl overflow-hidden flex flex-col p-10 text-center space-y-6">
+           <div className="w-16 h-16 bg-[#DEECF9] rounded-sm flex items-center justify-center mx-auto">
+              <Shield className="h-8 w-8 text-[#0078D4]" />
+           </div>
+           <div className="space-y-2">
+              <h2 className="text-lg font-bold text-[#323130] uppercase tracking-tight">Identity Created</h2>
+              <p className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider leading-relaxed">
+                Resource <span className="text-[#0078D4]">{createdEmployee.name}</span> has been provisioned. <br/>
+                Requires <span className="text-[#D83B01]">License Authorization</span> for cloud access.
+              </p>
+           </div>
+           
+           <div className="bg-[#FAF9F8] border border-[#EDEBE9] p-4 text-left">
+              <div className="flex justify-between items-center mb-2">
+                 <span className="text-[9px] font-bold text-[#605E5C] uppercase tracking-widest">Employee ID</span>
+                 <span className="text-[11px] font-bold text-[#323130]">{createdEmployee.empId}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                 <span className="text-[9px] font-bold text-[#605E5C] uppercase tracking-widest">License Fee</span>
+                 <span className="text-[11px] font-bold text-[#107C10]">₹2,000.00</span>
+              </div>
+           </div>
+
+           <p className="text-[9px] text-[#A19F9D] font-bold uppercase tracking-widest leading-none italic">
+             * Digital receipt available for download after payment
+           </p>
+
+           <div className="flex flex-col gap-3 pt-2">
+              <button
+                onClick={() => {
+                  onSuccess();
+                  onClose();
+                  navigate(`/payment?userId=${createdEmployee._id}&userName=${encodeURIComponent(createdEmployee.name)}&orgId=${orgId || ''}&orgName=${encodeURIComponent(currentOrgName)}&empId=${createdEmployee.empId}`);
+                }}
+                className="w-full py-3 bg-[#0078D4] text-white rounded-sm font-bold text-[11px] uppercase tracking-widest hover:bg-[#005A9E] transition-all flex items-center justify-center gap-2"
+              >
+                Authorize & Pay ₹2,000
+                <ArrowRight className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => {
+                  onSuccess();
+                  onClose();
+                }}
+                className="text-[10px] font-bold text-[#605E5C] uppercase tracking-wider hover:text-[#323130] transition-colors"
+              >
+                Skip to Directory
+              </button>
+           </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-none animate-in fade-in duration-200">
