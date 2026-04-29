@@ -38,14 +38,14 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   }, [user?.email]);
 
   const allMenuItems = [
-    { name: 'Dashboard', icon: ShieldCheck, path: '/superadmindashboard', roles: ['superadmin'] },
+    { name: 'Dashboard', icon: ShieldCheck, path: '/superadmin/dashboard', roles: ['superadmin'] },
     { name: 'Organizations', icon: Building2, path: '/organizations', roles: ['superadmin'] },
-    { name: 'Global Directory', icon: Users, path: '/admin/employee', roles: ['superadmin'] },
+    { name: 'Global Directory', icon: Users, path: '/orgadmin/employee', roles: ['superadmin'] },
     { name: 'Profile', icon: UserCircle, path: '/profile', roles: ['superadmin'] },
-    { name: 'Dashboard', icon: LayoutDashboard, path: '/admindashboard', roles: ['admin', 'orgadmin'] },
-    { name: 'Employees', icon: Users, path: '/admin/employee', roles: ['admin', 'orgadmin'] },
+    { name: 'Dashboard', icon: LayoutDashboard, path: '/orgadmin/dashboard', roles: ['admin', 'orgadmin'] },
+    { name: 'Employees', icon: Users, path: '/orgadmin/employee', roles: ['admin', 'orgadmin'] },
     { name: 'Profile', icon: UserCircle, path: '/profile', roles: ['admin', 'orgadmin'] },
-    { name: 'Dashboard', icon: LayoutDashboard, path: '/employeedashboard', roles: ['employee'] },
+    { name: 'Dashboard', icon: LayoutDashboard, path: '/employee/dashboard', roles: ['employee'] },
     { name: 'Calendar', icon: Calendar, path: '/calendar', roles: ['employee'] },
     { name: 'Store Visit', icon: Store, path: '/storevisit', roles: ['employee'] },
     { name: 'Profile', icon: UserCircle, path: '/profile', roles: ['employee'] },

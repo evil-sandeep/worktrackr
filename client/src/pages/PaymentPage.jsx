@@ -116,7 +116,7 @@ const PaymentPage = () => {
                   Print Receipt
                </button>
                <button 
-                  onClick={() => navigate('/admindashboard')}
+                  onClick={() => navigate('/orgadmin/dashboard')}
                   className="flex-1 py-3 bg-[#0078D4] text-white rounded-sm font-bold text-[11px] uppercase tracking-widest hover:bg-[#005A9E] transition-all flex items-center justify-center gap-2"
                >
                   Continue to Dashboard

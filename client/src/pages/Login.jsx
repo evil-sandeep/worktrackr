@@ -23,11 +23,11 @@ const Login = () => {
       if (data.role === 'employee' && !data.isPaid) {
         navigate('/payment');
       } else if (data.role === 'superadmin') {
-        navigate('/superadmindashboard');
+        navigate('/superadmin/dashboard');
       } else if (data.role === 'orgadmin' || data.role === 'admin') {
-        navigate('/admindashboard');
+        navigate('/orgadmin/dashboard');
       } else {
-        navigate('/employeedashboard');
+        navigate('/employee/dashboard');
       }
     } catch (err) {
       addToast(err.response?.data?.message || 'Invalid credentials.', 'error');
