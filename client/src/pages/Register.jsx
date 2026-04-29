@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import authService from '../services/authService';
 import { useUI } from '../context/UIContext';
-import { UserPlus, User, Mail, Phone, Hash, Lock, Eye, EyeOff, ArrowRight, ShieldCheck, Briefcase } from 'lucide-react';
+import { UserPlus, User, Mail, Phone, Hash, Lock, Eye, EyeOff, ArrowRight, ShieldCheck, Briefcase, Globe, HelpCircle } from 'lucide-react';
 
 const Register = () => {
   const { showLoader, addToast } = useUI();
@@ -26,8 +26,6 @@ const Register = () => {
     showLoader(true);
 
     try {
-      // Force all new registrations to start as 'employee'
-      // This ensures they see the Employee Dashboard first as requested
       const registrationData = { ...formData, role: 'employee' };
       await authService.register(registrationData);
       addToast('Registration successful! Welcome to WorkTrackr.', 'success');
@@ -40,75 +38,80 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#FAF9F8] py-12 px-4 relative">
-      {/* Structural Accent */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-[#0078D4]"></div>
+    <div className="min-h-screen bg-[#FAF9F8] flex flex-col items-center justify-center p-6 font-sans relative overflow-hidden">
+      {/* Dynamic Background Elements */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#0078D4] opacity-[0.03] rounded-full blur-[100px] animate-pulse"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#0078D4] opacity-[0.03] rounded-full blur-[100px] animate-pulse delay-700"></div>
 
-      <div className="max-w-md w-full">
+      <div className="w-full max-w-[500px] z-10 transition-all duration-500 transform animate-in slide-in-from-bottom-8">
         {/* Branding Node */}
-        <div className="flex flex-col items-center mb-6 text-center">
-          <div className="w-14 h-14 bg-[#0078D4] rounded-sm flex items-center justify-center shadow-lg mb-4">
-            <UserPlus className="h-7 w-7 text-white" />
+        <div className="mb-8 flex items-center justify-center gap-3">
+          <div className="w-10 h-10 bg-[#0078D4] flex items-center justify-center shadow-lg rounded-sm">
+            <UserPlus className="h-6 w-6 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-[#323130] tracking-tight">Provision Identity</h1>
-          <p className="text-[11px] font-bold text-[#605E5C] uppercase tracking-widest mt-1">WorkTrackr Cloud Directory Services</p>
+          <span className="text-[22px] font-bold text-[#323130] tracking-tight">WorkTrackr <span className="text-[#0078D4] font-medium text-sm align-top ml-1">Provisioning</span></span>
         </div>
 
-        {/* Provisioning Card */}
-        <div className="bg-white border border-[#EDEBE9] shadow-2xl p-8 sm:p-10 rounded-sm relative">
-          <div className="absolute top-0 right-0 p-3">
-             <div className="flex items-center gap-1.5">
-                <div className="w-1.5 h-1.5 bg-[#107C10] rounded-full"></div>
-                <span className="text-[9px] font-bold text-[#605E5C] uppercase">Secure Link</span>
-             </div>
+        {/* Register Card */}
+        <div className="bg-white p-10 border border-[#EDEBE9] shadow-[0_32px_64px_rgba(0,0,0,0.08)] relative rounded-sm group overflow-hidden">
+          {/* Top Progress Line */}
+          <div className="absolute top-0 left-0 w-full h-[2px] bg-transparent overflow-hidden">
+            <div className="w-full h-full bg-[#0078D4] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
           </div>
-          
-          <form className="space-y-5" onSubmit={handleSubmit}>
-            {/* Full Name */}
-            <div className="space-y-1.5">
-              <label className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider ml-0.5">Resource Name</label>
-              <div className="relative group">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#A19F9D]" />
-                <input
-                  name="name"
-                  type="text"
-                  required
-                  placeholder="Identity Identifier"
-                  className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#8A8886] text-[#323130] placeholder-[#A19F9D] rounded-sm focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] outline-none transition-all font-semibold text-sm"
-                  value={formData.name}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
 
-            {/* Employee ID */}
-            <div className="space-y-1.5">
-              <label className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider ml-0.5">Asset Tag (Emp ID)</label>
-              <div className="relative group">
-                <Hash className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#A19F9D]" />
-                <input
-                  name="empId"
-                  type="text"
-                  required
-                  placeholder="WT-00X"
-                  className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#8A8886] text-[#323130] placeholder-[#A19F9D] rounded-sm focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] outline-none transition-all font-semibold text-sm"
-                  value={formData.empId}
-                  onChange={handleChange}
-                />
+          <div className="mb-8">
+            <h1 className="text-[28px] font-semibold text-[#323130] mb-2">Create account</h1>
+            <p className="text-[14px] text-[#605E5C]">Join the global enterprise tracking network</p>
+          </div>
+
+          <form className="space-y-5" onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              {/* Full Name */}
+              <div className="relative group/input">
+                <label className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider mb-1 block">Full Name</label>
+                <div className="relative">
+                  <User className="absolute left-0 bottom-3 h-4 w-4 text-[#A19F9D]" />
+                  <input
+                    name="name"
+                    type="text"
+                    required
+                    placeholder="John Doe"
+                    className="w-full pl-6 pr-0 py-2 bg-transparent border-b border-[#8A8886] text-[#323130] placeholder-[#A19F9D] outline-none focus:border-[#0078D4] transition-all text-[15px]"
+                    value={formData.name}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
+              {/* Employee ID */}
+              <div className="relative group/input">
+                <label className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider mb-1 block">Employee ID</label>
+                <div className="relative">
+                  <Hash className="absolute left-0 bottom-3 h-4 w-4 text-[#A19F9D]" />
+                  <input
+                    name="empId"
+                    type="text"
+                    required
+                    placeholder="WT-123"
+                    className="w-full pl-6 pr-0 py-2 bg-transparent border-b border-[#8A8886] text-[#323130] placeholder-[#A19F9D] outline-none focus:border-[#0078D4] transition-all text-[15px]"
+                    value={formData.empId}
+                    onChange={handleChange}
+                  />
+                </div>
               </div>
             </div>
 
             {/* Email */}
-            <div className="space-y-1.5">
-              <label className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider ml-0.5">Routing Endpoint (Email)</label>
-              <div className="relative group">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#A19F9D]" />
+            <div className="relative group/input">
+              <label className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider mb-1 block">Work Email</label>
+              <div className="relative">
+                <Mail className="absolute left-0 bottom-3 h-4 w-4 text-[#A19F9D]" />
                 <input
                   name="email"
                   type="email"
                   required
-                  placeholder="identity@endpoint.com"
-                  className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#8A8886] text-[#323130] placeholder-[#A19F9D] rounded-sm focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] outline-none transition-all font-semibold text-sm"
+                  placeholder="name@company.com"
+                  className="w-full pl-6 pr-0 py-2 bg-transparent border-b border-[#8A8886] text-[#323130] placeholder-[#A19F9D] outline-none focus:border-[#0078D4] transition-all text-[15px]"
                   value={formData.email}
                   onChange={handleChange}
                 />
@@ -116,16 +119,16 @@ const Register = () => {
             </div>
 
             {/* Phone */}
-            <div className="space-y-1.5">
-              <label className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider ml-0.5">Communications Node</label>
-              <div className="relative group">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#A19F9D]" />
+            <div className="relative group/input">
+              <label className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider mb-1 block">Phone Number</label>
+              <div className="relative">
+                <Phone className="absolute left-0 bottom-3 h-4 w-4 text-[#A19F9D]" />
                 <input
                   name="phone"
                   type="text"
                   required
-                  placeholder="+XX XXXXX XXXXX"
-                  className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#8A8886] text-[#323130] placeholder-[#A19F9D] rounded-sm focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] outline-none transition-all font-semibold text-sm"
+                  placeholder="+91 XXXXX XXXXX"
+                  className="w-full pl-6 pr-0 py-2 bg-transparent border-b border-[#8A8886] text-[#323130] placeholder-[#A19F9D] outline-none focus:border-[#0078D4] transition-all text-[15px]"
                   value={formData.phone}
                   onChange={handleChange}
                 />
@@ -133,23 +136,23 @@ const Register = () => {
             </div>
 
             {/* Password */}
-            <div className="space-y-1.5">
-              <label className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider ml-0.5">Secure Key</label>
-              <div className="relative group">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#A19F9D]" />
+            <div className="relative group/input">
+              <label className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider mb-1 block">Secure Password</label>
+              <div className="relative">
+                <Lock className="absolute left-0 bottom-3 h-4 w-4 text-[#A19F9D]" />
                 <input
                   name="password"
                   type={showPassword ? 'text' : 'password'}
                   required
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-10 py-2.5 bg-white border border-[#8A8886] text-[#323130] placeholder-[#A19F9D] rounded-sm focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] outline-none transition-all font-semibold text-sm"
+                  className="w-full pl-6 pr-10 py-2 bg-transparent border-b border-[#8A8886] text-[#323130] placeholder-[#A19F9D] outline-none focus:border-[#0078D4] transition-all text-[15px]"
                   value={formData.password}
                   onChange={handleChange}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#605E5C] hover:text-[#0078D4] transition-colors"
+                  className="absolute right-0 bottom-2 text-[#605E5C] hover:text-[#0078D4] transition-colors p-1"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -157,41 +160,46 @@ const Register = () => {
             </div>
 
             {/* Role Selection */}
-            <div className="space-y-2">
-              <label className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider ml-0.5">Access Authorization Level</label>
-              <div className="grid grid-cols-2 gap-3">
-                <label className={`flex items-center justify-center gap-2 p-2.5 rounded-sm border cursor-pointer transition-all ${formData.role === 'employee' ? 'bg-[#DEECF9] border-[#0078D4] text-[#0078D4]' : 'bg-white border-[#8A8886] text-[#605E5C] hover:bg-[#FAF9F8]'}`}>
+            <div className="pt-2">
+              <label className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider mb-3 block">Authorization Type</label>
+              <div className="grid grid-cols-2 gap-4">
+                <label className={`flex items-center justify-center gap-2 py-2.5 px-4 border rounded-sm cursor-pointer transition-all duration-300 ${formData.role === 'employee' ? 'bg-[#F3F9FF] border-[#0078D4] text-[#0078D4] shadow-sm' : 'bg-white border-[#EDEBE9] text-[#605E5C] hover:bg-[#FAF9F8]'}`}>
                   <input type="radio" name="role" value="employee" className="hidden" checked={formData.role === 'employee'} onChange={handleChange} />
-                  <User className="h-3.5 w-3.5" />
-                  <span className="font-bold text-[11px] uppercase">Staff Node</span>
+                  <User className="h-4 w-4" />
+                  <span className="font-semibold text-xs uppercase">Staff</span>
                 </label>
-                <label className={`flex items-center justify-center gap-2 p-2.5 rounded-sm border cursor-pointer transition-all ${formData.role === 'orgadmin' ? 'bg-[#DEECF9] border-[#0078D4] text-[#0078D4]' : 'bg-white border-[#8A8886] text-[#605E5C] hover:bg-[#FAF9F8]'}`}>
+                <label className={`flex items-center justify-center gap-2 py-2.5 px-4 border rounded-sm cursor-pointer transition-all duration-300 ${formData.role === 'orgadmin' ? 'bg-[#F3F9FF] border-[#0078D4] text-[#0078D4] shadow-sm' : 'bg-white border-[#EDEBE9] text-[#605E5C] hover:bg-[#FAF9F8]'}`}>
                   <input type="radio" name="role" value="orgadmin" className="hidden" checked={formData.role === 'orgadmin'} onChange={handleChange} />
-                  <Briefcase className="h-3.5 w-3.5" />
-                  <span className="font-bold text-[11px] uppercase">Admin Node</span>
+                  <Briefcase className="h-4 w-4" />
+                  <span className="font-semibold text-xs uppercase">Admin</span>
                 </label>
               </div>
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 bg-[#0078D4] text-white font-bold text-sm rounded-sm shadow-md hover:bg-[#005A9E] transition-all flex items-center justify-center gap-2 group active:scale-[0.98]"
+              className="group w-full py-3 mt-4 bg-[#0078D4] text-white font-bold text-sm rounded-sm shadow-md hover:bg-[#005A9E] transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
             >
-              Commit Provisioning <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              Create Identity <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </button>
           </form>
 
-          <div className="mt-8 pt-6 border-t border-[#EDEBE9] text-center">
-            <p className="text-[11px] text-[#605E5C] font-semibold uppercase tracking-wider">
-              Existing identity?{' '}
+          <div className="mt-10 pt-8 border-t border-[#EDEBE9] text-center">
+            <p className="text-[14px] text-[#605E5C]">
+              Already have an account?{' '}
               <Link to="/login" className="text-[#0078D4] font-bold hover:underline ml-1">
-                Authenticate Instead
+                Sign in instead
               </Link>
             </p>
           </div>
         </div>
         
-        <p className="mt-6 text-center text-[9px] font-bold text-[#A19F9D] uppercase tracking-[0.3em]">WorkTrackr Identity Protocol v2.1-Enterprise</p>
+        {/* Footer info */}
+        <div className="mt-8 flex items-center justify-center gap-6 text-[12px] text-[#605E5C] font-medium opacity-70">
+          <span className="flex items-center gap-1 cursor-pointer hover:text-[#323130] transition-colors"><Globe className="h-3 w-3" /> Global Directory</span>
+          <span className="flex items-center gap-1 cursor-pointer hover:text-[#323130] transition-colors"><ShieldCheck className="h-3 w-3" /> Encrypted Protocol</span>
+          <span className="flex items-center gap-1 cursor-pointer hover:text-[#323130] transition-colors"><HelpCircle className="h-3 w-3" /> Knowledge Base</span>
+        </div>
       </div>
     </div>
   );
