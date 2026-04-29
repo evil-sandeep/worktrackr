@@ -26,10 +26,16 @@ const Register = () => {
     showLoader(true);
 
     try {
-      const registrationData = { ...formData, role: 'employee' };
-      await authService.register(registrationData);
+      // Respect the user's selected role (employee or orgadmin)
+      await authService.register(formData);
       addToast('Registration successful! Welcome to WorkTrackr.', 'success');
-      navigate('/employeedashboard');
+      
+      // Redirect based on role
+      if (formData.role === 'orgadmin') {
+        navigate('/admindashboard');
+      } else {
+        navigate('/employeedashboard');
+      }
     } catch (err) {
       addToast(err.response?.data?.message || 'Registration failed.', 'error');
     } finally {

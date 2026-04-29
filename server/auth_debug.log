@@ -266,3 +266,19 @@ MongoServerSelectionError: getaddrinfo ENOTFOUND ac-sve3w3s-shard-00-00.w2qh5ki.
 [AUTH TRACE] 2026-04-29T02:30:00.973Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69efb85359405a47217433dd - TargetDB: worktrackr_org_brovanta_33dd
 
 [AUTH TRACE] 2026-04-29T02:30:01.093Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-04-29T02:38:49.434Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T02:38:49.446Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T02:38:49.652Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T02:38:49.698Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T02:38:52.818Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T02:38:52.927Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T02:39:05.233Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
+
+[AUTH TRACE] 2026-04-29T02:39:05.484Z - User: suno@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: Main
