@@ -1,7 +1,7 @@
 import React from 'react';
 import { ShieldCheck } from 'lucide-react';
 
-const OrgStatsSidebar = ({ employees, orgName }) => {
+const OrgStatsSidebar = ({ employees, orgName, joinCode }) => {
   const stats = [
     { label: 'Total Staff', value: employees.length, color: 'text-[#0078D4]', bg: 'bg-[#DEECF9]' },
     { label: 'Paid License', value: employees.filter(e => e.isPaid).length, color: 'text-[#107C10]', bg: 'bg-[#DFF6DD]' },
@@ -19,6 +19,13 @@ const OrgStatsSidebar = ({ employees, orgName }) => {
               <span className={`text-sm font-bold ${stat.color}`}>{stat.value}</span>
             </div>
           ))}
+
+          <div className="pt-2 mt-2 border-t border-[#EDEBE9]">
+            <div className="flex flex-col gap-1.5 p-3 rounded-sm bg-[#F3F9FF] border border-[#0078D4]/20">
+              <span className="text-[10px] font-bold text-[#0078D4] uppercase tracking-wider">Secret Code</span>
+              <span className="text-sm font-mono font-bold text-[#323130] tracking-wider">{joinCode || 'N/A'}</span>
+            </div>
+          </div>
         </div>
       </div>
 

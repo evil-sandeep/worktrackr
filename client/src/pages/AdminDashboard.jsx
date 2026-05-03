@@ -17,7 +17,8 @@ const AdminDashboard = () => {
     totalEmployees: 0,
     presentToday: 0,
     absentToday: 0,
-    recentActivity: []
+    recentActivity: [],
+    joinCode: 'N/A'
   });
   const { showLoader, addToast } = useUI();
 
@@ -67,6 +68,22 @@ const AdminDashboard = () => {
           <Activity className="h-4 w-4 text-[#0078D4]" />
           Refresh Metrics
         </button>
+      </div>
+
+      {/* Secret Code Banner */}
+      <div className="bg-[#FAF9F8] border border-[#EDEBE9] px-6 py-3 flex items-center justify-between rounded-sm">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-[#0078D4] bg-opacity-10 rounded-sm">
+            <Activity className="h-4 w-4 text-[#0078D4]" />
+          </div>
+          <div>
+            <p className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider">Organization Secret Code</p>
+            <p className="text-[14px] font-mono font-bold text-[#323130]">{stats.joinCode}</p>
+          </div>
+        </div>
+        <div className="text-right">
+          <p className="text-[10px] text-[#605E5C] italic text-right">Share this code with employees to join your organization during registration.</p>
+        </div>
       </div>
 
       {/* Primary Analytics */}

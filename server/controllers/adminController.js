@@ -130,7 +130,7 @@ const createEmployee = async (req, res) => {
         name: user.name,
         email: user.email,
         phone: user.phone,
-        joinCode: Math.random().toString(36).substring(2, 8).toUpperCase(),
+        joinCode: Math.random().toString(36).substring(2, 10).toUpperCase(),
         status: 'active'
       });
 

@@ -333,11 +333,15 @@ const getAdminDashboardStats = async (req, res) => {
       };
     }));
 
+    const Organization = require('../models/Organization');
+    const orgData = req.user.organizationId ? await Organization.findById(req.user.organizationId) : null;
+
     res.status(200).json({
       totalEmployees,
       presentToday,
       absentToday: totalEmployees - presentToday,
-      recentActivity: activityWithNames
+      recentActivity: activityWithNames,
+      joinCode: orgData ? orgData.joinCode : 'N/A'
     });
   } catch (error) {
     console.error('Admin Stats Error:', error);

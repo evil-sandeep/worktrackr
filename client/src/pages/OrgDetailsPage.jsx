@@ -67,6 +67,7 @@ const OrgDetailsPage = () => {
         <OrgStatsSidebar 
           employees={employees}
           orgName={orgDetails?.name}
+          joinCode={orgDetails?.joinCode}
         />
 
         <EmployeeFleetTable 
