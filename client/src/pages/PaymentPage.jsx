@@ -26,13 +26,17 @@ const PaymentPage = () => {
       return;
     }
 
+    const isOrgActivation = userId === orgId;
+
     initPayment({
       amount: 2000,
       orgName: orgName,
-      userName: user.name,
-      userEmail: user.email,
-      userPhone: user.phone || '9999999999',
+      userName: userName || user?.name || 'Guest User',
+      userEmail: user?.email || 'support@worktrackr.com',
+      userPhone: user?.phone || '9999999999',
       orgId: orgId,
+      type: isOrgActivation ? 'license_activation' : 'employee_activation',
+      targetId: userId,
       onSuccess: (verification) => {
         const details = {
           txnId: verification.paymentId,

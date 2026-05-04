@@ -64,8 +64,9 @@ const verifyPayment = async (req, res) => {
       razorpay_order_id, 
       razorpay_payment_id, 
       razorpay_signature,
-      type, // 'license_activation' or 'other'
-      orgId 
+      type, // 'license_activation' or 'employee_activation'
+      orgId,
+      targetId // The specific user/org ID being activated
     } = req.body;
 
     const body = razorpay_order_id + "|" + razorpay_payment_id;
@@ -82,17 +83,32 @@ const verifyPayment = async (req, res) => {
       
       // If this was for a license activation, update the user/org
       if (type === 'license_activation' && orgId) {
-        const { getTenantDb } = require('../config/tenantConnection');
-        const { getTenantModels } = require('../models/tenantModels');
-        
-        // 1. Find the admin in Main DB
         const admin = await User.findById(orgId);
         if (admin) {
            admin.isPaid = true;
            await admin.save();
-           
-           // 2. If they have a tenant DB, we might want to update something there too?
-           // For now, the 'isPaid' status on the OrgAdmin in Main DB is the source of truth.
+           console.log(`[PAYMENT] Organization ${admin.name} marked as PAID.`);
+        }
+      }
+
+      // If this was for an individual employee activation
+      if (type === 'employee_activation' && targetId && orgId) {
+        const { getTenantDb } = require('../config/tenantConnection');
+        const { getTenantModels } = require('../models/tenantModels');
+        
+        // 1. Get the org admin to find the dbName
+        const admin = await User.findById(orgId);
+        if (admin && admin.dbName) {
+          const connection = await getTenantDb(admin.dbName);
+          const { User: TenantUser } = getTenantModels(connection);
+          
+          // 2. Find and update the employee in their tenant DB
+          const employee = await TenantUser.findById(targetId);
+          if (employee) {
+            employee.isPaid = true;
+            await employee.save();
+            console.log(`[PAYMENT] Employee ${employee.name} in Org ${admin.name} marked as PAID.`);
+          }
         }
       }
 

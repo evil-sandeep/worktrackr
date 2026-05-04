@@ -7,6 +7,10 @@ const useRazorpay = () => {
 
   const loadScript = (src) => {
     return new Promise((resolve) => {
+      if (document.querySelector(`script[src="${src}"]`)) {
+        resolve(true);
+        return;
+      }
       const script = document.createElement('script');
       script.src = src;
       script.onload = () => resolve(true);
@@ -23,7 +27,8 @@ const useRazorpay = () => {
     userPhone,
     onSuccess,
     type = 'license_activation',
-    orgId
+    orgId,
+    targetId
   }) => {
     const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js');
 
@@ -34,12 +39,20 @@ const useRazorpay = () => {
 
     try {
       showLoader(true);
+      console.log(`[PAYMENT] Initiating order for ${amount}...`);
+      
       // 1. Create order on server
       const order = await paymentService.createOrder(amount, `org_${orgId}_${Date.now()}`);
+      console.log(`[PAYMENT] Order created: ${order.id}`);
       showLoader(false);
 
+      if (!import.meta.env.VITE_RAZORPAY_KEY_ID || import.meta.env.VITE_RAZORPAY_KEY_ID.includes('YOUR_KEY_ID')) {
+        addToast('Razorpay Key ID is not configured in client .env', 'error');
+        return;
+      }
+
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID, // Enter the Key ID generated from the Dashboard
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: order.amount,
         currency: order.currency,
         name: "WorkTrackr SaaS",
@@ -49,16 +62,18 @@ const useRazorpay = () => {
         handler: async (response) => {
           try {
             showLoader(true);
-            // 2. Verify payment on server
+            console.log('[PAYMENT] Signature received, verifying...');
             const verification = await paymentService.verifyPayment({
               ...response,
               type,
-              orgId
+              orgId,
+              targetId
             });
             
             addToast('Payment successful and verified!', 'success');
             if (onSuccess) onSuccess(verification);
           } catch (error) {
+            console.error('[PAYMENT] Verification Error:', error);
             addToast(error.response?.data?.message || 'Payment verification failed', 'error');
           } finally {
             showLoader(false);
@@ -70,7 +85,6 @@ const useRazorpay = () => {
           contact: userPhone,
         },
         notes: {
-          address: "WorkTrackr Corporate Office",
           orgId: orgId
         },
         theme: {
@@ -79,14 +93,17 @@ const useRazorpay = () => {
       };
 
       const paymentObject = new window.Razorpay(options);
+      console.log('[PAYMENT] Opening Razorpay modal...');
       paymentObject.open();
       
       paymentObject.on('payment.failed', function (response) {
+        console.error('[PAYMENT] Failed:', response.error);
         addToast(response.error.description, 'error');
       });
 
     } catch (error) {
       showLoader(false);
+      console.error('[PAYMENT] Error:', error);
       addToast(error.response?.data?.message || 'Failed to initiate payment', 'error');
     }
   }, [addToast, showLoader]);

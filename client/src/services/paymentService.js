@@ -1,24 +1,12 @@
-import axios from 'axios';
-
-const API_URL = '/api/payment';
+import api from './api';
 
 const createOrder = async (amount, receipt) => {
-  const token = localStorage.getItem('token');
-  const response = await axios.post(`${API_URL}/order`, { amount, receipt }, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  });
+  const response = await api.post('/payment/order', { amount, receipt });
   return response.data;
 };
 
 const verifyPayment = async (paymentData) => {
-  const token = localStorage.getItem('token');
-  const response = await axios.post(`${API_URL}/verify`, paymentData, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  });
+  const response = await api.post('/payment/verify', paymentData);
   return response.data;
 };
 
