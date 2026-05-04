@@ -1,7 +1,9 @@
 import React from 'react';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, Zap } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-const OrgStatsSidebar = ({ employees, orgName, joinCode }) => {
+const OrgStatsSidebar = ({ employees, orgName, joinCode, isPaid, orgId }) => {
+  const navigate = useNavigate();
   const stats = [
     { label: 'Total Staff', value: employees.length, color: 'text-[#0078D4]', bg: 'bg-[#DEECF9]' },
     { label: 'Paid License', value: employees.filter(e => e.isPaid).length, color: 'text-[#107C10]', bg: 'bg-[#DFF6DD]' },
@@ -28,6 +30,19 @@ const OrgStatsSidebar = ({ employees, orgName, joinCode }) => {
           </div>
         </div>
       </div>
+
+      {!isPaid && (
+        <button 
+          onClick={() => navigate(`/payment?orgId=${orgId}&orgName=${encodeURIComponent(orgName)}&userId=${orgId}&userName=${encodeURIComponent(orgName)}`)}
+          className="w-full bg-[#107C10] p-4 text-white rounded-sm shadow-md flex items-center justify-between hover:bg-[#0B590B] transition-all group"
+        >
+          <div className="flex flex-col items-start">
+             <span className="text-[10px] font-bold uppercase opacity-80">Organization Status</span>
+             <span className="text-sm font-bold">Activate Premium</span>
+          </div>
+          <Zap className="h-5 w-5 group-hover:scale-110 transition-transform" />
+        </button>
+      )}
 
       <div className="bg-[#0078D4] p-6 rounded-sm text-white shadow-md relative group overflow-hidden border border-[#005A9E]">
         <ShieldCheck className="h-8 w-8 text-white/30 mb-3" />

@@ -1,9 +1,9 @@
-import React, { useState, useRef } from 'react';
-import { CreditCard, ShieldCheck, AlertTriangle, ArrowRight, LogOut, CheckCircle2, IndianRupee, Printer, Download, Globe, Hash } from 'lucide-react';
+import React, { useState } from 'react';
+import { CreditCard, ShieldCheck, ArrowRight, CheckCircle2, Printer } from 'lucide-react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
-import adminService from '../services/adminService';
 import { useUI } from '../context/UIContext';
+import useRazorpay from '../hooks/useRazorpay';
 
 const PaymentPage = () => {
   const [searchParams] = useSearchParams();
@@ -11,6 +11,7 @@ const PaymentPage = () => {
   const { addToast, showLoader } = useUI();
   const [isSuccess, setIsSuccess] = useState(false);
   const [txnDetails, setTxnDetails] = useState(null);
+  const { initPayment } = useRazorpay();
   
   const userId = searchParams.get('userId');
   const userName = searchParams.get('userName');
@@ -25,26 +26,25 @@ const PaymentPage = () => {
       return;
     }
 
-    showLoader(true);
-    try {
-      await adminService.markAsPaid(userId, orgId);
-      
-      const details = {
-        txnId: `WT-TXN-${Math.random().toString(36).toUpperCase().substring(2, 12)}`,
-        date: new Date().toLocaleDateString(),
-        time: new Date().toLocaleTimeString(),
-        amount: '₹2,000.00',
-        status: 'SUCCESS'
-      };
-      
-      setTxnDetails(details);
-      setIsSuccess(true);
-      addToast(`Payment of ₹2,000 for ${userName} successful`, 'success');
-    } catch (error) {
-      addToast(error.response?.data?.message || 'Payment failed', 'error');
-    } finally {
-      showLoader(false);
-    }
+    initPayment({
+      amount: 2000,
+      orgName: orgName,
+      userName: user.name,
+      userEmail: user.email,
+      userPhone: user.phone || '9999999999',
+      orgId: orgId,
+      onSuccess: (verification) => {
+        const details = {
+          txnId: verification.paymentId,
+          date: new Date().toLocaleDateString(),
+          time: new Date().toLocaleTimeString(),
+          amount: '₹2,000.00',
+          status: 'SUCCESS'
+        };
+        setTxnDetails(details);
+        setIsSuccess(true);
+      }
+    });
   };
 
   const handlePrint = () => {

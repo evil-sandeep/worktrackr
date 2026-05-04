@@ -39,6 +39,7 @@ app.use('/api/location', locationRoutes);
 app.use('/api/checkin', checkInRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/visit', require('./routes/visitRoutes'));
+app.use('/api/payment', require('./routes/paymentRoutes'));
 
 // Global Error Handler
 app.use((err, req, res, next) => {

@@ -68,6 +68,8 @@ const OrgDetailsPage = () => {
           employees={employees}
           orgName={orgDetails?.name}
           joinCode={orgDetails?.joinCode}
+          isPaid={orgDetails?.isPaid}
+          orgId={orgId}
         />
 
         <EmployeeFleetTable 
