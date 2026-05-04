@@ -251,9 +251,10 @@ const updateEmployee = async (req, res) => {
 
     if (user) {
       console.log(`[AUTH DEBUG] updateEmployee: User ${user.name} found. Applying updates...`);
-      const { name, phone, address, designation, role, salary, isPaid, password } = req.body;
+      const { name, email, phone, address, designation, role, salary, isPaid, password } = req.body;
 
       if (name) user.name = name;
+      if (email) user.email = email;
       if (phone) user.phone = phone;
       if (address) user.address = address;
       if (designation) user.designation = designation;

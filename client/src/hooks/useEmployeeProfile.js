@@ -15,6 +15,7 @@ const useEmployeeProfile = (employeeId, initialEmployee, orgId) => {
     role: initialEmployee?.role || 'employee',
     salary: initialEmployee?.salary || 0,
     isPaid: initialEmployee?.isPaid || false,
+    email: initialEmployee?.email || '',
     password: ''
   });
   
@@ -36,6 +37,7 @@ const useEmployeeProfile = (employeeId, initialEmployee, orgId) => {
           role: data.role,
           salary: data.salary || 0,
           isPaid: data.isPaid || false,
+          email: data.email || '',
           password: ''
         });
       } catch (err) {

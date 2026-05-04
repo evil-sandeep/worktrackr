@@ -198,6 +198,16 @@ const ProfileSection = ({ employee, formData, onFormChange, onUpdate, onDelete, 
 
           <div className="space-y-3">
             <div className="space-y-1.5">
+              <label className="text-[10px] font-semibold text-[#605E5C] uppercase tracking-wider">Email Address</label>
+              <input 
+                name="email" 
+                value={formData.email} 
+                onChange={onFormChange} 
+                placeholder="Email Address" 
+                className="w-full px-3 py-2 bg-white border border-[#8A8886] rounded-sm font-semibold text-xs text-[#323130] focus:border-[#0078D4] outline-none" 
+              />
+            </div>
+            <div className="space-y-1.5">
               <label className="text-[10px] font-semibold text-[#605E5C] uppercase tracking-wider">Contact Endpoint</label>
               <input 
                 name="phone" 
