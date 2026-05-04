@@ -31,11 +31,6 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: 'Please add all required fields' });
     }
 
-    const userExists = await User.findOne({ $or: [{ email }, { empId }] });
-    if (userExists) {
-      return res.status(400).json({ message: 'User with this email or Employee ID already exists' });
-    }
-
     // Automatically set superadmin role for admin@worktrackr.com
     let assignedRole = 'employee';
     if (email.toLowerCase() === 'admin@worktrackr.com') {
@@ -45,15 +40,46 @@ const registerUser = async (req, res) => {
     }
 
     let assignedOrgId = undefined;
+    let targetDbName = null;
+
+    // Handle Organization Secret Code
     if (assignedRole === 'employee' && secretCode) {
       const Organization = require('../models/Organization');
-      const org = await Organization.findOne({ joinCode: secretCode.trim() });
+      const org = await Organization.findOne({ joinCode: secretCode.trim().toUpperCase() });
+      
       if (org) {
-        assignedOrgId = org._id;
+        // Find the orgadmin to get their dbName and ID
+        const adminUser = await User.findOne({ organizationId: org._id, role: { $in: ['orgadmin', 'admin'] } });
+        if (adminUser) {
+          assignedOrgId = adminUser._id; // Use Admin's User ID as organizationId for consistency
+          targetDbName = adminUser.dbName;
+          console.log(`[REGISTER DEBUG] Secret code matched org: ${org.name}. Target Admin: ${adminUser.name}, DB: ${targetDbName}`);
+        } else {
+          console.warn(`[REGISTER DEBUG] Org ${org.name} found but no admin associated.`);
+          // Fallback to org ID if admin not found (though should not happen)
+          assignedOrgId = org._id;
+        }
+      } else {
+        return res.status(400).json({ message: 'Invalid organization secret code. Please verify and try again.' });
       }
     }
 
-    const user = await User.create({
+    // Check if user exists in the TARGET database
+    let UserContext = User; // Default to Main DB User model
+    if (targetDbName) {
+      const { getTenantDb } = require('../config/tenantConnection');
+      const { getTenantModels } = require('../models/tenantModels');
+      const connection = await getTenantDb(targetDbName);
+      const { User: TenantUser } = getTenantModels(connection);
+      UserContext = TenantUser;
+    }
+
+    const userExists = await UserContext.findOne({ $or: [{ email }, { empId }] });
+    if (userExists) {
+      return res.status(400).json({ message: 'User with this email or Employee ID already exists in this system' });
+    }
+
+    const user = await UserContext.create({
       name,
       email,
       phone,
@@ -70,12 +96,14 @@ const registerUser = async (req, res) => {
         email: user.email,
         empId: user.empId,
         role: user.role,
-        token: generateToken(user._id, user.dbName),
+        organizationId: user.organizationId,
+        token: generateToken(user._id, targetDbName || user.dbName),
       });
     } else {
       res.status(400).json({ message: 'Invalid user data received' });
     }
   } catch (error) {
+    console.error('Registration Error:', error);
     res.status(500).json({ message: error.message });
   }
 };
