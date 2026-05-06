@@ -45,7 +45,7 @@ const OrgDetailsPage = () => {
   }, [orgId]);
 
   const handlePay = (emp) => {
-    navigate(`/payment?userId=${emp._id}&userName=${encodeURIComponent(emp.name)}`);
+    navigate(`/payment?userId=${emp._id}&userName=${encodeURIComponent(emp.name)}&orgId=${orgId}&orgName=${encodeURIComponent(orgDetails?.name || 'Organization')}&empId=${emp.empId || ''}`);
   };
 
   const filteredEmployees = employees.filter(emp => 

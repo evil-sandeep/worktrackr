@@ -42,7 +42,7 @@ const useRazorpay = () => {
       console.log(`[PAYMENT] Initiating order for ${amount}...`);
       
       // 1. Create order on server
-      const order = await paymentService.createOrder(amount, `org_${orgId}_${Date.now()}`);
+      const order = await paymentService.createOrder(amount, `rcpt_${Date.now()}`);
       console.log(`[PAYMENT] Order created: ${order.id}`);
       showLoader(false);
 

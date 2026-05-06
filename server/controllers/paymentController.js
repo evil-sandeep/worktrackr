@@ -4,14 +4,22 @@ const User = require('../models/User');
 
 let razorpay;
 try {
-  if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
+  const keyId = process.env.RAZORPAY_KEY_ID;
+  const keySecret = process.env.RAZORPAY_KEY_SECRET;
+
+  const isConfigured = keyId && 
+                       keySecret && 
+                       !keyId.includes('YOUR_KEY_ID') && 
+                       !keySecret.includes('YOUR_KEY_SECRET');
+
+  if (isConfigured) {
     razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID,
-      key_secret: process.env.RAZORPAY_KEY_SECRET,
+      key_id: keyId,
+      key_secret: keySecret,
     });
     console.log('[PAYMENT] Razorpay initialized successfully.');
   } else {
-    console.warn('[PAYMENT] Razorpay keys missing in .env. Payment features will be disabled.');
+    console.warn('[PAYMENT] Razorpay keys missing or using placeholders in .env. Payment features will be disabled.');
   }
 } catch (error) {
   console.error('[PAYMENT] Razorpay initialization failed:', error.message);
@@ -23,7 +31,10 @@ try {
 const createOrder = async (req, res) => {
   try {
     if (!razorpay) {
-      return res.status(500).json({ message: 'Razorpay gateway is not configured on the server. Please check environment variables.' });
+      console.error('[PAYMENT] createOrder failed: Razorpay not configured.');
+      return res.status(500).json({ 
+        message: 'Razorpay gateway is not configured on the server. Please check your .env file for RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET.' 
+      });
     }
 
     const { amount, currency = 'INR', receipt } = req.body;
@@ -33,21 +44,31 @@ const createOrder = async (req, res) => {
     }
 
     const options = {
-      amount: amount * 100, // amount in smallest currency unit (paise for INR)
+      amount: Math.round(amount * 100), // amount in smallest currency unit (paise for INR)
       currency,
       receipt: receipt || `receipt_${Date.now()}`,
     };
 
+    console.log(`[PAYMENT] Creating Razorpay order with options:`, JSON.stringify(options));
     const order = await razorpay.orders.create(options);
 
     if (!order) {
-      return res.status(500).json({ message: 'Failed to create Razorpay order' });
+      console.error('[PAYMENT] Razorpay API returned null/undefined order');
+      throw new Error('Razorpay API returned an empty order object');
     }
 
+    console.log(`[PAYMENT] Razorpay order created successfully: ${order.id}`);
     res.status(200).json(order);
   } catch (error) {
-    console.error('Razorpay Order Error:', error);
-    res.status(500).json({ message: error.message });
+    console.error('[PAYMENT] Razorpay Order Error Detail:', error);
+    
+    // Razorpay error response usually has error.error.description
+    const errorMsg = error.error?.description || error.description || error.message || 'Failed to create payment order';
+    
+    res.status(500).json({ 
+      message: errorMsg,
+      error: error
+    });
   }
 };
 
@@ -83,11 +104,23 @@ const verifyPayment = async (req, res) => {
       
       // If this was for a license activation, update the user/org
       if (type === 'license_activation' && orgId) {
-        const admin = await User.findById(orgId);
+        // Try finding the admin by their User ID first
+        let admin = await User.findById(orgId);
+        
+        // If not found or not an admin, try finding the org admin user by their organizationId
+        if (!admin || (admin.role !== 'orgadmin' && admin.role !== 'admin')) {
+           admin = await User.findOne({ 
+             organizationId: orgId, 
+             role: { $in: ['orgadmin', 'admin'] }
+           });
+        }
+
         if (admin) {
            admin.isPaid = true;
            await admin.save();
-           console.log(`[PAYMENT] Organization ${admin.name} marked as PAID.`);
+           console.log(`[PAYMENT] Organization admin ${admin.name} (ID: ${admin._id}) marked as PAID.`);
+        } else {
+           console.warn(`[PAYMENT] Could not resolve organization admin for license activation with ID ${orgId}.`);
         }
       }
 
@@ -96,19 +129,45 @@ const verifyPayment = async (req, res) => {
         const { getTenantDb } = require('../config/tenantConnection');
         const { getTenantModels } = require('../models/tenantModels');
         
-        // 1. Get the org admin to find the dbName
-        const admin = await User.findById(orgId);
+        // 1. Try to update in Main DB first (in case it's a global identity)
+        const mainEmployee = await User.findById(targetId);
+        if (mainEmployee) {
+          mainEmployee.isPaid = true;
+          await mainEmployee.save();
+          console.log(`[PAYMENT] Employee ${mainEmployee.name} (ID: ${targetId}) found in MAIN DB and marked as PAID.`);
+        }
+
+        // 2. Resolve the organization's database name
+        // Try finding the admin by their User ID first
+        let admin = await User.findById(orgId).select('dbName name');
+        
+        // If not found or no dbName, try finding the org admin user by their organizationId
+        if (!admin || !admin.dbName) {
+           admin = await User.findOne({ 
+             organizationId: orgId, 
+             role: { $in: ['orgadmin', 'admin'] }
+           }).select('dbName name');
+        }
+
         if (admin && admin.dbName) {
-          const connection = await getTenantDb(admin.dbName);
-          const { User: TenantUser } = getTenantModels(connection);
-          
-          // 2. Find and update the employee in their tenant DB
-          const employee = await TenantUser.findById(targetId);
-          if (employee) {
-            employee.isPaid = true;
-            await employee.save();
-            console.log(`[PAYMENT] Employee ${employee.name} in Org ${admin.name} marked as PAID.`);
+          try {
+            console.log(`[PAYMENT] Accessing Tenant DB: ${admin.dbName} for employee activation...`);
+            const connection = await getTenantDb(admin.dbName);
+            const { User: TenantUser } = getTenantModels(connection);
+            
+            const tenantEmployee = await TenantUser.findById(targetId);
+            if (tenantEmployee) {
+              tenantEmployee.isPaid = true;
+              await tenantEmployee.save();
+              console.log(`[PAYMENT] Employee ${tenantEmployee.name} (ID: ${targetId}) found in TENANT DB (${admin.dbName}) and marked as PAID.`);
+            } else if (!mainEmployee) {
+              console.warn(`[PAYMENT] Employee ID ${targetId} not found in Tenant DB or Main DB.`);
+            }
+          } catch (dbError) {
+            console.error(`[PAYMENT] Error accessing tenant DB ${admin.dbName}:`, dbError.message);
           }
+        } else if (!mainEmployee) {
+          console.warn(`[PAYMENT] Could not resolve tenant database for Org/Admin ID ${orgId}.`);
         }
       }
 
