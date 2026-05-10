@@ -64,6 +64,17 @@ const registerUser = async (req, res) => {
       }
     }
 
+    // Fallback: If employee registration without secret code, link to Super Admin
+    if (assignedRole === 'employee' && !assignedOrgId) {
+      const superAdmin = await User.findOne({ email: 'admin@worktrackr.com' });
+      if (superAdmin) {
+        assignedOrgId = superAdmin._id;
+        console.log(`[REGISTER DEBUG] Guest employee registration. Linking to Super Admin: ${superAdmin.name}`);
+      } else {
+        console.warn(`[REGISTER DEBUG] Guest registration attempted but Super Admin (admin@worktrackr.com) not found in DB.`);
+      }
+    }
+
     // Check if user exists in the TARGET database
     let UserContext = User; // Default to Main DB User model
     if (targetDbName) {
@@ -103,8 +114,15 @@ const registerUser = async (req, res) => {
       res.status(400).json({ message: 'Invalid user data received' });
     }
   } catch (error) {
-    console.error('Registration Error:', error);
-    res.status(500).json({ message: error.message });
+    console.error('[REGISTRATION ERROR DETAILED]', {
+      message: error.message,
+      stack: error.stack,
+      body: { ...req.body, password: '***' }
+    });
+    res.status(500).json({ 
+      message: error.message,
+      details: process.env.NODE_ENV === 'development' ? error.errors : undefined
+    });
   }
 };
 
