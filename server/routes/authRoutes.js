@@ -3,6 +3,7 @@ const router = express.Router();
 const { 
   registerUser, 
   loginUser, 
+  getUserProfile,
   updateUserProfile, 
   getEmployees,
   updateEmployee,
@@ -31,6 +32,10 @@ router.get('/organizations', getPublicOrganizations);
 // @route   POST /api/auth/login
 // @desc    Authenticate a user
 router.post('/login', loginUser);
+
+// @route   GET /api/auth/profile
+// @desc    Get user profile
+router.get('/profile', protect, getUserProfile);
 
 // @route   PUT /api/auth/profile
 // @desc    Update user profile

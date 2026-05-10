@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CreditCard, ShieldCheck, ArrowRight, CheckCircle2, Printer } from 'lucide-react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
@@ -13,12 +13,31 @@ const PaymentPage = () => {
   const [txnDetails, setTxnDetails] = useState(null);
   const { initPayment } = useRazorpay();
   
-  const userId = searchParams.get('userId');
-  const userName = searchParams.get('userName');
-  const orgId = searchParams.get('orgId');
-  const orgName = searchParams.get('orgName') || 'WorkTrackr Cloud';
-  const empId = searchParams.get('empId') || 'N/A';
   const user = authService.getCurrentUser();
+
+  useEffect(() => {
+    const checkStatus = async () => {
+      try {
+        const profile = await authService.getProfile();
+        if (profile.isPaid) {
+          addToast('Account is already activated!', 'success');
+          navigate(profile.role === 'employee' ? '/employee/dashboard' : '/orgadmin/dashboard');
+        }
+      } catch (err) {
+        console.error('Failed to sync profile on payment page', err);
+      }
+    };
+    
+    if (user) {
+      checkStatus();
+    }
+  }, []);
+  
+  const userId = searchParams.get('userId') || user?._id;
+  const userName = searchParams.get('userName') || user?.name;
+  const orgId = searchParams.get('orgId') || user?.organizationId;
+  const orgName = searchParams.get('orgName') || user?.organizationName || 'WorkTrackr Cloud';
+  const empId = searchParams.get('empId') || user?.empId || 'N/A';
 
   const handlePayment = async () => {
     if (!userId) {
@@ -47,6 +66,12 @@ const PaymentPage = () => {
         };
         setTxnDetails(details);
         setIsSuccess(true);
+        
+        // Update local user status if the payment was for the current user
+        if (userId === user?._id) {
+          const updatedUser = { ...user, isPaid: true };
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+        }
       }
     });
   };
@@ -120,7 +145,7 @@ const PaymentPage = () => {
                   Print Receipt
                </button>
                <button 
-                  onClick={() => navigate('/orgadmin/dashboard')}
+                  onClick={() => navigate(user?.role === 'employee' ? '/employee/dashboard' : '/orgadmin/dashboard')}
                   className="flex-1 py-3 bg-[#0078D4] text-white rounded-sm font-bold text-[11px] uppercase tracking-widest hover:bg-[#005A9E] transition-all flex items-center justify-center gap-2"
                >
                   Continue to Dashboard

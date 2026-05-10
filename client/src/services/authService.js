@@ -27,6 +27,13 @@ const getCurrentUser = () => {
   return JSON.parse(localStorage.getItem('user'));
 };
 
+const getProfile = async () => {
+  const response = await api.get('/auth/profile');
+  const currentUser = getCurrentUser();
+  localStorage.setItem('user', JSON.stringify({ ...currentUser, ...response.data }));
+  return response.data;
+};
+
 const updateProfile = async (userData) => {
   const response = await api.put('/auth/profile', userData);
   if (response.data.token) {
@@ -58,6 +65,7 @@ const authService = {
   register,
   logout,
   getCurrentUser,
+  getProfile,
   updateProfile,
   verifyUser,
   resetPassword,

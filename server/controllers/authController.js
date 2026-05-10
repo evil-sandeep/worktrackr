@@ -247,6 +247,19 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
+// @desc    Get current user profile
+const getUserProfile = async (req, res) => {
+  try {
+    if (req.user) {
+      res.json(req.user);
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // @desc    Update employee (Admin Only)
 const updateEmployee = async (req, res) => {
   try {
@@ -466,6 +479,7 @@ const resetPassword = async (req, res) => {
 module.exports = {
   registerUser,
   loginUser,
+  getUserProfile,
   updateUserProfile,
   getEmployees,
   updateEmployee,
