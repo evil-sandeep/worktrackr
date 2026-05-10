@@ -2316,3 +2316,37 @@ MongoServerSelectionError: getaddrinfo ENOTFOUND ac-sve3w3s-shard-00-00.w2qh5ki.
 [AUTH TRACE] 2026-05-10T23:32:34.560Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: 69f712941e39150172232776 - TargetDB: worktrackr_org_sahoo_org_2776
 
 [AUTH TRACE] 2026-05-10T23:32:34.580Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: 69f712941e39150172232776 - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:47:53.274Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-05-10T23:47:53.546Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-05-10T23:47:58.609Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-05-10T23:48:02.047Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-05-10T23:48:02.457Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-05-10T23:48:04.777Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-05-10T23:48:05.037Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-05-10T23:48:05.285Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-05-10T23:48:07.660Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-05-10T23:48:07.919Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-05-10T23:48:08.158Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-05-10T23:48:12.628Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-05-10T23:48:22.536Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-05-10T23:48:43.100Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-05-10T23:48:51.323Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-05-10T23:48:51.567Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd
+
+[AUTH TRACE] 2026-05-10T23:48:55.587Z - User: sandeep@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_brovanta_33dd

@@ -21,9 +21,20 @@ const markAttendance = async (req, res) => {
     }
 
     const now = new Date();
-    const serverToday = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+    // Use ISO string to get YYYY-MM-DD safely
+    const serverToday = now.toISOString().split('T')[0];
+    
+    // Calculate yesterday and tomorrow to allow for timezone differences
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const serverYesterday = yesterday.toISOString().split('T')[0];
+    
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const serverTomorrow = tomorrow.toISOString().split('T')[0];
 
-    if (date !== serverToday) {
+    // Allow the client's local date as long as it's within 1 day of the server's UTC date
+    if (date !== serverToday && date !== serverYesterday && date !== serverTomorrow) {
       return res.status(400).json({ message: 'Backdated attendance is not allowed. Capture today only.' });
     }
 
@@ -129,9 +140,19 @@ const markCheckout = async (req, res) => {
     }
 
     const now = new Date();
-    const serverToday = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+    // Use ISO string to get YYYY-MM-DD safely
+    const serverToday = now.toISOString().split('T')[0];
+    
+    // Calculate yesterday and tomorrow to allow for timezone differences
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const serverYesterday = yesterday.toISOString().split('T')[0];
+    
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const serverTomorrow = tomorrow.toISOString().split('T')[0];
 
-    if (date !== serverToday) {
+    if (date !== serverToday && date !== serverYesterday && date !== serverTomorrow) {
       return res.status(400).json({ message: 'Backdated checkout is not allowed.' });
     }
 
