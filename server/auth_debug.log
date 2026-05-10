@@ -1914,3 +1914,29 @@ MongoServerSelectionError: getaddrinfo ENOTFOUND ac-sve3w3s-shard-00-00.w2qh5ki.
 [AUTH TRACE] 2026-05-10T16:36:38.917Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
 
 [AUTH TRACE] 2026-05-10T16:36:39.102Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-05-10T16:38:11.776Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-05-10T16:38:12.492Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-05-10T16:38:17.203Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69d5013866d534240634c8aa - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-05-10T16:38:17.720Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-05-10T16:38:17.920Z - User: admin@worktrackr.com - Role: superadmin - OrgId: 69d5013866d534240634c8aa - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-05-10T16:38:18.634Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-05-10T16:38:22.536Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-05-10T16:38:23.344Z - User: admin@worktrackr.com - Role: superadmin - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-05-10T16:45:54.823Z - User: vmjdskkmg@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-05-10T16:45:56.766Z - User: vmjdskkmg@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-05-10T16:46:06.928Z - User: vmjdskkmg@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-05-10T16:46:36.918Z - User: vmjdskkmg@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-05-10T16:46:37.615Z - User: vmjdskkmg@gmail.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa

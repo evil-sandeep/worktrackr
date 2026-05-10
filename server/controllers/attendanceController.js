@@ -12,6 +12,14 @@ const markAttendance = async (req, res) => {
 
     const userId = req.user ? req.user._id.toString() : req.body.userId;
 
+    // PAYMENT RESTRICTION: Employees cannot check-in until they have paid 2000 units
+    if (req.user && req.user.role === 'employee' && !req.user.isPaid) {
+      return res.status(403).json({ 
+        message: 'CHECK-IN RESTRICTED: Full account activation (2000 Units) required. Please contact your administrator.',
+        isPaymentRequired: true 
+      });
+    }
+
     const now = new Date();
     const serverToday = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
 

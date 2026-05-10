@@ -1,12 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react';
 import attendanceService from '../services/attendanceService';
 import { useUI } from '../context/UIContext';
-import { 
-  Camera, 
-  MapPin, 
-  Loader2, 
-  CheckCircle, 
-  AlertCircle, 
+import {
+  Camera,
+  MapPin,
+  Loader2,
+  CheckCircle,
+  AlertCircle,
   ArrowRight,
   LogOut,
   LogIn,
@@ -50,16 +50,16 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
       if (data.status === 'OK' && data.results.length > 0) {
         const result = data.results[0];
         const formattedAddress = result.formatted_address;
-        
+
         let city = '';
         let state = '';
         result.address_components.forEach(component => {
           if (component.types.includes('locality')) city = component.long_name;
           if (component.types.includes('administrative_area_level_1')) state = component.short_name || component.long_name;
         });
-        
+
         const shortAddress = [city, state].filter(Boolean).join(', ') || formattedAddress.split(',').slice(0, 2).join(',');
-        
+
         setAddress(shortAddress);
         setFullAddress(formattedAddress);
       }
@@ -120,12 +120,12 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
 
     const canvas = canvasRef.current;
     const video = videoRef.current;
-    
+
     canvas.width = 1280;
     canvas.height = 720;
-    
+
     const context = canvas.getContext('2d');
-    
+
     context.save();
     context.scale(-1, 1);
     context.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
@@ -141,11 +141,11 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
     const dateStr = currentTime.toLocaleDateString();
     const timeStr = currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const locStr = address ? address : `LOC: ${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`;
-    
+
     context.fillText(`${dateStr} | ${timeStr}`, 40, canvas.height - 60);
     context.font = '18px Inter, sans-serif';
     context.fillText(locStr, 40, canvas.height - 30);
-    
+
     context.fillStyle = mode === 'checkin' ? '#3b82f6' : '#f43f5e';
     context.fillRect(canvas.width - 240, canvas.height - 70, 200, 40);
     context.fillStyle = 'white';
@@ -173,7 +173,7 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
       } else {
         await attendanceService.markCheckout(capturedData);
       }
-      
+
       addToast(`${mode === 'checkin' ? 'Check-In' : 'Check-Out'} logged successfully!`, 'success');
       addNotification(
         mode === 'checkin' ? 'Check-in Verified' : 'Check-out Success',
@@ -206,36 +206,56 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
       <div className="relative flex-1 w-full bg-[#11100F] rounded-sm overflow-hidden shadow-xl border border-[#EDEBE9] group min-h-0 min-w-[300px]">
         {!isCameraActive && !capturedImage ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center space-y-8 bg-[#FAF9F8]">
-             <div className="relative group/btn cursor-pointer" onClick={startCamera}>
-                {/* Azure Pulse Effect */}
-                <div className={`absolute inset-0 ${mode === 'checkin' ? 'bg-[#0078D4]/10' : 'bg-[#E81123]/10'} rounded-full blur-2xl animate-pulse transition-all duration-700`}></div>
-                
-                <button 
-                  className={`relative w-24 h-24 sm:w-28 sm:h-28 ${mode === 'checkin' ? 'bg-[#0078D4]' : 'bg-[#E81123]'} text-white rounded-sm flex items-center justify-center transform group-hover/btn:scale-105 transition-all duration-300 shadow-lg`}
-                >
-                   {mode === 'checkin' ? (
-                     <LogIn className="h-10 w-10 sm:h-12 sm:w-12" />
-                   ) : (
-                     <LogOut className="h-10 w-10 sm:h-12 sm:w-12" />
-                   )}
-                </button>
-             </div>
+            <div
+              className={`relative group/btn ${!userData?.isPaid && userData?.role === 'employee' ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+              onClick={() => {
+                if (!userData?.isPaid && userData?.role === 'employee') {
+                  addToast('Payment Required: 2000 Units needed for full activation.', 'warning');
+                  return;
+                }
+                startCamera();
+              }}
+            >
+              {/* Azure Pulse Effect */}
+              <div className={`absolute inset-0 ${mode === 'checkin' ? 'bg-[#0078D4]/10' : 'bg-[#E81123]/10'} rounded-full blur-2xl animate-pulse transition-all duration-700`}></div>
 
-             <div className="space-y-2">
-               <h3 className={`text-lg font-bold uppercase tracking-tight ${mode === 'checkin' ? 'text-[#0078D4]' : 'text-[#E81123]'}`}>
-                 {mode === 'checkin' ? 'Initialize Ingress' : 'Initialize Egress'}
-               </h3>
-               <p className="text-[#605E5C] text-[10px] font-semibold uppercase tracking-wider leading-relaxed">
-                 Biometric Identity Verification Required
-               </p>
-             </div>
+              <button
+                disabled={!userData?.isPaid && userData?.role === 'employee'}
+                className={`relative w-24 h-24 sm:w-28 sm:h-28 ${mode === 'checkin' ? 'bg-[#0078D4]' : 'bg-[#E81123]'} text-white rounded-sm flex items-center justify-center transform ${!userData?.isPaid && userData?.role === 'employee' ? '' : 'group-hover/btn:scale-105'} transition-all duration-300 shadow-lg`}
+              >
+                {mode === 'checkin' ? (
+                  <LogIn className="h-10 w-10 sm:h-12 sm:w-12" />
+                ) : (
+                  <LogOut className="h-10 w-10 sm:h-12 sm:w-12" />
+                )}
+              </button>
+            </div>
+
+            {/* Payment Requirement Message */}
+            {!userData?.isPaid && userData?.role === 'employee' && (
+              <div className="flex items-center gap-2 px-4 py-2 bg-amber-50 border border-amber-200 rounded-sm text-amber-700 text-xs font-bold animate-in slide-in-from-bottom-2 duration-500">
+                <ShieldCheck className="h-3.5 w-3.5" />
+                PAYMENT REQUIRED: CONTACT ADMIN
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <h3 className={`text-lg font-bold uppercase tracking-tight ${mode === 'checkin' ? 'text-[#0078D4]' : 'text-[#E81123]'}`}>
+                {mode === 'checkin' ? 'Initialize Ingress' : 'Initialize Egress'}
+              </h3>
+              <p className="text-[#605E5C] text-[10px] font-semibold uppercase tracking-wider leading-relaxed">
+                {!userData?.isPaid && userData?.role === 'employee'
+                  ? 'Full Identity Activation Required'
+                  : 'Biometric Identity Verification Required'}
+              </p>
+            </div>
           </div>
         ) : capturedImage ? (
           <div className="relative w-full h-full animate-in fade-in duration-500">
-            <img 
-              src={capturedImage} 
-              alt="captured" 
-              className="w-full h-full object-cover" 
+            <img
+              src={capturedImage}
+              alt="captured"
+              className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-black/40 flex flex-col justify-end p-6">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-sm border border-[#EDEBE9] shadow-2xl">
@@ -243,7 +263,7 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
                   <div className="w-8 h-8 bg-[#DFF6DD] rounded-sm flex items-center justify-center border border-[#107C10]/20">
                     <CheckCircle className="h-4 w-4 text-[#107C10]" />
                   </div>
-                   <div>
+                  <div>
                     <h4 className="text-[#323130] font-bold text-[11px] tracking-tight">Telemetry Captured</h4>
                     <p className="text-[#605E5C] text-[9px] font-bold uppercase tracking-wider">{currentTime.toLocaleTimeString()}</p>
                   </div>
@@ -252,7 +272,7 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
                   <button onClick={resetCapture} className="flex-1 sm:flex-initial px-4 py-1.5 bg-[#F3F2F1] hover:bg-[#EDEBE9] text-[#323130] rounded-sm font-bold text-[10px] uppercase tracking-wider transition-all border border-[#D2D0CE]">
                     Discard
                   </button>
-                  <button 
+                  <button
                     onClick={handleUpload}
                     className={`flex-1 sm:flex-initial px-6 py-1.5 ${mode === 'checkin' ? 'bg-[#0078D4] hover:bg-[#005A9E]' : 'bg-[#E81123] hover:bg-[#A80000]'} text-white rounded-sm font-bold text-[10px] uppercase tracking-wider shadow-sm transition-all flex items-center justify-center gap-2`}
                   >
@@ -277,33 +297,33 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
 
             {/* Viewfinder Overlay - Azure Professional Style */}
             <div className="absolute inset-0 pointer-events-none">
-               <div className="w-full h-full relative">
-                  {/* Digital Grid */}
-                  <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[length:40px_40px]"></div>
-                  
-                  {/* Precision Corners */}
-                  <div className="absolute top-8 left-8 w-8 h-8 border-t border-l border-[#0078D4]"></div>
-                  <div className="absolute top-8 right-8 w-8 h-8 border-t border-r border-[#0078D4]"></div>
-                  <div className="absolute bottom-8 left-8 w-8 h-8 border-b border-l border-[#0078D4]"></div>
-                  <div className="absolute bottom-8 right-8 w-8 h-8 border-b border-r border-[#0078D4]"></div>
-                  
-                  {/* Central Reticle */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border border-white/10 rounded-sm">
-                     <div className="absolute top-1/2 left-0 right-0 h-px bg-white/5"></div>
-                     <div className="absolute top-0 bottom-0 left-1/2 w-px bg-white/5"></div>
-                  </div>
-               </div>
+              <div className="w-full h-full relative">
+                {/* Digital Grid */}
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[length:40px_40px]"></div>
+
+                {/* Precision Corners */}
+                <div className="absolute top-8 left-8 w-8 h-8 border-t border-l border-[#0078D4]"></div>
+                <div className="absolute top-8 right-8 w-8 h-8 border-t border-r border-[#0078D4]"></div>
+                <div className="absolute bottom-8 left-8 w-8 h-8 border-b border-l border-[#0078D4]"></div>
+                <div className="absolute bottom-8 right-8 w-8 h-8 border-b border-r border-[#0078D4]"></div>
+
+                {/* Central Reticle */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border border-white/10 rounded-sm">
+                  <div className="absolute top-1/2 left-0 right-0 h-px bg-white/5"></div>
+                  <div className="absolute top-0 bottom-0 left-1/2 w-px bg-white/5"></div>
+                </div>
+              </div>
             </div>
 
             {!isCameraReady && (
               <div className="absolute inset-0 flex items-center justify-center bg-[#11100F]">
-                 <div className="flex flex-col items-center gap-4">
-                   <Loader2 className="h-8 w-8 text-[#0078D4] animate-spin" />
-                   <span className="text-white font-bold text-[9px] tracking-widest uppercase opacity-60">Initializing Azure Lens...</span>
-                 </div>
+                <div className="flex flex-col items-center gap-4">
+                  <Loader2 className="h-8 w-8 text-[#0078D4] animate-spin" />
+                  <span className="text-white font-bold text-[9px] tracking-widest uppercase opacity-60">Initializing Azure Lens...</span>
+                </div>
               </div>
             )}
-            
+
             {isCameraReady && !capturedImage && (
               <div className="absolute inset-x-0 bottom-0 p-6 flex flex-col sm:flex-row items-center justify-between gap-4 pointer-events-none z-20">
                 <div className="flex-shrink-0 px-3 py-1 bg-black/60 rounded-sm border border-white/10 flex items-center gap-2">
@@ -314,9 +334,9 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
                 </div>
 
                 <div className="pointer-events-auto">
-                  <button 
-                     onClick={handleCapture}
-                     className="group relative w-16 h-16 rounded-full border border-white/40 flex items-center justify-center bg-white/10 hover:bg-white/20 transition-all active:scale-90"
+                  <button
+                    onClick={handleCapture}
+                    className="group relative w-16 h-16 rounded-full border border-white/40 flex items-center justify-center bg-white/10 hover:bg-white/20 transition-all active:scale-90"
                   >
                     <div className={`w-12 h-12 rounded-full ${mode === 'checkin' ? 'bg-[#0078D4]' : 'bg-[#E81123]'} flex items-center justify-center`}>
                       <Camera className="h-6 w-6 text-white" />
@@ -326,8 +346,8 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
 
                 <div className="flex-shrink-0 px-3 py-1 bg-black/60 rounded-sm border border-white/10 flex items-center gap-2 max-w-[150px]">
                   <MapPin className="h-3 w-3 text-[#0078D4]" />
-                   <span className="text-[9px] font-bold text-white/80 uppercase tracking-wider truncate">
-                     {address ? 'SIGNAL_LOCKED' : 'SYNCING GPS...'}
+                  <span className="text-[9px] font-bold text-white/80 uppercase tracking-wider truncate">
+                    {address ? 'SIGNAL_LOCKED' : 'SYNCING GPS...'}
                   </span>
                 </div>
               </div>
@@ -336,8 +356,8 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
             {isCameraActive && !capturedImage && (
               <div className="absolute top-6 right-6">
                 <div className="px-3 py-1 bg-[#E81123] rounded-sm flex items-center gap-2 shadow-lg">
-                   <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
-                    <span className="text-[8px] font-bold text-white uppercase tracking-widest">Live Remote Auth</span>
+                  <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
+                  <span className="text-[8px] font-bold text-white uppercase tracking-widest">Live Remote Auth</span>
                 </div>
               </div>
             )}
