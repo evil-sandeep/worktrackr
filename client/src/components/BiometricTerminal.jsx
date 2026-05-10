@@ -42,26 +42,42 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
 
   const fetchAddress = async (lat, lon) => {
     try {
+      let fetchedShortAddress = '';
+      let fetchedFullAddress = '';
+
+      // 1. Try Google Maps First
       const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=${apiKey}`
-      );
-      const data = await response.json();
-      if (data.status === 'OK' && data.results.length > 0) {
-        const result = data.results[0];
-        const formattedAddress = result.formatted_address;
+      if (apiKey) {
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=${apiKey}`
+        );
+        const data = await response.json();
+        if (data.status === 'OK' && data.results.length > 0) {
+          const result = data.results[0];
+          fetchedFullAddress = result.formatted_address;
+          fetchedShortAddress = fetchedFullAddress.split(',').slice(0, 3).join(','); // Get exact location parts
+        } else {
+          console.warn('Google Maps Geocoding failed:', data.status, data.error_message);
+        }
+      }
 
-        let city = '';
-        let state = '';
-        result.address_components.forEach(component => {
-          if (component.types.includes('locality')) city = component.long_name;
-          if (component.types.includes('administrative_area_level_1')) state = component.short_name || component.long_name;
+      // 2. Fallback to OpenStreetMap Nominatim if Google Maps failed or is missing
+      if (!fetchedShortAddress) {
+        console.log('Falling back to OpenStreetMap Geocoding...');
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`, {
+          headers: { 'Accept-Language': 'en-US,en' }
         });
+        const data = await res.json();
+        if (data && data.display_name) {
+          fetchedFullAddress = data.display_name;
+          // Extract a nice exact location (e.g. first 3 parts of the address)
+          fetchedShortAddress = data.display_name.split(',').slice(0, 3).join(','); 
+        }
+      }
 
-        const shortAddress = [city, state].filter(Boolean).join(', ') || formattedAddress.split(',').slice(0, 2).join(',');
-
-        setAddress(shortAddress);
-        setFullAddress(formattedAddress);
+      if (fetchedShortAddress) {
+        setAddress(fetchedShortAddress.trim());
+        setFullAddress(fetchedFullAddress.trim());
       }
     } catch (err) {
       console.error('Reverse Geocoding Error:', err);
@@ -140,11 +156,18 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
     const dateISO = formatDateKey(currentTime);
     const dateStr = currentTime.toLocaleDateString();
     const timeStr = currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const locStr = address ? address : `LOC: ${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`;
+    
+    // Prioritize the exact full location name. Fall back to coordinates only if both APIs fail.
+    let locStr = fullAddress ? fullAddress : (address ? address : `LOC: ${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`);
+    
+    // Truncate if it's exceptionally long to prevent canvas overflow (though 1280px is wide)
+    if (locStr.length > 90) {
+      locStr = locStr.substring(0, 87) + '...';
+    }
 
     context.fillText(`${dateStr} | ${timeStr}`, 40, canvas.height - 60);
     context.font = '18px Inter, sans-serif';
-    context.fillText(locStr, 40, canvas.height - 30);
+    context.fillText(`📍 ${locStr}`, 40, canvas.height - 30);
 
     context.fillStyle = mode === 'checkin' ? '#3b82f6' : '#f43f5e';
     context.fillRect(canvas.width - 240, canvas.height - 70, 200, 40);
