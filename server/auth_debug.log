@@ -2236,3 +2236,83 @@ MongoServerSelectionError: getaddrinfo ENOTFOUND ac-sve3w3s-shard-00-00.w2qh5ki.
 [AUTH TRACE] 2026-05-10T23:23:22.935Z - User: test_fresh@example.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
 
 [AUTH TRACE] 2026-05-10T23:23:23.178Z - User: test_fresh@example.com - Role: employee - OrgId: undefined - TargetDB: worktrackr_org_super_admin_c8aa
+
+[AUTH TRACE] 2026-05-10T23:26:30.671Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:26:30.735Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:26:31.119Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:26:31.309Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:29:51.956Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:29:51.962Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:29:52.127Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:29:52.321Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:29:54.462Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:29:54.988Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:30:00.323Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:30:00.333Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:30:00.509Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:30:00.696Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:30:09.447Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:30:09.527Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:30:12.073Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:30:46.123Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:30:48.979Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:30:48.995Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:30:49.338Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:30:49.452Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:30:52.598Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:30:52.765Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:31:31.059Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:31:34.205Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:31:34.245Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:31:34.331Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:31:35.842Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:32:02.310Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:32:10.014Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:32:10.022Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:32:10.401Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:32:10.564Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:32:13.531Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:32:13.721Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: undefined - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:32:34.398Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: 69f712941e39150172232776 - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:32:34.401Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: 69f712941e39150172232776 - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:32:34.560Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: 69f712941e39150172232776 - TargetDB: worktrackr_org_sahoo_org_2776
+
+[AUTH TRACE] 2026-05-10T23:32:34.580Z - User: sahoo@gmail.com - Role: orgadmin - OrgId: 69f712941e39150172232776 - TargetDB: worktrackr_org_sahoo_org_2776

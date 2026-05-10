@@ -85,9 +85,39 @@ const registerUser = async (req, res) => {
       UserContext = TenantUser;
     }
 
-    const userExists = await UserContext.findOne({ $or: [{ email }, { empId }] });
-    if (userExists) {
-      return res.status(400).json({ message: 'User with this email or Employee ID already exists in this system' });
+    // 1. Check if EMAIL exists GLOBALLY
+    // Step A: Check Main DB
+    let existingUser = await User.findOne({ email });
+    
+    // Step B: If not in Main DB, check all Tenant DBs
+    if (!existingUser) {
+      const { getTenantDb } = require('../config/tenantConnection');
+      const { getTenantModels } = require('../models/tenantModels');
+      const orgsWithDBs = await User.find({ role: 'orgadmin', dbName: { $ne: null } }).select('dbName');
+      
+      for (const org of orgsWithDBs) {
+        try {
+          const connection = await getTenantDb(org.dbName);
+          const { User: TenantUser } = getTenantModels(connection);
+          const tenantUser = await TenantUser.findOne({ email });
+          if (tenantUser) {
+            existingUser = tenantUser;
+            break;
+          }
+        } catch (err) {
+          console.error(`Error checking email in tenant DB ${org.dbName}:`, err.message);
+        }
+      }
+    }
+
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email address is already registered in the WorkTrackr platform.' });
+    }
+
+    // 2. Check if EMP ID exists in the target database
+    const empIdExists = await UserContext.findOne({ empId });
+    if (empIdExists) {
+      return res.status(400).json({ message: `Employee ID "${empId}" is already assigned to another user in this organization.` });
     }
 
     const user = await UserContext.create({
