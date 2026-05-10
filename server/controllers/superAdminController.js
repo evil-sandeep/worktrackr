@@ -223,6 +223,86 @@ const revokeAdminPermission = async (req, res) => {
   }
 };
 
+// @desc    Get all employees who are not assigned to a specific organization (ghost employees)
+// @route   GET /api/admin/super/unassigned-employees
+// @access  Private/SuperAdmin
+const getUnassignedEmployees = async (req, res) => {
+  try {
+    const superAdmin = await User.findOne({ email: 'admin@worktrackr.com' });
+    if (!superAdmin) {
+      return res.status(404).json({ message: 'Super Admin reference not found' });
+    }
+
+    // Unassigned employees are those whose organizationId is the Super Admin's ID
+    const employees = await User.find({ 
+      role: 'employee', 
+      organizationId: superAdmin._id 
+    }).select('-password');
+    
+    res.json(employees);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Assign a ghost employee to a specific organization
+// @route   PUT /api/admin/super/assign-employee
+// @access  Private/SuperAdmin
+const assignEmployeeToOrg = async (req, res) => {
+  const { employeeId, targetAdminId } = req.body;
+  
+  if (!employeeId || !targetAdminId) {
+    return res.status(400).json({ message: 'Employee ID and Target Admin ID are required' });
+  }
+
+  try {
+    const { getTenantDb } = require('../config/tenantConnection');
+    const { getTenantModels } = require('../models/tenantModels');
+
+    // 1. Find the target admin
+    const targetAdmin = await User.findById(targetAdminId);
+    if (!targetAdmin || (targetAdmin.role !== 'orgadmin' && targetAdmin.role !== 'admin')) {
+      return res.status(404).json({ message: 'Target Organization Admin not found' });
+    }
+
+    // 2. Find the employee in the Main DB
+    const employee = await User.findById(employeeId);
+    if (!employee || employee.role !== 'employee') {
+      return res.status(404).json({ message: 'Employee not found in Main Database' });
+    }
+
+    // 3. Update organizationId (use target admin's ID for consistency with your employee lookup pattern)
+    employee.organizationId = targetAdmin._id;
+    
+    // 4. Handle Tenant DB migration if the target org uses a separate database
+    if (targetAdmin.dbName) {
+      console.log(`[MIGRATION] Moving user ${employee.email} to tenant DB: ${targetAdmin.dbName}`);
+      const connection = await getTenantDb(targetAdmin.dbName);
+      const { User: TenantUser } = getTenantModels(connection);
+
+      // Check if user already exists in Tenant DB to avoid duplicates
+      const existingTenantUser = await TenantUser.findOne({ email: employee.email });
+      if (!existingTenantUser) {
+        const userData = employee.toObject();
+        await TenantUser.create(userData);
+      }
+
+      // Delete from Main DB once moved (or if already there)
+      await User.deleteOne({ _id: employee._id });
+      console.log(`[MIGRATION] User moved successfully.`);
+    } else {
+      // Just save the updated organizationId in Main DB
+      await employee.save();
+      console.log(`[MIGRATION] User organization updated in Main DB.`);
+    }
+
+    res.json({ message: `Employee ${employee.name} successfully assigned to ${targetAdmin.name}'s organization.` });
+  } catch (error) {
+    console.error('Assignment Error:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getSuperAdminStats,
   getOrganizations,
@@ -230,4 +310,6 @@ module.exports = {
   deleteOrganization,
   grantAdminPermission,
   revokeAdminPermission,
+  getUnassignedEmployees,
+  assignEmployeeToOrg
 };

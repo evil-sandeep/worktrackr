@@ -13,6 +13,8 @@ const {
   deleteOrganization,
   grantAdminPermission,
   revokeAdminPermission,
+  getUnassignedEmployees,
+  assignEmployeeToOrg
 } = require('../controllers/superAdminController');
 const { protect, admin, superAdmin } = require('../middleware/authMiddleware');
 
@@ -23,6 +25,8 @@ router.put('/super/organizations/:id', protect, superAdmin, updateOrganization);
 router.delete('/super/organizations/:id', protect, superAdmin, deleteOrganization);
 router.put('/super/organizations/:id/grant-admin', protect, superAdmin, grantAdminPermission);
 router.put('/super/organizations/:id/revoke-admin', protect, superAdmin, revokeAdminPermission);
+router.get('/super/unassigned-employees', protect, superAdmin, getUnassignedEmployees);
+router.put('/super/assign-employee', protect, superAdmin, assignEmployeeToOrg);
 
 // --- ADMIN ROUTES ---
 // @route   GET /api/admin/employees

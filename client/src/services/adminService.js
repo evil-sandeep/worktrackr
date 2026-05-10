@@ -78,6 +78,16 @@ const revokeAdmin = async (id) => {
   return response.data;
 };
 
+const getUnassignedEmployees = async () => {
+  const response = await api.get('/admin/super/unassigned-employees');
+  return response.data;
+};
+
+const assignEmployeeToOrg = async (assignmentData) => {
+  const response = await api.put('/admin/super/assign-employee', assignmentData);
+  return response.data;
+};
+
 // --- NEW MODULAR USER ENDPOINTS ---
 const getEmployeesByOrg = async (orgId) => {
   const response = await api.get(`/users/org/${orgId}/employees`);
@@ -113,6 +123,8 @@ const adminService = {
   getEmployeesByOrg,
   createOrgEmployee,
   markAsPaid,
+  getUnassignedEmployees,
+  assignEmployeeToOrg
 };
 
 export default adminService;

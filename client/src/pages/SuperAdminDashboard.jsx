@@ -9,6 +9,7 @@ import DashboardStats from '../components/SuperAdmin/DashboardStats';
 import OrganizationTable from '../components/SuperAdmin/OrganizationTable';
 import AddOrganizationModal from '../components/SuperAdmin/AddOrganizationModal';
 import OrganizationDetailModal from '../components/Admin/OrganizationDetailModal';
+import GhostEmployeeManager from '../components/SuperAdmin/GhostEmployeeManager';
 
 const SuperAdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -82,6 +83,12 @@ const SuperAdminDashboard = () => {
 
       {/* Stats Snapshot */}
       <DashboardStats stats={stats} />
+
+      {/* Ghost Employee Management */}
+      <GhostEmployeeManager 
+        organizations={organizations} 
+        onAssignmentSuccess={fetchData} 
+      />
 
       {/* Main Content Area */}
       <div className="space-y-4">
