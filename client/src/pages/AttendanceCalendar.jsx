@@ -6,6 +6,7 @@ import attendanceService from '../services/attendanceService';
 import authService from '../services/authService';
 import { useUI } from '../context/UIContext';
 import { formatDateKey } from '../components/Calendar/useCalendar';
+import PaymentBlock from '../components/PaymentBlock';
 import { 
   CheckCircle2, 
   AlertCircle, 
@@ -124,6 +125,23 @@ const AttendanceCalendar = () => {
     setSelectedLogDate(dateKey);
     setIsLogModalOpen(true);
   };
+
+  if (user?.role === 'employee' && !user?.isPaid) {
+    return (
+      <div className="flex-1 h-full flex flex-col p-4 bg-[#F3F2F1]">
+         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#EDEBE9] pb-4 bg-white -mx-6 -mt-6 px-6 py-4 mb-4 shadow-sm">
+            <div className="space-y-1">
+              <h1 className="text-[20px] font-semibold text-[#323130] tracking-tight">Resource Attendance Log</h1>
+              <p className="text-[11px] font-bold text-[#605E5C] uppercase tracking-wider">Telemtry Access Restricted</p>
+            </div>
+          </div>
+          <PaymentBlock 
+            title="Attendance Log Locked" 
+            message="Your attendance history and telemetry logs are restricted until full account activation." 
+          />
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 h-full flex flex-col p-4 pb-2 overflow-hidden bg-[#F3F2F1] relative animate-in fade-in duration-300">

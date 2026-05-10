@@ -1,10 +1,34 @@
 import React from 'react';
 import VisitFlow from '../components/VisitFlow/VisitFlow';
 import authService from '../services/authService';
+import PaymentBlock from '../components/PaymentBlock';
 import { Store, ShieldCheck, Activity, Globe, Info } from 'lucide-react';
 
 const StoreVisit = () => {
     const user = authService.getCurrentUser();
+
+    if (user?.role === 'employee' && !user?.isPaid) {
+        return (
+            <div className="min-h-screen bg-[#FAF9F8] p-6 space-y-6">
+                <div className="bg-white border border-[#EDEBE9] p-6 shadow-sm rounded-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="space-y-1">
+                        <div className="flex items-center gap-2 text-[#0078D4] text-[12px] font-semibold uppercase tracking-wider mb-1">
+                            <Globe className="h-3 w-3" />
+                            Operational Identity Hub
+                        </div>
+                        <h1 className="text-[28px] font-semibold text-[#323130] tracking-tight leading-tight">
+                            Site Operational Audit
+                        </h1>
+                        <p className="text-[14px] text-[#605E5C]">Audit sequences are currently locked.</p>
+                    </div>
+                </div>
+                <PaymentBlock 
+                    title="Audit Capability Locked" 
+                    message="Store visits and site audit protocols are restricted until full account activation." 
+                />
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-[#FAF9F8] p-6 space-y-6 animate-in fade-in duration-500 font-sans">

@@ -135,6 +135,22 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                 <p className="px-6 text-[11px] font-semibold text-[#605e5c] uppercase tracking-wider mb-2">Staff Hub</p>
                 {menuItems.filter(item => ['Dashboard', 'Calendar', 'Store Visit'].includes(item.name)).map((item) => {
                   const isActive = location.pathname === item.path;
+                  const isDisabled = ['Calendar', 'Store Visit'].includes(item.name) && !user.isPaid;
+                  
+                  if (isDisabled) {
+                    return (
+                      <div
+                        key={item.name}
+                        className="flex items-center gap-3 px-6 py-2.5 text-[#A19F9D] cursor-not-allowed opacity-60"
+                        title="Payment required for full activation"
+                      >
+                        <item.icon className="h-4 w-4" />
+                        <span className="text-[13px] font-medium">{item.name}</span>
+                        <Shield className="h-3 w-3 ml-auto text-amber-500" />
+                      </div>
+                    );
+                  }
+
                   return (
                     <Link
                       key={item.name}

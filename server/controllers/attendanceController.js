@@ -74,6 +74,14 @@ const getAttendanceByUserId = async (req, res) => {
     const { userId } = req.params;
     const { month, year } = req.query;
 
+    // PAYMENT RESTRICTION: Employees cannot view attendance logs until they have paid
+    if (req.user && req.user.role === 'employee' && !req.user.isPaid) {
+      return res.status(403).json({ 
+        message: 'CALENDAR RESTRICTED: Full account activation (2000 Units) required.',
+        isPaymentRequired: true 
+      });
+    }
+
     if (!userId) {
       return res.status(400).json({ message: 'User ID is required' });
     }

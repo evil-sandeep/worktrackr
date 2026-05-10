@@ -5,6 +5,14 @@ const startVisit = async (req, res) => {
     const { latitude, longitude } = req.body;
     const employeeId = req.user._id;
 
+    // PAYMENT RESTRICTION: Employees cannot perform store visits until they have paid
+    if (req.user && req.user.role === 'employee' && !req.user.isPaid) {
+      return res.status(403).json({ 
+        message: 'STORE VISIT RESTRICTED: Full account activation (2000 Units) required.',
+        isPaymentRequired: true 
+      });
+    }
+
     if (latitude === undefined || longitude === undefined) {
       return res.status(400).json({ message: 'Latitude and longitude are required to start a visit.' });
     }
