@@ -5,12 +5,14 @@ const startVisit = async (Visit, employeeId, latitude, longitude) => {
   // Resolve address in background or await if needed for consistency
   // Awaiting here to ensure the record is complete upon return
   const address = await reverseGeocode(latitude, longitude);
+  const date = new Date().toISOString().split('T')[0];
 
   const visit = await Visit.create({
     employeeId,
     latitude,
     longitude,
-    address
+    address,
+    date
   });
   
   return visit;
@@ -50,10 +52,10 @@ const getVisits = async (Visit, employeeId, dateStr) => {
     const endOfDay = new Date(startOfDay);
     endOfDay.setDate(endOfDay.getDate() + 1);
 
-    query.createdAt = {
-      $gte: startOfDay,
-      $lt: endOfDay
-    };
+    query.$or = [
+      { date: dateStr },
+      { createdAt: { $gte: startOfDay, $lt: endOfDay } }
+    ];
   }
 
   const visits = await Visit.find(query).sort({ createdAt: -1 });

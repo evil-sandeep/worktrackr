@@ -18,7 +18,7 @@ import {
 import adminService from '../../services/adminService';
 import TrackingMap from './TrackingMap';
 
-const AdminVisitView = ({ employeeId }) => {
+const AdminVisitView = ({ employeeId, orgId }) => {
   const [data, setData] = useState({ visits: [], locations: [], checkIns: [] });
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(null); // { url, label }
@@ -35,7 +35,7 @@ const AdminVisitView = ({ employeeId }) => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await adminService.getDailyTracking(employeeId, selectedDate);
+        const response = await adminService.getDailyTracking(employeeId, selectedDate, orgId);
         if (response.success) {
           setData(response.data);
         }

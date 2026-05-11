@@ -30,6 +30,9 @@ const visitSchema = new mongoose.Schema({
     type: String, // Resolved street address
     default: null,
   },
+  date: {
+    type: String, // Format: YYYY-MM-DD
+  },
   createdAt: {
     type: Date,
     default: Date.now,

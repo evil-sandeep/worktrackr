@@ -150,7 +150,7 @@ const EmployeeDetailModal = ({ employee: initialEmployee, orgId: propOrgId, onCl
                      </div>
                   </div>
                 ) : (
-                  <AdminVisitView employeeId={employee._id} />
+                  <AdminVisitView employeeId={employee._id} orgId={effectiveOrgId} />
                 )}
               </div>
 

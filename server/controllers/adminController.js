@@ -203,7 +203,10 @@ const getEmployeeDailyTracking = async (req, res) => {
 
     const visitRangeQuery = {
       employeeId: id,
-      createdAt: { $gte: startOfDay, $lte: endOfDay }
+      $or: [
+        { date: date },
+        { createdAt: { $gte: startOfDay, $lte: endOfDay } }
+      ]
     };
 
     const [locations, checkIns, visits, summary] = await Promise.all([
