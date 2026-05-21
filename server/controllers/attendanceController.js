@@ -12,8 +12,8 @@ const markAttendance = async (req, res) => {
 
     const userId = req.user ? req.user._id.toString() : req.body.userId;
 
-    // PAYMENT RESTRICTION: Employees cannot check-in until they have paid 2000 units
-    if (req.user && req.user.role === 'employee' && !req.user.isPaid) {
+    // PAYMENT RESTRICTION: Employees with an organization cannot check-in until they have paid 2000 units
+    if (req.user && req.user.role === 'employee' && req.user.organizationId && !req.user.isPaid) {
       return res.status(403).json({ 
         message: 'CHECK-IN RESTRICTED: Full account activation (2000 Units) required. Please contact your administrator.',
         isPaymentRequired: true 
@@ -85,8 +85,8 @@ const getAttendanceByUserId = async (req, res) => {
     const { userId } = req.params;
     const { month, year } = req.query;
 
-    // PAYMENT RESTRICTION: Employees cannot view attendance logs until they have paid
-    if (req.user && req.user.role === 'employee' && !req.user.isPaid) {
+    // PAYMENT RESTRICTION: Employees with an organization cannot view attendance logs until they have paid
+    if (req.user && req.user.role === 'employee' && req.user.organizationId && !req.user.isPaid) {
       return res.status(403).json({ 
         message: 'CALENDAR RESTRICTED: Full account activation (2000 Units) required.',
         isPaymentRequired: true 

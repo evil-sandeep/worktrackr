@@ -126,7 +126,7 @@ const AttendanceCalendar = () => {
     setIsLogModalOpen(true);
   };
 
-  if (user?.role === 'employee' && !user?.isPaid) {
+  if (user?.role === 'employee' && user?.organizationId && !user?.isPaid) {
     return (
       <div className="flex-1 h-full flex flex-col p-4 bg-[#F3F2F1]">
          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#EDEBE9] pb-4 bg-white -mx-6 -mt-6 px-6 py-4 mb-4 shadow-sm">

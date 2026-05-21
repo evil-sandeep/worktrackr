@@ -131,6 +131,26 @@ const registerUser = async (req, res) => {
     });
 
     if (user) {
+      if (assignedRole === 'orgadmin') {
+        // Create actual Organization record
+        const Organization = require('../models/Organization');
+        const org = await Organization.create({
+          name: user.name,
+          email: user.email,
+          phone: user.phone,
+          joinCode: Math.random().toString(36).substring(2, 10).toUpperCase(),
+          orgId: `ORG-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+          status: 'active'
+        });
+
+        user.organizationId = org._id;
+        // Generate unique DB name: worktrackr_org_<sanitized_name>_<short_id>
+        const sanitizedName = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+        const shortId = user._id.toString().slice(-4);
+        user.dbName = `worktrackr_org_${sanitizedName}_${shortId}`;
+        await user.save();
+      }
+
       res.status(201).json({
         _id: user._id,
         name: user.name,

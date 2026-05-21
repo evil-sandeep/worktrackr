@@ -5,8 +5,8 @@ const startVisit = async (req, res) => {
     const { latitude, longitude } = req.body;
     const employeeId = req.user._id;
 
-    // PAYMENT RESTRICTION: Employees cannot perform store visits until they have paid
-    if (req.user && req.user.role === 'employee' && !req.user.isPaid) {
+    // PAYMENT RESTRICTION: Employees with an organization cannot perform store visits until they have paid
+    if (req.user && req.user.role === 'employee' && req.user.organizationId && !req.user.isPaid) {
       return res.status(403).json({ 
         message: 'STORE VISIT RESTRICTED: Full account activation (2000 Units) required.',
         isPaymentRequired: true 

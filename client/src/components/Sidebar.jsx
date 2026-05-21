@@ -135,7 +135,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                 <p className="px-6 text-[11px] font-semibold text-[#605e5c] uppercase tracking-wider mb-2">Staff Hub</p>
                 {menuItems.filter(item => ['Dashboard', 'Calendar', 'Store Visit'].includes(item.name)).map((item) => {
                   const isActive = location.pathname === item.path;
-                  const isDisabled = ['Calendar', 'Store Visit'].includes(item.name) && !user.isPaid;
+                  const isDisabled = ['Calendar', 'Store Visit'].includes(item.name) && user.organizationId && !user.isPaid;
                   
                   if (isDisabled) {
                     return (

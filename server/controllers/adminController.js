@@ -131,6 +131,7 @@ const createEmployee = async (req, res) => {
         email: user.email,
         phone: user.phone,
         joinCode: Math.random().toString(36).substring(2, 10).toUpperCase(),
+        orgId: `ORG-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
         status: 'active'
       });
 

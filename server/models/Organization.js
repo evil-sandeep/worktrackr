@@ -18,6 +18,10 @@ const organizationSchema = new mongoose.Schema({
     unique: true,
     sparse: true,
   },
+  orgId: {
+    type: String,
+    unique: true,
+  },
   status: {
     type: String,
     enum: ['active', 'inactive'],

@@ -230,9 +230,9 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
         {!isCameraActive && !capturedImage ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center space-y-8 bg-[#FAF9F8]">
             <div
-              className={`relative group/btn ${!userData?.isPaid && userData?.role === 'employee' ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+              className={`relative group/btn ${userData?.organizationId && !userData?.isPaid && userData?.role === 'employee' ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
               onClick={() => {
-                if (!userData?.isPaid && userData?.role === 'employee') {
+                if (userData?.organizationId && !userData?.isPaid && userData?.role === 'employee') {
                   addToast('Payment Required: 2000 Units needed for full activation.', 'warning');
                   return;
                 }
@@ -243,8 +243,8 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
               <div className={`absolute inset-0 ${mode === 'checkin' ? 'bg-[#0078D4]/10' : 'bg-[#E81123]/10'} rounded-full blur-2xl animate-pulse transition-all duration-700`}></div>
 
               <button
-                disabled={!userData?.isPaid && userData?.role === 'employee'}
-                className={`relative w-24 h-24 sm:w-28 sm:h-28 ${mode === 'checkin' ? 'bg-[#0078D4]' : 'bg-[#E81123]'} text-white rounded-sm flex items-center justify-center transform ${!userData?.isPaid && userData?.role === 'employee' ? '' : 'group-hover/btn:scale-105'} transition-all duration-300 shadow-lg`}
+                disabled={userData?.organizationId && !userData?.isPaid && userData?.role === 'employee'}
+                className={`relative w-24 h-24 sm:w-28 sm:h-28 ${mode === 'checkin' ? 'bg-[#0078D4]' : 'bg-[#E81123]'} text-white rounded-sm flex items-center justify-center transform ${userData?.organizationId && !userData?.isPaid && userData?.role === 'employee' ? '' : 'group-hover/btn:scale-105'} transition-all duration-300 shadow-lg`}
               >
                 {mode === 'checkin' ? (
                   <LogIn className="h-10 w-10 sm:h-12 sm:w-12" />
@@ -255,7 +255,7 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
             </div>
 
             {/* Payment Requirement Message */}
-            {!userData?.isPaid && userData?.role === 'employee' && (
+            {userData?.organizationId && !userData?.isPaid && userData?.role === 'employee' && (
               <div className="flex items-center gap-2 px-4 py-2 bg-amber-50 border border-amber-200 rounded-sm text-amber-700 text-xs font-bold animate-in slide-in-from-bottom-2 duration-500">
                 <ShieldCheck className="h-3.5 w-3.5" />
                 PAYMENT REQUIRED: CONTACT ADMIN
@@ -267,7 +267,7 @@ const BiometricTerminal = ({ mode = 'checkin', onSuccess }) => {
                 {mode === 'checkin' ? 'Initialize Ingress' : 'Initialize Egress'}
               </h3>
               <p className="text-[#605E5C] text-[10px] font-semibold uppercase tracking-wider leading-relaxed">
-                {!userData?.isPaid && userData?.role === 'employee'
+                {userData?.organizationId && !userData?.isPaid && userData?.role === 'employee'
                   ? 'Full Identity Activation Required'
                   : 'Biometric Identity Verification Required'}
               </p>

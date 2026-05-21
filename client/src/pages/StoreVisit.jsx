@@ -7,7 +7,7 @@ import { Store, ShieldCheck, Activity, Globe, Info } from 'lucide-react';
 const StoreVisit = () => {
     const user = authService.getCurrentUser();
 
-    if (user?.role === 'employee' && !user?.isPaid) {
+    if (user?.role === 'employee' && user?.organizationId && !user?.isPaid) {
         return (
             <div className="min-h-screen bg-[#FAF9F8] p-6 space-y-6">
                 <div className="bg-white border border-[#EDEBE9] p-6 shadow-sm rounded-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
