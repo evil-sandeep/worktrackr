@@ -220,9 +220,11 @@ const loginUser = async (req, res) => {
     if (user && isMatch) {
       // For employees in tenant DBs, they might not have dbName on their record, 
       // but we resolved it during login from the organization.
-      if (!resolvedDbName && user.organizationId) {
-        const org = await User.findById(user.organizationId).select('dbName');
-        resolvedDbName = org?.dbName;
+      let organizationName = 'Direct Parent (System)';
+      if (user.organizationId) {
+        const org = await User.findById(user.organizationId).select('dbName name');
+        if (!resolvedDbName) resolvedDbName = org?.dbName;
+        if (org) organizationName = org.name;
       }
 
       res.json({
@@ -232,6 +234,7 @@ const loginUser = async (req, res) => {
         empId: user.empId,
         role: user.role,
         organizationId: user.organizationId,
+        organizationName,
         isPaid: user.isPaid,
         status: user.status,
         token: generateToken(user._id, resolvedDbName),
@@ -302,7 +305,15 @@ const updateUserProfile = async (req, res) => {
 const getUserProfile = async (req, res) => {
   try {
     if (req.user) {
-      res.json(req.user);
+      let organizationName = 'Direct Parent (System)';
+      if (req.user.organizationId) {
+        const MainUser = require('../models/User');
+        const org = await MainUser.findById(req.user.organizationId).select('name');
+        if (org) organizationName = org.name;
+      }
+      
+      const userObj = { ...req.user._doc || req.user, organizationName };
+      res.json(userObj);
     } else {
       res.status(404).json({ message: 'User not found' });
     }
@@ -358,18 +369,26 @@ const updateEmployee = async (req, res) => {
 // @desc    Delete employee (Admin Only)
 const deleteEmployee = async (req, res) => {
   try {
-    const { User: TenantUser, Attendance: TenantAttendance } = req.tenantModels || {};
+    const { User: TenantUser, Attendance: TenantAttendance, CheckIn: TenantCheckIn, LocationLog: TenantLocationLog, DailySummary: TenantDailySummary, Visit: TenantVisit } = req.tenantModels || {};
     const MainUser = require('../models/User');
     const MainAttendance = require('../models/Attendance');
+    const MainCheckIn = require('../models/CheckIn');
+    const MainLocationLog = require('../models/LocationLog');
+    const MainDailySummary = require('../models/DailySummary');
+    const MainVisit = require('../models/Visit');
     
     let user = null;
     let UserModel = null;
+    let isTenant = false;
     
     // 1. Try finding in Tenant DB if available
     if (TenantUser) {
       console.log(`[AUTH DEBUG] deleteEmployee: Searching in TENANT DB: ${TenantUser.db.name}`);
       user = await TenantUser.findById(req.params.id);
-      UserModel = TenantUser;
+      if (user) {
+        UserModel = TenantUser;
+        isTenant = true;
+      }
     }
     
     // 2. Fallback to Main DB
@@ -380,13 +399,31 @@ const deleteEmployee = async (req, res) => {
     }
 
     if (user) {
-      console.log(`[AUTH DEBUG] deleteEmployee: User ${user.name} found. Deleting...`);
-      // Also delete all attendance associated with this user
-      const AttendanceModel = TenantAttendance || MainAttendance;
-      await AttendanceModel.deleteMany({ userId: user._id });
+      console.log(`[AUTH DEBUG] deleteEmployee: User ${user.name} found. Deleting all records...`);
+      const empIdStr = user._id.toString();
+
+      // Delete from the DB where the user was found
+      const AttModel = isTenant ? TenantAttendance : MainAttendance;
+      const CIModel = isTenant ? TenantCheckIn : MainCheckIn;
+      const LLModel = isTenant ? TenantLocationLog : MainLocationLog;
+      const DSModel = isTenant ? TenantDailySummary : MainDailySummary;
+      const VModel = isTenant ? TenantVisit : MainVisit;
+
+      await AttModel.deleteMany({ userId: user._id });
+      await CIModel.deleteMany({ userId: user._id });
+      await LLModel.deleteMany({ employeeId: empIdStr });
+      await DSModel.deleteMany({ employeeId: empIdStr });
+      await VModel.deleteMany({ employeeId: empIdStr });
       
       await UserModel.deleteOne({ _id: user._id });
-      res.json({ message: 'User and associated data removed' });
+
+      // Also clean from Main DB if deleted from Tenant (in case of duplicates)
+      if (isTenant) {
+        await MainUser.deleteOne({ _id: user._id });
+        await MainAttendance.deleteMany({ userId: user._id });
+      }
+
+      res.json({ message: 'User and all associated data removed' });
     } else {
       res.status(404).json({ message: 'Identity not found in any database domain' });
     }

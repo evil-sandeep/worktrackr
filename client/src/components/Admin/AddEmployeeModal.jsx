@@ -208,7 +208,6 @@ const AddEmployeeModal = ({ isOpen, onClose, onSuccess, organizations = [], orgI
               onChange={handleChange}
             >
               <option value="employee">Standard Employee</option>
-              <option value="admin">System Admin</option>
               <option value="orgadmin">Organization Admin</option>
             </select>
           </div>

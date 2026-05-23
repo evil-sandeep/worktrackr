@@ -121,18 +121,50 @@ const deleteOrganization = async (req, res) => {
 
     const Attendance = require('../models/Attendance');
     const CheckIn = require('../models/CheckIn');
+    const LocationLog = require('../models/LocationLog');
+    const DailySummary = require('../models/DailySummary');
+    const Visit = require('../models/Visit');
 
     // CASE 1: Deleting an Organization (Admin/OrgAdmin)
     if (userToDelete.role === 'orgadmin' || userToDelete.role === 'admin') {
-      // Find all employees belonging to this org
+      
+      // --- STEP 1: Clean up Tenant Database (if exists) ---
+      if (userToDelete.dbName) {
+        try {
+          const { getTenantDb } = require('../config/tenantConnection');
+          const { getTenantModels } = require('../models/tenantModels');
+          const connection = await getTenantDb(userToDelete.dbName);
+          const tenantModels = getTenantModels(connection);
+
+          // Delete all data from tenant DB
+          await tenantModels.User.deleteMany({});
+          await tenantModels.Attendance.deleteMany({});
+          await tenantModels.CheckIn.deleteMany({});
+          await tenantModels.LocationLog.deleteMany({});
+          await tenantModels.DailySummary.deleteMany({});
+          await tenantModels.Visit.deleteMany({});
+
+          // Drop the entire tenant database
+          await connection.dropDatabase();
+          console.log(`[DELETE] Tenant database ${userToDelete.dbName} dropped successfully.`);
+        } catch (tenantErr) {
+          console.error(`[DELETE] Error cleaning tenant DB ${userToDelete.dbName}:`, tenantErr.message);
+        }
+      }
+
+      // --- STEP 2: Clean up Main Database ---
+      // Find all employees belonging to this org in Main DB
       const employees = await User.find({ organizationId: userToDelete.organizationId || userToDelete._id });
       const employeeIds = employees.map(emp => emp._id);
 
-      // Delete attendance/checkins for these employees
+      // Delete all related records from Main DB
       await Attendance.deleteMany({ userId: { $in: employeeIds } });
       await CheckIn.deleteMany({ userId: { $in: employeeIds } });
+      await LocationLog.deleteMany({ employeeId: { $in: employeeIds.map(id => id.toString()) } });
+      await DailySummary.deleteMany({ employeeId: { $in: employeeIds.map(id => id.toString()) } });
+      await Visit.deleteMany({ employeeId: { $in: employeeIds.map(id => id.toString()) } });
 
-      // Delete the employees
+      // Delete the employees from Main DB
       await User.deleteMany({ organizationId: userToDelete.organizationId || userToDelete._id });
 
       // Delete the actual Organization record if it exists
@@ -144,19 +176,48 @@ const deleteOrganization = async (req, res) => {
       // Delete the admin user
       await User.deleteOne({ _id: userToDelete._id });
 
+      console.log(`[DELETE] Organization ${userToDelete.name} and all data deleted.`);
       return res.json({ message: 'Organization and all associated staff removed successfully.' });
     }
 
     // CASE 2: Deleting a standard Employee/Identity
     if (userToDelete.role === 'employee') {
-      // Delete attendance/checkins for this specific user
+      const empIdStr = userToDelete._id.toString();
+
+      // Delete all related records from Main DB
       await Attendance.deleteMany({ userId: userToDelete._id });
       await CheckIn.deleteMany({ userId: userToDelete._id });
+      await LocationLog.deleteMany({ employeeId: empIdStr });
+      await DailySummary.deleteMany({ employeeId: empIdStr });
+      await Visit.deleteMany({ employeeId: empIdStr });
 
-      // Delete the user
+      // Also try cleaning from tenant DB if employee belongs to an org
+      if (userToDelete.organizationId) {
+        try {
+          const orgAdmin = await User.findById(userToDelete.organizationId).select('dbName');
+          if (orgAdmin && orgAdmin.dbName) {
+            const { getTenantDb } = require('../config/tenantConnection');
+            const { getTenantModels } = require('../models/tenantModels');
+            const connection = await getTenantDb(orgAdmin.dbName);
+            const tenantModels = getTenantModels(connection);
+
+            await tenantModels.User.deleteOne({ _id: userToDelete._id });
+            await tenantModels.Attendance.deleteMany({ userId: userToDelete._id });
+            await tenantModels.CheckIn.deleteMany({ userId: userToDelete._id });
+            await tenantModels.LocationLog.deleteMany({ employeeId: empIdStr });
+            await tenantModels.DailySummary.deleteMany({ employeeId: empIdStr });
+            await tenantModels.Visit.deleteMany({ employeeId: empIdStr });
+            console.log(`[DELETE] Employee ${userToDelete.name} cleaned from tenant DB: ${orgAdmin.dbName}`);
+          }
+        } catch (tenantErr) {
+          console.error(`[DELETE] Error cleaning employee from tenant DB:`, tenantErr.message);
+        }
+      }
+
+      // Delete the user from Main DB
       await User.deleteOne({ _id: userToDelete._id });
 
-      return res.json({ message: 'User identity and attendance records removed successfully.' });
+      return res.json({ message: 'User identity and all records removed successfully.' });
     }
 
     // Fallback for other roles (if any)

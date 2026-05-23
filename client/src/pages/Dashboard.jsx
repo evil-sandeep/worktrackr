@@ -82,8 +82,19 @@ const Dashboard = () => {
   if (!user) return null;
 
   return (
-    <div className="flex-1 h-full flex flex-col overflow-hidden animate-in fade-in duration-500">
+    <div className="flex-1 h-full flex flex-col overflow-hidden animate-in fade-in duration-500 p-2">
       
+      {/* Header with Organization Name */}
+      <div className="mb-4 flex flex-col shrink-0">
+         <h1 className="text-2xl font-bold text-[#323130] tracking-tight">{greeting}, {user.name}</h1>
+         <div className="flex items-center gap-2 mt-1">
+            <span className="text-xs font-bold text-[#605E5C] uppercase tracking-wider">Organization:</span>
+            <span className="text-xs font-bold text-[#0078D4] bg-[#0078D4]/10 px-2 py-0.5 rounded-sm border border-[#0078D4]/20">
+               {user.organizationName || 'Direct Parent'}
+            </span>
+         </div>
+      </div>
+
       {/* Viewport Locked Grid */}
       <div className="flex-1 flex flex-col lg:flex-row gap-4 overflow-hidden min-h-0">
         
