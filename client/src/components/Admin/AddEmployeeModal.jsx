@@ -122,7 +122,7 @@ const AddEmployeeModal = ({ isOpen, onClose, onSuccess, organizations = [], orgI
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-none animate-in fade-in duration-200">
-      <div className="bg-white border border-[#EDEBE9] w-full max-w-md shadow-2xl overflow-hidden flex flex-col">
+      <div className="bg-white border border-[#EDEBE9] w-full max-w-md shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         <div className="px-6 py-4 border-b border-[#EDEBE9] bg-[#FAF9F8] flex justify-between items-center">
           <h2 className="text-sm font-bold text-[#323130] uppercase tracking-wider flex items-center gap-2">
             <Plus className="h-4 w-4 text-[#0078D4]" />
@@ -133,7 +133,7 @@ const AddEmployeeModal = ({ isOpen, onClose, onSuccess, organizations = [], orgI
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 bg-white">
+        <form onSubmit={handleSubmit} className="p-6 space-y-4 bg-white overflow-y-auto">
           <div className="space-y-1">
             <label className="text-[11px] font-semibold text-[#605E5C] uppercase tracking-wider">Identity Name</label>
             <input

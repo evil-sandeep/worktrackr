@@ -103,13 +103,14 @@ const createEmployee = async (req, res) => {
         assignedRole = 'orgadmin';
         assignedOrgId = null;
       } else {
-        assignedOrgId = organizationId || null;
+        assignedOrgId = organizationId || req.user._id;
       }
     }
 
-    // CRITICAL: orgadmin/superadmin must ALWAYS be in the Main DB
+    // CRITICAL: orgadmin/superadmin and direct parent employees must ALWAYS be in the Main DB
     const MainUser = require('../models/User');
-    const UserModel = assignedRole === 'orgadmin' ? MainUser : User;
+    const isDirectParent = req.user.role === 'superadmin' && !organizationId;
+    const UserModel = (assignedRole === 'orgadmin' || isDirectParent) ? MainUser : User;
 
     const user = await UserModel.create({
       name,

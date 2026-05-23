@@ -31,7 +31,9 @@ beforeAll(async () => {
     email: 'attendance@example.com',
     phone: '0987654321',
     empId: 'EMP002',
-    password: 'Password123'
+    password: 'Password123',
+    organizationId: new mongoose.Types.ObjectId(),
+    isPaid: true
   });
 
   token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'fallback_secret_key');

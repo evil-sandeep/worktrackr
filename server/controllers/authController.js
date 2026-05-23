@@ -51,7 +51,8 @@ const registerUser = async (req, res) => {
         // Find the orgadmin to get their dbName and ID
         const adminUser = await User.findOne({ organizationId: org._id, role: { $in: ['orgadmin', 'admin'] } });
         if (adminUser) {
-          assignedOrgId = adminUser._id; // Use Admin's User ID as organizationId for consistency
+          // IMPORTANT: Use adminUser._id (not org._id) so employees appear in admin dashboard
+          assignedOrgId = adminUser._id;
           targetDbName = adminUser.dbName;
           console.log(`[REGISTER DEBUG] Secret code matched org: ${org.name}. Target Admin: ${adminUser.name}, DB: ${targetDbName}`);
         } else {
